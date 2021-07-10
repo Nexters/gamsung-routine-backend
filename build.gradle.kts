@@ -59,6 +59,8 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
     outputs.dir(snippetsDir)
+
+    onlyIf { project.hasProperty("test") }
 }
 
 tasks {
