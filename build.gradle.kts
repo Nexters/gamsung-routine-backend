@@ -15,64 +15,77 @@ configurations {
     }
 }
 
-allprojects {
-    repositories {
-        mavenCentral()
+repositories {
+    mavenCentral()
+}
+
+group = "gamsung"
+version = "0.0.1-SNAPSHOT"
+
+apply(plugin = "org.springframework.boot")
+apply(plugin = "io.spring.dependency-management")
+
+apply(plugin = "kotlin")
+apply(plugin = "kotlin-kapt")
+apply(plugin = "kotlin-spring")
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "junit", module = "junit")
+    }
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("io.mockk:mockk:1.12.0")
+}
+
+val snippetsDir by extra { file("build/generated-snippets") }
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+        jvmTarget = "11"
     }
 }
 
-subprojects {
-    group = "com.gamsung"
-    version = "0.0.1-SNAPSHOT"
+tasks.withType<Test> {
+    useJUnitPlatform()
+    outputs.dir(snippetsDir)
+}
 
-    apply(plugin = "org.springframework.boot")
-    apply(plugin = "io.spring.dependency-management")
+tasks {
+    asciidoctor {
+        inputs.dir(snippetsDir)
+        dependsOn(test)
 
-    apply(plugin = "kotlin")
-    apply(plugin = "kotlin-kapt")
-    apply(plugin = "kotlin-spring")
-
-    dependencies {
-        implementation("org.springframework.boot:spring-boot-starter-actuator")
-        implementation("org.springframework.boot:spring-boot-starter-web")
-        implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-        implementation("org.jetbrains.kotlin:kotlin-reflect")
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-        annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-        testImplementation("org.springframework.boot:spring-boot-starter-test") {
-            exclude(group = "junit", module = "junit")
+        doFirst {
+            delete { file(snippetsDir) }
         }
-        testImplementation("org.junit.jupiter:junit-jupiter-api")
-        testImplementation("org.junit.jupiter:junit-jupiter-params")
-        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-
-        testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-        testImplementation("io.mockk:mockk:1.12.0")
     }
 
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "11"
-        }
+    val copyHTML = register<Copy>("copyHTML") {
+        dependsOn(asciidoctor)
+        from("build/asciidoc/html5")
+        into("src/main/resources/static/docs")
     }
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
+    build {
+        dependsOn(copyHTML)
     }
 
-    val jar: Jar by tasks
-    val bootJar: org.springframework.boot.gradle.tasks.bundling.BootJar by tasks
-
-    bootJar.enabled = false
-    jar.enabled = true
-}
-
-tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
-    enabled = false
-    project(":routine-interfaces")
-}
-
-tasks.getByName<Jar>("jar") {
-    enabled = true
+    bootJar {
+        dependsOn(asciidoctor)
+//        from ("${asciidoctor}/html5")
+//        into("BOOT-INF/classes/static/docs")
+        enabled = true
+        archiveFileName.set("app.jar")
+    }
 }

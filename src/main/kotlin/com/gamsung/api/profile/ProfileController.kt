@@ -1,9 +1,9 @@
-package com.gamsung.interfaces.api.profile
+package com.gamsung.api.profile
 
+import com.gamsung.api.dto.ResponseDto
+import com.gamsung.api.profile.dto.ProfileDto
+import com.gamsung.api.profile.dto.toDto
 import com.gamsung.domain.profile.ProfileService
-import com.gamsung.interfaces.api.dto.ResponseDto
-import com.gamsung.interfaces.api.profile.dto.ProfileDto
-import com.gamsung.interfaces.api.profile.dto.toDto
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 

@@ -1,4 +1,4 @@
-package com.gamsung.dto
+package com.gamsung.api.dto
 
 import java.time.LocalDateTime
 

@@ -1,8 +1,8 @@
-package com.gamsung.interfaces.api
+package com.gamsung.api
 
 import com.gamsung.domain.profile.Profile
 import com.gamsung.domain.profile.ProfileService
-import com.gamsung.interfaces.api.profile.ProfileController
+import com.gamsung.api.profile.ProfileController
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

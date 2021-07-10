@@ -1,4 +1,4 @@
-package com.gamsung.interfaces.api.dto
+package com.gamsung.api.dto
 
 data class ResponseDto<T> internal constructor(
     val code: Int,

@@ -1,4 +1,4 @@
-package com.gamsung.interfaces.api.profile.dto
+package com.gamsung.api.profile.dto
 
 import com.gamsung.domain.profile.Profile
 
