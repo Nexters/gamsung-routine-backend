@@ -42,6 +42,10 @@ tasks {
         enabled = true
         archiveFileName.set("app.jar")
     }
+
+    test {
+        onlyIf { project.hasProperty("withTest") }
+    }
 }
 
 jib {
