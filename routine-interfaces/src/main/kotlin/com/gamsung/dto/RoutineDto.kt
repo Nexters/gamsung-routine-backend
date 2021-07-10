@@ -6,7 +6,7 @@ package com.gamsung.dto
  */
 
 data class RoutineDto(
-      var task: List<RoutineTaskDto>
+    var task: List<RoutineTaskDto>
 ) {
     //
 }

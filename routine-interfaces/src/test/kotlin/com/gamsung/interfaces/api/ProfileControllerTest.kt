@@ -1,12 +1,19 @@
 package com.gamsung.interfaces.api
 
+import com.gamsung.domain.profile.Profile
+import com.gamsung.domain.profile.ProfileService
+import com.gamsung.interfaces.api.profile.ProfileController
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
+import org.mockito.Mockito.`when`
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor
@@ -19,17 +26,37 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
+import java.util.*
 
 @ExtendWith(RestDocumentationExtension::class, SpringExtension::class)
 @WebMvcTest(ProfileController::class)
 @AutoConfigureRestDocs
 class ProfileControllerTest {
-    @Autowired
     private lateinit var mockMvc: MockMvc
+
+    @MockBean
+    private lateinit var profileService: ProfileService
+
+    @BeforeEach
+    fun setUp(webApplicationContext: WebApplicationContext, restDocumentation: RestDocumentationContextProvider) {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .apply<DefaultMockMvcBuilder>(documentationConfiguration(restDocumentation))
+            .build()
+    }
 
     @Test
     fun `Profile Get Api Test Docs`() {
         // given
+        `when`(profileService.get()).thenReturn(
+            Profile(
+                id = UUID.randomUUID().toString(),
+                name = "Test",
+                profileImageUrl = "http://test.com"
+            )
+        )
 
         // when
         val resultActions = mockMvc.perform(
@@ -41,10 +68,10 @@ class ProfileControllerTest {
             .andExpect { MockMvcResultMatchers.status().isOk }
             .andDo {
                 document(
-                    "Profile",
+                    "profile",
                     getDocumentRequest(),
                     getDocumentResponse(),
-                    responseFields(*common())
+                    responseFields(*common(), fieldWithPath("data.id").description("Profile Id"))
                 )
             }
     }

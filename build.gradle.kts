@@ -5,6 +5,8 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version Versions.kotlin
     kotlin("plugin.spring") version Versions.kotlin
+    id("org.asciidoctor.convert") version Versions.asciiDoctorConvertPlugin
+    id("com.google.cloud.tools.jib") version Versions.jibVersion
 }
 
 configurations {
@@ -37,8 +39,15 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-reflect")
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
         annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testImplementation("org.springframework.boot:spring-boot-starter-test") {
+            exclude(group = "junit", module = "junit")
+        }
+        testImplementation("org.junit.jupiter:junit-jupiter-api")
+        testImplementation("org.junit.jupiter:junit-jupiter-params")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
         testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+        testImplementation("io.mockk:mockk:1.12.0")
     }
 
     tasks.withType<KotlinCompile> {

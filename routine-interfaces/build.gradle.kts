@@ -1,5 +1,6 @@
 plugins {
-    id("org.asciidoctor.convert") version Versions.asciiDoctorConvertPlugin
+    id("org.asciidoctor.convert")
+    id("com.google.cloud.tools.jib")
 }
 
 dependencies {
@@ -20,12 +21,7 @@ tasks {
         dependsOn(test)
 
         doFirst {
-            println("=====start asciidoctor")
             delete { file(snippetsDir) }
-        }
-
-        doLast {
-            println("asciidoctor is deleted!")
         }
     }
 
@@ -43,5 +39,21 @@ tasks {
         dependsOn(asciidoctor)
 //        from ("${asciidoctor}/html5")
 //        into("BOOT-INF/classes/static/docs")
+        enabled = true
+        archiveFileName.set("app.jar")
+    }
+}
+
+jib {
+    from {
+        image = "amazoncorretto:11"
+    }
+    to {
+        image = "gamsung-routine"
+        tags = setOf("latest")
+    }
+    container {
+        ports = listOf("8080")
+        creationTime = "USE_CURRENT_TIMESTAMP"
     }
 }

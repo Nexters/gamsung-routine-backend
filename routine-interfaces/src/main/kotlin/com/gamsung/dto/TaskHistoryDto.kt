@@ -8,9 +8,9 @@ import java.time.LocalDateTime
  */
 
 data class TaskHistoryDto(
-        var id: Long,
-        var taskId: Long,
-        var completedAt: LocalDateTime?
+    var id: Long,
+    var taskId: Long,
+    var completedAt: LocalDateTime?
 ) {
     //
 }

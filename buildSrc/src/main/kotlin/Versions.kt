@@ -6,5 +6,7 @@ object Versions {
     /**
      * https://plugins.gradle.org/plugin/org.asciidoctor.convert
      */
-    const val asciiDoctorConvertPlugin = "2.4.0"
+    const val asciiDoctorConvertPlugin = "1.5.9.2"
+
+    const val jibVersion = "3.1.2"
 }
