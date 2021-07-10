@@ -3,9 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.5.2"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("org.asciidoctor.convert") version "1.5.8"
-    kotlin("jvm") version "1.5.20"
-    kotlin("plugin.spring") version "1.5.20"
+    kotlin("jvm") version Versions.kotlin
+    kotlin("plugin.spring") version Versions.kotlin
 }
 
 configurations {
@@ -52,4 +51,10 @@ subprojects {
     tasks.withType<Test> {
         useJUnitPlatform()
     }
+
+    val jar: Jar by tasks
+    val bootJar: org.springframework.boot.gradle.tasks.bundling.BootJar by tasks
+
+    bootJar.enabled = false
+    jar.enabled = true
 }
