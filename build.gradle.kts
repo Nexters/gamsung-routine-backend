@@ -77,9 +77,15 @@ tasks {
         into("src/main/resources/static/docs")
     }
 
+    build {
+        dependsOn(copyHTML)
+    }
+
     bootJar {
         dependsOn(asciidoctor)
-        dependsOn(copyHTML)
+        from ("build/docs/asciidoc") {
+            into("BOOT-INF/classes/static/docs")
+        }
         enabled = true
         archiveFileName.set("app.jar")
     }
