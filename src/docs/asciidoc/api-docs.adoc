@@ -1,0 +1,36 @@
+ifndef::snippets[]
+:snippets: build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+[[resources]]
+= Resources
+
+= profile
+== get profile
+
+=== [Request Path Parameters]
+
+include::{snippets}/profile/path-parameters.adoc[]
+
+=== [Request HTTP Example]
+
+include::{snippets}/profile/http-request.adoc[]
+
+== Response
+
+
+=== [Response Fields]
+
+include::{snippets}/profile/response-fields.adoc[]
+
+=== [Response HTTP Example]
+
+include::{snippets}/profile/http-response.adoc[]

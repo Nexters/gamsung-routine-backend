@@ -5,7 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version Versions.kotlin
     kotlin("plugin.spring") version Versions.kotlin
-    id("org.asciidoctor.convert") version Versions.asciiDoctorConvertPlugin
+    id("org.asciidoctor.jvm.convert") version Versions.asciiDoctorConvertPlugin
     id("com.google.cloud.tools.jib") version Versions.jibVersion
 }
 
@@ -73,18 +73,13 @@ tasks {
 
     val copyHTML = register<Copy>("copyHTML") {
         dependsOn(asciidoctor)
-        from("build/asciidoc/html5")
+        from("build/docs/asciidoc")
         into("src/main/resources/static/docs")
-    }
-
-    build {
-        dependsOn(copyHTML)
     }
 
     bootJar {
         dependsOn(asciidoctor)
-//        from ("${asciidoctor}/html5")
-//        into("BOOT-INF/classes/static/docs")
+        dependsOn(copyHTML)
         enabled = true
         archiveFileName.set("app.jar")
     }

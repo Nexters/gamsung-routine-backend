@@ -23,8 +23,10 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
+import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.RequestBuilder
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
@@ -32,9 +34,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import java.util.*
 
-//@ExtendWith(RestDocumentationExtension::class, SpringExtension::class)
-//@WebMvcTest(ProfileController::class)
-//@AutoConfigureRestDocs
+@ExtendWith(RestDocumentationExtension::class, SpringExtension::class)
+@WebMvcTest(ProfileController::class)
+@AutoConfigureRestDocs
 class ProfileControllerTest {
     private lateinit var mockMvc: MockMvc
 
@@ -48,7 +50,7 @@ class ProfileControllerTest {
             .build()
     }
 
-//    @Test
+    @Test
     fun `Profile Get Api Test Docs`() {
         // given
         `when`(profileService.get()).thenReturn(
@@ -67,15 +69,33 @@ class ProfileControllerTest {
         // then
         resultActions
             .andExpect { MockMvcResultMatchers.status().isOk }
-            .andDo {
+            .andDo(
                 document(
                     "profile",
                     getDocumentRequest(),
                     getDocumentResponse(),
-                    responseFields(*common(), fieldWithPath("data.id").description("Profile Id"))
+                    pathParameters(),
+                    responseFields(
+                        *common(),
+                        fieldWithPath("data.id").type(JsonFieldType.STRING).description("Profile Id")
+                    )
                 )
-            }
+            )
     }
+//
+//    @Test
+//    fun test() {
+//        // given
+//        `when`(profileService.get()).thenReturn(
+//            Profile(
+//                id = UUID.randomUUID().toString(),
+//                name = "Test",
+//                profileImageUrl = "http://test.com"
+//            )
+//        )
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/profile")).andDo(document("profile"))
+//    }
 
     private fun common(): Array<FieldDescriptor> {
         return arrayOf(
