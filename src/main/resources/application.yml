@@ -1,0 +1,4 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://junjinbus:gjswlsqjtm123$@cluster0.ynfwx.mongodb.net/gamsung?retryWrites=true&w=majority
