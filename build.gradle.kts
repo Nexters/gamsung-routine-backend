@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.5.2"
+    id("org.springframework.boot") version Versions.springBootVersion
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version Versions.kotlin
     kotlin("plugin.spring") version Versions.kotlin
@@ -30,8 +30,11 @@ apply(plugin = "kotlin-kapt")
 apply(plugin = "kotlin-spring")
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+//    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
 
     // Mongo DB
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
