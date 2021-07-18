@@ -3,10 +3,8 @@ package com.gamsung.domain.routine
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document
-data class RoutineTask(
-    @Id
-    var id: String, // UUID
+data class Task(
+
     var profileId: String,
     var title: String,
     var timesOfWeek: Int, // 주당 횟수

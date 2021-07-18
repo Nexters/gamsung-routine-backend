@@ -1,28 +1,34 @@
 package com.gamsung.api.routine
 
-import com.gamsung.api.dto.RoutineTaskDto
-import com.gamsung.api.dto.toDto
-import com.gamsung.api.dto.toEntity
+import com.gamsung.api.dto.*
+import com.gamsung.domain.routine.RoutineTaskService
 import com.gamsung.repository.RoutineTaskRepository
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/routine")
-class RoutineTaskController(private val routineTaskRepository: RoutineTaskRepository) {
+class RoutineTaskController(
+    private val routineTaskRepository: RoutineTaskRepository,
+    private val routineTaskService: RoutineTaskService
+) {
 
     @PostMapping
     fun create(
         @RequestBody routineTaskDto: RoutineTaskDto
     ): RoutineTaskDto {
-        val routineTask = routineTaskRepository.save(routineTaskDto.toEntity())
-        return routineTask.toDto()
+        return routineTaskRepository.save(routineTaskDto.toEntity()).toDto()
     }
 
-    @GetMapping("/{profileId}")
-    fun read(@PathVariable profileId: String): List<RoutineTaskDto> {
-        return routineTaskRepository.findByProfileId(profileId).map {
-            it.toDto()
-        }
+//    @GetMapping("/{profileId}")
+//    fun read(@PathVariable profileId: String): RoutineDto {
+//        return routineTaskService.getUserRoutines(profileId)
+//    }
+
+    @GetMapping("/weekly/{profileId}")
+    fun read(@PathVariable profileId: String,
+             @RequestParam year: Int?,
+             @RequestParam month: Int?): MonthlyRoutineHistoryDto {
+        return routineTaskService.getMonthlyRoutines(profileId, year, month)
     }
 
     @PutMapping
