@@ -1,13 +1,13 @@
 package com.gamsung.api.dto
 
 data class ResponseDto<T> internal constructor(
-    val code: Int,
+    val status: Int,
     val message: String,
     val data: T?,
 ) {
     companion object {
-        fun <T> ofSuccess(data: T) = ResponseDto(
-            code = 200,
+        fun <T> ok(data: T) = ResponseDto(
+            status = 200,
             message = "성공",
             data = data,
         )
