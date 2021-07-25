@@ -15,4 +15,6 @@ object Versions {
     const val asciiDoctorConvertPlugin = "2.4.0"
 
     const val jibVersion = "3.1.2"
+
+    const val springCloudVersion = "2020.0.3"
 }

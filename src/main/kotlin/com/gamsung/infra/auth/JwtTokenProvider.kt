@@ -5,18 +5,19 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.stereotype.Component
 import java.util.*
 
 class JwtTokenProvider(
     private val secret: String,
-    private val tokenValidateHour: Long,
+    private val validateDays: Long,
 ) {
     fun usernameFromToken(token: String): String = claimFrom(token, Claims::getSubject)
 
     fun expirationDateFrom(token: String): Date = claimFrom(token, Claims::getExpiration)
 
     fun generateToken(userDetails: UserDetails): String {
-        val millis = tokenValidateHour * 60 * 60 * 1000
+        val millis = validateDays * 24 * 60 * 60 * 1000
         return Jwts.builder().apply {
             setClaims(mutableMapOf<String, Any>())
             setSubject(userDetails.username)

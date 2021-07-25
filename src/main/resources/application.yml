@@ -2,3 +2,16 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://junjinbus:gjswlsqjtm123$@cluster0.ynfwx.mongodb.net/gamsung?retryWrites=true&w=majority
+
+auth:
+  jwt:
+    access:
+      secret: 755891e2290545012a0073daf9313bfdaefb96422dc55fbe242517c7eeda40d7
+      expire-days: 999
+    refresh:
+      secret: 6ee7a4c0ddd9ef131c0695a168243074cf511143c9a201a8821422811a7d5fff
+      expire-days: 9999
+
+logging:
+  level:
+    com.gamsung: DEBUG

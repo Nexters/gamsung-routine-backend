@@ -1,13 +1,17 @@
 package com.gamsung.domain.security
 
+import com.gamsung.domain.auth.service.CustomUserDetailsService
 import com.gamsung.infra.auth.JwtTokenProvider
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class JwtRequestFilter(
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val userDetailsService: CustomUserDetailsService,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -37,7 +41,11 @@ class JwtRequestFilter(
             return
         }
 
-        // TODO userService
+        val userDetails = userDetailsService.loadUserByUsername(userId)
+        if (jwtTokenProvider.validateToken(jwtToken, userDetails)) {
+            val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+            SecurityContextHolder.getContext().authentication = authentication
+        }
 
         filterChain.doFilter(request, response)
     }
