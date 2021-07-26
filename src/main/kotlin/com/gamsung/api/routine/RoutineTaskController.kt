@@ -49,4 +49,9 @@ class RoutineTaskController(
         routineTaskRepository.deleteById(taskId)
     }
 
+    /**
+     * [태스크 수행/완료]
+     * 루틴 - 태스크 중 하나를 터치하면 Count가 올라간다.
+     */
+
 }
