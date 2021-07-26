@@ -30,16 +30,38 @@ class RoutineTaskService(
 //        return RoutineDto (routine = routineTasks.map { it.toDto() }.groupBy { it.days })
 //    }
 
-//    fun getMonthlyRoutines(profileId: String, year: Int?, month: Int?): MonthlyRoutineHistoryDto {
-//        if (year != null && month != null) {
-//            val start = LocalDateTime.of(year, Month.of(month), 1, 0, 0)
-//            val isLeapYear = LocalDate.ofYearDay(year, 1).isLeapYear
-//            val end = LocalDateTime.of(year, Month.of(month), Month.of(month).length(isLeapYear), 23, 59)
-//            val routineTaskHistories =
-//                routineTaskUnitRepository.findByProfileIdAndCompletedAtBetween(profileId, start, end)
-//            return MonthlyRoutineHistoryDto(year = year, month = month, dailyRoutineHistory = routineTaskHistories.groupBy { it.completedAt.dayOfMonth })
-//        } else {
-//            throw Exception()
-//        }
-//    }
+    fun getMonthlyRoutines(profileId: String, year: Int?, month: Int?): MonthlyRoutineHistoryDto {
+        if (year != null && month != null) {
+            val start = LocalDateTime.of(year, Month.of(month), 1, 0, 0)
+            val isLeapYear = LocalDate.ofYearDay(year, 1).isLeapYear
+            val end = LocalDateTime.of(year, Month.of(month-1), Month.of(month).length(isLeapYear), 23, 59)
+            val dailyRoutines = routineTaskUnitRepository.findByProfileIdAndDateBetween(profileId, start, end)
+            val routineTasks = routineTaskRepository.findByProfileId(profileId)
+            val today = LocalDate.now()
+            for (routineTask in routineTasks) {
+                routineTask.days?.let {
+                    for (day in it) {
+                        if (day <= today.dayOfWeek.value) {
+                            continue
+                        }
+
+                        val daysFromToday = day - today.dayOfWeek.value
+                        val currDate = LocalDate.now().plusDays(daysFromToday.toLong())
+                        val date = currDate.year.toString() + currDate.month.toString() + currDate.dayOfMonth.toString()
+                        val id = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
+
+                        val dailyTaskUnit = RoutineTaskUnit(id = id, profileId = routineTask.profileId, taskId = routineTask.id, title = routineTask.title, timesOfWeek = routineTask.timesOfWeek,
+                                    timesOfDay = routineTask.timesOfDay, days = routineTask.days, times = routineTask.times, targetCount = routineTask.times.size,
+                                    date = date, completeCount = 0, completedAt = arrayListOf(), friendIds = arrayListOf())
+
+                        dailyRoutines.add(dailyTaskUnit)
+                    }
+                }
+            }
+            return MonthlyRoutineHistoryDto(year = year, month = month, dailyRoutines = dailyRoutines.groupBy { it.date })
+        } else {
+            throw Exception()
+        }
+    }
+
 }

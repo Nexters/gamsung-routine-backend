@@ -8,10 +8,10 @@ import java.time.LocalDate
 data class RoutineTaskUnit(
 
     @Id
-    val id: Long, // "20210702:profileId:taskId", key가 없을 시 최초 생성
+    val id: String, // "20210702:profileId:taskId", key가 없을 시 최초 생성
     val profileId: String,
 //    val dateString: String, //20210702
-    val taskId: Long,
+    val taskId: String,
     val title: String,
 
     // ** 이 4 필드는, 루틴 수정시 해당 "주"에 있는 history에 반영 **
@@ -33,7 +33,7 @@ data class RoutineTaskUnit(
 //    val month: String, //8
 //    val day: String, //1
     // better performance
-    val date: LocalDate,
+    val date: String, //20210801
 
     // 완료 될때마다 업데이트 되야 하는 필드들
     val completeCount: Int,
