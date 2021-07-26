@@ -8,8 +8,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.FilterType
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -35,7 +38,14 @@ import org.springframework.web.context.WebApplicationContext
 import java.util.*
 
 @ExtendWith(RestDocumentationExtension::class, SpringExtension::class)
-@WebMvcTest(ProfileController::class)
+@WebMvcTest(
+    controllers = [ProfileController::class],
+    useDefaultFilters = false,
+    includeFilters = [ComponentScan.Filter(
+        type = FilterType.ASSIGNABLE_TYPE,
+        value = [ProfileController::class]
+    )]
+)
 @AutoConfigureRestDocs
 class ProfileControllerTest {
     private lateinit var mockMvc: MockMvc
@@ -99,7 +109,7 @@ class ProfileControllerTest {
 
     private fun common(): Array<FieldDescriptor> {
         return arrayOf(
-            fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+            fieldWithPath("status").type(JsonFieldType.NUMBER).description("응답 코드"),
             fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
             subsectionWithPath("error").type(JsonFieldType.OBJECT).description("에러 Data").optional(),
             subsectionWithPath("data").type(JsonFieldType.OBJECT).description("응답 Data").optional()
