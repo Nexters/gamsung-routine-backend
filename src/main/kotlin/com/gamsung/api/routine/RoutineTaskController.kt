@@ -24,12 +24,12 @@ class RoutineTaskController(
 //        return routineTaskService.getUserRoutines(profileId)
 //    }
 
-    @GetMapping("/weekly/{profileId}")
-    fun read(@PathVariable profileId: String,
-             @RequestParam year: Int?,
-             @RequestParam month: Int?): MonthlyRoutineHistoryDto {
-        return routineTaskService.getMonthlyRoutines(profileId, year, month)
-    }
+//    @GetMapping("/weekly/{profileId}")
+//    fun read(@PathVariable profileId: String,
+//             @RequestParam year: Int?,
+//             @RequestParam month: Int?): MonthlyRoutineHistoryDto {
+//        return routineTaskService.getMonthlyRoutines(profileId, year, month)
+//    }
 
     @PutMapping
     fun update(
