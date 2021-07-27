@@ -1,12 +1,8 @@
 package com.gamsung.domain.routine
 
-import com.gamsung.api.dto.MonthlyRoutineHistoryDto
-import com.gamsung.repository.RoutineTaskUnitRepository
 import com.gamsung.repository.RoutineTaskRepository
+import com.gamsung.repository.RoutineTaskUnitRepository
 import org.springframework.stereotype.Service
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.Month
 
 @Service
 class RoutineTaskService(
