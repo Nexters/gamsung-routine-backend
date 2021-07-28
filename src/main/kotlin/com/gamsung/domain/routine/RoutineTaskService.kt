@@ -32,9 +32,11 @@ class RoutineTaskService(
 
     fun getMonthlyRoutines(profileId: String, year: Int?, month: Int?): MonthlyRoutineHistoryDto {
         if (year != null && month != null) {
-            val start = LocalDateTime.of(year, Month.of(month), 1, 0, 0)
+            val lastMonth = Month.of(month).minus(1)
+            val year = if (lastMonth.value == 1) (year-1) else year
+            val start = LocalDateTime.of(year, lastMonth, 1, 0, 0)
             val isLeapYear = LocalDate.ofYearDay(year, 1).isLeapYear
-            val end = LocalDateTime.of(year, Month.of(month-1), Month.of(month).length(isLeapYear), 23, 59)
+            val end = LocalDateTime.of(year, Month.of(month), Month.of(month).length(isLeapYear), 23, 59)
             val dailyRoutines = routineTaskUnitRepository.findByProfileIdAndDateBetween(profileId, start, end)
             val routineTasks = routineTaskRepository.findByProfileId(profileId)
             val today = LocalDate.now()
@@ -47,7 +49,14 @@ class RoutineTaskService(
 
                         val daysFromToday = day - today.dayOfWeek.value
                         val currDate = LocalDate.now().plusDays(daysFromToday.toLong())
-                        val date = currDate.year.toString() + currDate.month.toString() + currDate.dayOfMonth.toString()
+
+                        val monthString = currDate.month.value.toString()
+                        val month = if (monthString.length < 2) ("0$monthString") else monthString
+
+                        val dayString = currDate.dayOfMonth.toString()
+                        val day = if (dayString.length < 2) ("0$dayString") else dayString
+
+                        val date = currDate.year.toString() + month + day
                         val id = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
 
                         val dailyTaskUnit = RoutineTaskUnit(id = id, profileId = routineTask.profileId, taskId = routineTask.id, title = routineTask.title, timesOfWeek = routineTask.timesOfWeek,
