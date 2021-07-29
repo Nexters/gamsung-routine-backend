@@ -3,6 +3,7 @@ package com.gamsung.domain.routine
 import com.gamsung.repository.RoutineTaskUnitRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class RoutineTaskUnitService(
@@ -29,4 +30,19 @@ class RoutineTaskUnitService(
 
         return routineTaskUnitRepository.save(unit)
     }
+
+    fun getRoutineTaskUnitAll(profileId: String): MutableList<RoutineTaskUnit> {
+        return routineTaskUnitRepository.findByProfileId(profileId)
+    }
+
+    fun getRoutineTaskUnit(
+        profileId: String,
+        fromDate: LocalDateTime,
+        toDate: LocalDateTime
+    ): MutableList<RoutineTaskUnit> {
+        return routineTaskUnitRepository.findByProfileIdAndDateBetween(
+            profileId, fromDate, toDate
+        )
+    }
+
 }
