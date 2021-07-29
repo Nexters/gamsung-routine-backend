@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/routine/unit")
@@ -20,7 +21,8 @@ class RoutineTaskUnitController(
     fun create(
         @RequestBody routineTask: RoutineTask
     ): RoutineTaskUnit {
-        return routineTaskUnitService.createRoutineTaskUnit(routineTask)
+        val date = LocalDate.now() // todo
+        return routineTaskUnitService.createRoutineTaskUnit(routineTask, date)
     }
 /*
     @PutMapping

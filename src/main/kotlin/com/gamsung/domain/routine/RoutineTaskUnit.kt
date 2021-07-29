@@ -1,6 +1,5 @@
 package com.gamsung.domain.routine
 
-import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
@@ -9,9 +8,10 @@ import java.time.LocalDate
 data class RoutineTaskUnit(
 
     @Id
-//    val id: ObjectId, // "20210702:profileId:taskId", key가 없을 시 최초 생성
+    val id: String, // "20210702:profileId:taskId", key가 없을 시 최초 생성
     val profileId: String,
-    val date: LocalDate,
+//    val date: LocalDate,
+    val date: String,
     val taskId: String,
     val title: String,
 

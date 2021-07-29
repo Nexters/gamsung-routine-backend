@@ -7,5 +7,5 @@ import java.time.LocalDateTime
 
 @Repository
 interface RoutineTaskUnitRepository: MongoRepository<RoutineTaskUnit, String> {
-//    fun findByProfileIdAndCompletedAtBetween(profileId: String, start: LocalDateTime, end: LocalDateTime): List<RoutineTaskUnit>
+    fun findByProfileIdAndDateBetween(profileId: String, start: LocalDateTime, end: LocalDateTime): MutableList<RoutineTaskUnit>
 }

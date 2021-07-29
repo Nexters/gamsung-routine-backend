@@ -9,10 +9,11 @@ class RoutineTaskUnitService(
     private val routineTaskUnitRepository: RoutineTaskUnitRepository,
 ) {
 
-    fun createRoutineTaskUnit(routineTask: RoutineTask): RoutineTaskUnit {
+    fun createRoutineTaskUnit(routineTask: RoutineTask, date: LocalDate): RoutineTaskUnit {
         return RoutineTaskUnit(
+            id = date.toString().plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id),
             profileId = routineTask.profileId,
-            date = LocalDate.now(), // todo
+            date = date.toString(), // todo
             taskId = routineTask.id, // todo : String???
             title = routineTask.title,
 
