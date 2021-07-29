@@ -22,7 +22,6 @@ class CustomUserDetailsService(
 private fun User.toUserDetails() = CustomUserDetails(
     _id = this.id!!,
     _socialType = this.socialType,
-    _username = this.username,
     _nickname = this.nickname,
     _password = this.password,
     _email = this.email,
