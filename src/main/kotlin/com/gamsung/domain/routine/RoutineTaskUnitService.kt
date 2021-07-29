@@ -10,7 +10,7 @@ class RoutineTaskUnitService(
 ) {
 
     fun createRoutineTaskUnit(routineTask: RoutineTask, date: LocalDate): RoutineTaskUnit {
-        return RoutineTaskUnit(
+        val unit = RoutineTaskUnit(
             id = date.toString().plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id),
             profileId = routineTask.profileId,
             date = date.toString(), // todo
@@ -26,5 +26,7 @@ class RoutineTaskUnitService(
             completeCount = 0, // 시작은 0
             completedDateList = mutableListOf()
         )
+
+        return routineTaskUnitRepository.save(unit)
     }
 }
