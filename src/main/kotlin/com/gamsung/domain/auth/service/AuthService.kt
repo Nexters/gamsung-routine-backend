@@ -52,7 +52,7 @@ class AuthService(
         val token = UsernamePasswordAuthenticationToken(user.id, user.providerId)
         val authenticate =
             authenticationManager.authenticate(token)
-        val userDetails = userDetailsService.loadUserByUsername(user.username)
+        val userDetails = userDetailsService.loadUserByUsername(user.id!!)
 
         SecurityContextHolder.getContext().authentication = authenticate
 
