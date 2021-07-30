@@ -8,4 +8,5 @@ class RoutineApplication
 
 fun main(args: Array<String>) {
     runApplication<RoutineApplication>(*args)
+    println("\n\n* * * Application start!!! * * * \n")
 }

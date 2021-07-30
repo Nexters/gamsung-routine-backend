@@ -45,9 +45,11 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
+    implementation("io.springfox:springfox-swagger2:2.9.2")
+    implementation("io.springfox:springfox-swagger-ui:2.9.2")
     // Mongo DB
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -61,6 +63,7 @@ dependencies {
 
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.0.0")
 }
 
 val snippetsDir by extra { file("build/generated-snippets") }
