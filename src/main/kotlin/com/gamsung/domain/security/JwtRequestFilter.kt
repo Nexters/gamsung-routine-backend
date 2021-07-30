@@ -29,19 +29,19 @@ class JwtRequestFilter(
         }
 
         val jwtToken = token.substring(7)
-        val userId = try {
+        val username = try {
             jwtTokenProvider.usernameFromToken(jwtToken)
         } catch (e: Exception) {
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             null
         }
 
-        requireNotNull(userId) {
+        requireNotNull(username) {
             filterChain.doFilter(request, response)
             return
         }
 
-        val userDetails = userDetailsService.loadUserByUsername(userId)
+        val userDetails = userDetailsService.loadUserByUsername(username)
         if (jwtTokenProvider.validateToken(jwtToken, userDetails)) {
             val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
             SecurityContextHolder.getContext().authentication = authentication

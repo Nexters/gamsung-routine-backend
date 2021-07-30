@@ -6,6 +6,7 @@ import com.gamsung.domain.auth.SocialType
 data class SignInRequestDto(
     val accessToken: String,
     val refreshToken: String,
+    val pushToken: String?,
 )
 
 data class SignInResponseDto(
@@ -14,5 +15,5 @@ data class SignInResponseDto(
 )
 
 fun SignInRequestDto.toRequestWith(socialType: SocialType) = SocialSignInRequest(
-    socialType = socialType, accessToken = accessToken, refreshToken = refreshToken
+    socialType = socialType, accessToken = accessToken, refreshToken = refreshToken, pushToken = pushToken,
 )

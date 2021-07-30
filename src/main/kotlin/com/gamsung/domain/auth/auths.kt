@@ -13,6 +13,7 @@ data class SocialSignInRequest(
     val socialType: SocialType,
     val accessToken: String,
     val refreshToken: String,
+    val pushToken: String?,
 )
 
 data class SocialSignInResponse(
@@ -25,26 +26,56 @@ data class User(
     @Id
     val id: String?,
 
+    val username: String,
     val password: String,
     val socialType: SocialType,
     val providerId: String,
-    val username: String,
     val nickname: String,
     val email: String,
     val profileImageUrl: String?,
+    val thumbnailImageUrl: String?,
+    val pushToken: String?,
     val lastAccessTime: LocalDateTime = LocalDateTime.now(),
     val active: Boolean = true,
-)
+) {
+    companion object {
+        fun create(
+            username: String,
+            password: String,
+            socialType: SocialType,
+            providerId: String,
+            nickname: String,
+            email: String,
+            profileImageUrl: String?,
+            pushToken: String?,
+            thumbnailImageUrl: String?,
+        ): User {
+            return User(
+                id = null,
+                username = username,
+                password = password,
+                socialType = socialType,
+                providerId = providerId,
+                nickname = nickname,
+                email = email,
+                profileImageUrl = profileImageUrl,
+                thumbnailImageUrl = thumbnailImageUrl,
+                pushToken = pushToken,
+            )
+        }
+    }
+}
 
 class CustomUserDetails(
     private val _id: String,
+    private val _username: String,
     private val _socialType: SocialType,
     private val _nickname: String,
     private val _password: String,
     private val _email: String,
     private val _profileImageUrl: String?,
     private val _authorities: MutableList<out GrantedAuthority>,
-): UserDetails {
+) : UserDetails {
     val id: String get() = _id
     val socialType: SocialType get() = _socialType
     val nickname: String get() = _nickname
@@ -60,7 +91,7 @@ class CustomUserDetails(
     }
 
     override fun getUsername(): String {
-        return _id
+        return _username
     }
 
     override fun isAccountNonExpired(): Boolean {
