@@ -1,7 +1,7 @@
 package com.gamsung.configuration
 
-import com.gamsung.domain.auth.Oauth2Provider
 import com.gamsung.domain.auth.service.CustomUserDetailsService
+import com.gamsung.domain.auth.service.Oauth2Provider
 import com.gamsung.domain.security.JwtRequestFilter
 import com.gamsung.infra.auth.JwtTokenProvider
 import org.springframework.beans.factory.annotation.Value

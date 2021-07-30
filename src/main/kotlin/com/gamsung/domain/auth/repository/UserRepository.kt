@@ -1,7 +1,7 @@
 package com.gamsung.domain.auth.repository
 
-import com.gamsung.domain.auth.SocialType
-import com.gamsung.domain.auth.User
+import com.gamsung.domain.auth.document.User
+import com.gamsung.domain.auth.service.SocialType
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface UserRepository: MongoRepository<User, String> {

@@ -1,6 +1,6 @@
 package com.gamsung.api.profile.dto
 
-import com.gamsung.domain.profile.Profile
+import com.gamsung.domain.auth.service.Account
 
 /**
  * @author Jongkook
@@ -9,7 +9,9 @@ import com.gamsung.domain.profile.Profile
 data class ProfileDto(
     val id: String, // UUID
     val name: String,
-    val profileImageUrl: String,
+    val profileImageUrl: String?,
+    val thumbnailImageUrl: String?,
 )
 
-fun Profile.toDto() = ProfileDto(id = id, name = name, profileImageUrl = profileImageUrl)
+fun Account.toDto() =
+    ProfileDto(id = id, name = nickname, profileImageUrl = profileImageUrl, thumbnailImageUrl = thumbnailImageUrl)

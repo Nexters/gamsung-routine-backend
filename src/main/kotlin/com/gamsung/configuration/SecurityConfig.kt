@@ -1,9 +1,15 @@
 package com.gamsung.configuration
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.gamsung.api.dto.ResponseDto
 import com.gamsung.domain.auth.service.CustomUserDetailsService
 import com.gamsung.domain.security.JwtRequestFilter
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.BeanIds
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -45,9 +51,9 @@ class SecurityConfig(
             .antMatchers("/oauth2/**").permitAll()
             .antMatchers("/login/**").permitAll()
             .antMatchers("/api/v1/auth/sign-in/**").permitAll()
-            .anyRequest().permitAll()
-//            .antMatchers("/api/**")
-//            .authenticated()
+//            .anyRequest().permitAll()
+            .antMatchers("/api/**")
+            .authenticated()
             .and()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -55,6 +61,17 @@ class SecurityConfig(
             .csrf().disable()
             .formLogin().disable()
             .exceptionHandling()
+            .authenticationEntryPoint { request, response, _ ->
+                log.warn("인증되지 않았습니다. [${request.requestURI}]")
+
+                response.contentType = MediaType.APPLICATION_JSON_VALUE
+                response.status = HttpStatus.UNAUTHORIZED.value()
+                response.outputStream.use {
+                    val responseDto = ResponseDto.error(status = HttpStatus.UNAUTHORIZED, message = "인증되지 않았습니다.")
+                    OBJECT_MAPPER.writeValue(it, responseDto)
+                    it.flush()
+                }
+            }
             .and()
             .oauth2Login()
             .userInfoEndpoint()
@@ -65,5 +82,11 @@ class SecurityConfig(
     override fun configure(web: WebSecurity) {
         web.ignoring()
             .antMatchers("/docs/**")
+            .antMatchers("/swagger-ui.html")
+    }
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
+        private val OBJECT_MAPPER = ObjectMapper()
     }
 }

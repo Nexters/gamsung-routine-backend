@@ -1,7 +1,7 @@
 package com.gamsung.api.dto
 
-import com.gamsung.domain.auth.SocialSignInRequest
-import com.gamsung.domain.auth.SocialType
+import com.gamsung.domain.auth.service.SocialSignInRequest
+import com.gamsung.domain.auth.service.SocialType
 
 data class SignInRequestDto(
     val accessToken: String,

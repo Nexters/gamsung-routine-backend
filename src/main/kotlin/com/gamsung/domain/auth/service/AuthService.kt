@@ -1,9 +1,7 @@
 package com.gamsung.domain.auth.service
 
-import com.gamsung.domain.auth.SocialSignInRequest
-import com.gamsung.domain.auth.SocialSignInResponse
-import com.gamsung.domain.auth.SocialType
-import com.gamsung.domain.auth.User
+import com.gamsung.api.UnAuthorizedException
+import com.gamsung.domain.auth.document.User
 import com.gamsung.domain.auth.repository.UserRepository
 import com.gamsung.domain.external.kakao.KakaoApiClient
 import com.gamsung.domain.external.kakao.KakaoResponse
@@ -30,16 +28,21 @@ class AuthService(
     private val log: Logger = LoggerFactory.getLogger(AuthService::class.java)
 
     fun signIn(signInRequest: SocialSignInRequest): SocialSignInResponse {
-        val userInfoResponse = kakaoApiClient.userInfo(accessToken = "Bearer ${signInRequest.accessToken}")
+        val userInfoResponse = try {
+            kakaoApiClient.userInfo(accessToken = "Bearer ${signInRequest.accessToken}")
+        } catch (e: Exception) {
+            null
+        }
 
-        require(userInfoResponse.statusCode == HttpStatus.OK) { "인증 실패" }
+        requireNotNull(userInfoResponse) { throw UnAuthorizedException("카카오 인증 실패") }
+        require(userInfoResponse.statusCode == HttpStatus.OK) { throw UnAuthorizedException("카카오 인증 실패") }
 
         val userInfo = requireNotNull(userInfoResponse.body)
 
         val user = userRepository.findByProviderIdAndSocialTypeAndActive(
             providerId = userInfo.id.toString(),
             socialType = signInRequest.socialType
-        )
+        )?.also { updateProfile(it, signInRequest.pushToken, userInfo) }
             ?: join(
                 username = userInfo.toUsernameWithSocialType(signInRequest.socialType),
                 providerId = userInfo.id.toString(),
@@ -62,6 +65,17 @@ class AuthService(
             accessToken = accessTokenProvider.generateToken(userDetails),
             refreshToken = refreshTokenProvider.generateToken(userDetails),
         )
+    }
+
+    private fun updateProfile(user: User, pushToken: String?, userInfo: KakaoResponse): User {
+        val updatedUser = user.update(
+            nickname = userInfo.properties.nickname,
+            email = userInfo.properties.accountEmail ?: "",
+            profileImageUrl = userInfo.properties.profileImage,
+            thumbnailImageUrl = userInfo.properties.thumbnailImage,
+            pushToken = pushToken,
+        )
+        return userRepository.save(updatedUser)
     }
 
     private fun join(
