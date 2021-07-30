@@ -1,8 +1,8 @@
 package com.gamsung.domain.routine
 
 import com.gamsung.api.dto.MonthlyRoutineHistoryDto
-import com.gamsung.repository.RoutineTaskUnitRepository
 import com.gamsung.repository.RoutineTaskRepository
+import com.gamsung.repository.RoutineTaskUnitRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,7 +33,7 @@ class RoutineTaskService(
     fun getMonthlyRoutines(profileId: String, year: Int?, month: Int?): MonthlyRoutineHistoryDto {
         if (year != null && month != null) {
             val lastMonth = Month.of(month).minus(1)
-            val year = if (lastMonth.value == 1) (year-1) else year
+            val year = if (lastMonth.value == 1) (year - 1) else year
             val start = LocalDateTime.of(year, lastMonth, 1, 0, 0)
             val isLeapYear = LocalDate.ofYearDay(year, 1).isLeapYear
             val end = LocalDateTime.of(year, Month.of(month), Month.of(month).length(isLeapYear), 23, 59)
@@ -41,7 +41,7 @@ class RoutineTaskService(
             val routineTasks = routineTaskRepository.findByProfileId(profileId)
             val today = LocalDate.now()
             for (routineTask in routineTasks) {
-                routineTask.days?.let {
+                routineTask.days.let {
                     for (day in it) {
                         if (day <= today.dayOfWeek.value) {
                             continue
@@ -59,15 +59,29 @@ class RoutineTaskService(
                         val date = currDate.year.toString() + month + day
                         val id = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
 
-                        val dailyTaskUnit = RoutineTaskUnit(id = id, profileId = routineTask.profileId, taskId = routineTask.id, title = routineTask.title, timesOfWeek = routineTask.timesOfWeek,
-                                    timesOfDay = routineTask.timesOfDay, days = routineTask.days, times = routineTask.times, targetCount = routineTask.times.size,
-                                    date = date, completeCount = 0, completedAt = arrayListOf(), friendIds = arrayListOf())
+                        val dailyTaskUnit = RoutineTaskUnit(
+                            id = id,
+                            profileId = routineTask.profileId,
+                            taskId = routineTask.id,
+                            title = routineTask.title,
+                            timesOfWeek = routineTask.timesOfWeek,
+                            timesOfDay = routineTask.timesOfDay,
+                            days = routineTask.days,
+                            times = routineTask.times,
+                            date = date, // todo @권사원, 이거 LocalDate로 바궈도 됨???
+                            completeCount = 0,
+                            completedDateList = arrayListOf(),
+                            friendIds = arrayListOf()
+                        )
 
                         dailyRoutines.add(dailyTaskUnit)
                     }
                 }
             }
-            return MonthlyRoutineHistoryDto(year = year, month = month, dailyRoutines = dailyRoutines.groupBy { it.date })
+            return MonthlyRoutineHistoryDto(
+                year = year,
+                month = month,
+                dailyRoutines = dailyRoutines.groupBy { it.date })
         } else {
             throw Exception()
         }
