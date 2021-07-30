@@ -43,7 +43,7 @@ class AuthService(
                 providerId = userInfo.id.toString(),
                 socialType = signInRequest.socialType,
                 email = userInfo.properties.accountEmail ?: "",
-                username = userInfo.properties.nickname,
+                username = signInRequest.socialType.toString() + userInfo.id.toString(),
                 nickname = userInfo.properties.nickname,
                 profileImage = userInfo.properties.profileImage,
                 thumbnailImage = userInfo.properties.thumbnailImage
@@ -52,7 +52,7 @@ class AuthService(
         val token = UsernamePasswordAuthenticationToken(user.id, user.providerId)
         val authenticate =
             authenticationManager.authenticate(token)
-        val userDetails = userDetailsService.loadUserByUsername(user.username)
+        val userDetails = userDetailsService.loadUserByUsername(user.id!!)
 
         SecurityContextHolder.getContext().authentication = authenticate
 

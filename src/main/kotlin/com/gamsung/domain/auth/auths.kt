@@ -39,7 +39,6 @@ data class User(
 class CustomUserDetails(
     private val _id: String,
     private val _socialType: SocialType,
-    private val _username: String,
     private val _nickname: String,
     private val _password: String,
     private val _email: String,
@@ -61,7 +60,7 @@ class CustomUserDetails(
     }
 
     override fun getUsername(): String {
-        return _username
+        return _id
     }
 
     override fun isAccountNonExpired(): Boolean {

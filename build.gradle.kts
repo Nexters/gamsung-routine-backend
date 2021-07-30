@@ -63,6 +63,7 @@ dependencies {
 
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.0.0")
 }
 
 val snippetsDir by extra { file("build/generated-snippets") }
