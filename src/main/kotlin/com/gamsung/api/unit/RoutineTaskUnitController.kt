@@ -1,28 +1,29 @@
-package com.gamsung.api.routine
+package com.gamsung.api.unit
 
-import com.gamsung.domain.routine.RoutineTask
-import com.gamsung.domain.routine.RoutineTaskUnit
-import com.gamsung.domain.routine.RoutineTaskUnitService
-import com.gamsung.repository.RoutineTaskUnitRepository
+import com.gamsung.api.dto.ResponseDto
+import com.gamsung.api.dto.RoutineTaskUnitDto
+import com.gamsung.domain.unit.RoutineTaskUnitService
+import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/routine/unit")
 class RoutineTaskUnitController(
-    private val routineTaskUnitRepository: RoutineTaskUnitRepository,
     private val routineTaskUnitService: RoutineTaskUnitService
 ) {
 
-    @PostMapping
+    @ApiOperation(value = "Task unit 생성")
+    @PostMapping("")
     fun create(
-        @RequestBody routineTask: RoutineTask
-    ): RoutineTaskUnit {
-        val date = LocalDate.now() // todo
-        return routineTaskUnitService.createRoutineTaskUnit(routineTask, date)
+        @RequestBody routineTaskUnitDto: RoutineTaskUnitDto
+    ): ResponseDto<String> {
+        val unit = routineTaskUnitService.createRoutineTaskUnit(routineTaskUnitDto)
+        return ResponseDto.ok(
+            unit.id ?: "ID를 찾을 수 없습니다"
+        )
     }
 /*
     @PutMapping
