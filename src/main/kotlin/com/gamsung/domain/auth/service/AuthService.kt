@@ -1,11 +1,10 @@
 package com.gamsung.domain.auth.service
 
-import com.gamsung.domain.auth.SocialSignInRequest
-import com.gamsung.domain.auth.SocialSignInResponse
-import com.gamsung.domain.auth.SocialType
-import com.gamsung.domain.auth.User
+import com.gamsung.api.UnAuthorizedException
+import com.gamsung.domain.auth.document.User
 import com.gamsung.domain.auth.repository.UserRepository
 import com.gamsung.domain.external.kakao.KakaoApiClient
+import com.gamsung.domain.external.kakao.KakaoResponse
 import com.gamsung.infra.auth.JwtTokenProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,32 +26,38 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder,
 ) {
     private val log: Logger = LoggerFactory.getLogger(AuthService::class.java)
-    fun signIn(signInRequest: SocialSignInRequest): SocialSignInResponse {
-        val userInfoResponse = kakaoApiClient.userInfo(accessToken = "Bearer ${signInRequest.accessToken}")
-        log.debug("userInfo : [${userInfoResponse}]")
 
-        require(userInfoResponse.statusCode == HttpStatus.OK) { "인증 실패" }
+    fun signIn(signInRequest: SocialSignInRequest): SocialSignInResponse {
+        val userInfoResponse = try {
+            kakaoApiClient.userInfo(accessToken = "Bearer ${signInRequest.accessToken}")
+        } catch (e: Exception) {
+            null
+        }
+
+        requireNotNull(userInfoResponse) { throw UnAuthorizedException("카카오 인증 실패") }
+        require(userInfoResponse.statusCode == HttpStatus.OK) { throw UnAuthorizedException("카카오 인증 실패") }
 
         val userInfo = requireNotNull(userInfoResponse.body)
 
         val user = userRepository.findByProviderIdAndSocialTypeAndActive(
             providerId = userInfo.id.toString(),
             socialType = signInRequest.socialType
-        )
+        )?.also { updateProfile(it, signInRequest.pushToken, userInfo) }
             ?: join(
+                username = userInfo.toUsernameWithSocialType(signInRequest.socialType),
                 providerId = userInfo.id.toString(),
                 socialType = signInRequest.socialType,
                 email = userInfo.properties.accountEmail ?: "",
-                username = signInRequest.socialType.toString() + userInfo.id.toString(),
                 nickname = userInfo.properties.nickname,
                 profileImage = userInfo.properties.profileImage,
-                thumbnailImage = userInfo.properties.thumbnailImage
+                thumbnailImage = userInfo.properties.thumbnailImage,
+                pushToken = signInRequest.pushToken,
             )
 
-        val token = UsernamePasswordAuthenticationToken(user.id, user.providerId)
+        val token = UsernamePasswordAuthenticationToken(user.username, user.providerId)
         val authenticate =
             authenticationManager.authenticate(token)
-        val userDetails = userDetailsService.loadUserByUsername(user.id!!)
+        val userDetails = userDetailsService.loadUserByUsername(user.username)
 
         SecurityContextHolder.getContext().authentication = authenticate
 
@@ -62,26 +67,43 @@ class AuthService(
         )
     }
 
+    private fun updateProfile(user: User, pushToken: String?, userInfo: KakaoResponse): User {
+        val updatedUser = user.update(
+            nickname = userInfo.properties.nickname,
+            email = userInfo.properties.accountEmail ?: "",
+            profileImageUrl = userInfo.properties.profileImage,
+            thumbnailImageUrl = userInfo.properties.thumbnailImage,
+            pushToken = pushToken,
+        )
+        return userRepository.save(updatedUser)
+    }
+
     private fun join(
+        username: String,
         providerId: String,
         socialType: SocialType,
         email: String,
-        username: String,
         nickname: String,
         profileImage: String?,
-        thumbnailImage: String?
+        thumbnailImage: String?,
+        pushToken: String?,
     ): User {
-        val user = User(
-            id = null,
+        val user = User.create(
+            username = username,
+            password = passwordEncoder.encode(providerId),
             providerId = providerId,
             socialType = socialType,
             email = email,
-            username = username,
             nickname = nickname,
             profileImageUrl = profileImage,
-            password = passwordEncoder.encode(providerId),
+            thumbnailImageUrl = thumbnailImage,
+            pushToken = pushToken,
         )
 
         return userRepository.save(user)
     }
+}
+
+private fun KakaoResponse.toUsernameWithSocialType(socialType: SocialType): String {
+    return "$socialType ${this.id}"
 }

@@ -14,8 +14,6 @@ class JwtTokenProvider(
 ) {
     fun usernameFromToken(token: String): String = claimFrom(token, Claims::getSubject)
 
-    fun expirationDateFrom(token: String): Date = claimFrom(token, Claims::getExpiration)
-
     fun generateToken(userDetails: UserDetails): String {
         val millis = validateDays * 24 * 60 * 60 * 1000
         return Jwts.builder().apply {
@@ -31,6 +29,8 @@ class JwtTokenProvider(
         val username = usernameFromToken(token)
         return username == userDetails.username && !tokenExpired(token)
     }
+
+    private fun expirationDateFrom(token: String): Date = claimFrom(token, Claims::getExpiration)
 
     private fun tokenExpired(token: String): Boolean {
         val expirationDateFrom = expirationDateFrom(token)

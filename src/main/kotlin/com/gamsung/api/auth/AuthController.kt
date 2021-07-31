@@ -4,8 +4,8 @@ import com.gamsung.api.dto.ResponseDto
 import com.gamsung.api.dto.SignInRequestDto
 import com.gamsung.api.dto.SignInResponseDto
 import com.gamsung.api.dto.toRequestWith
-import com.gamsung.domain.auth.SocialType
 import com.gamsung.domain.auth.service.AuthService
+import com.gamsung.domain.auth.service.SocialType
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

@@ -1,18 +1,16 @@
-package com.gamsung.domain.auth
+package com.gamsung.domain.auth.service
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.client.registration.ClientRegistration
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod
-import java.time.LocalDateTime
 
 data class SocialSignInRequest(
     val socialType: SocialType,
     val accessToken: String,
     val refreshToken: String,
+    val pushToken: String?,
 )
 
 data class SocialSignInResponse(
@@ -20,36 +18,32 @@ data class SocialSignInResponse(
     val refreshToken: String,
 )
 
-@Document
-data class User(
-    @Id
-    val id: String?,
-
-    val password: String,
+data class Account(
+    val id: String,
     val socialType: SocialType,
-    val providerId: String,
-    val username: String,
     val nickname: String,
     val email: String,
     val profileImageUrl: String?,
-    val lastAccessTime: LocalDateTime = LocalDateTime.now(),
-    val active: Boolean = true,
+    val thumbnailImageUrl: String?,
 )
 
 class CustomUserDetails(
     private val _id: String,
+    private val _username: String,
     private val _socialType: SocialType,
     private val _nickname: String,
     private val _password: String,
     private val _email: String,
     private val _profileImageUrl: String?,
+    private val _thumbnailImageUrl: String?,
     private val _authorities: MutableList<out GrantedAuthority>,
-): UserDetails {
+) : UserDetails {
     val id: String get() = _id
     val socialType: SocialType get() = _socialType
     val nickname: String get() = _nickname
     val email: String get() = _email
     val profileImageUrl: String? get() = _profileImageUrl
+    val thumbnailImageUrl: String? get() = _thumbnailImageUrl
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return _authorities
@@ -60,7 +54,7 @@ class CustomUserDetails(
     }
 
     override fun getUsername(): String {
-        return _id
+        return _username
     }
 
     override fun isAccountNonExpired(): Boolean {
@@ -121,4 +115,17 @@ sealed class Oauth2Provider {
     companion object {
         private const val DEFAULT_LOGIN_REDIRECT_URL = "{baseUrl}/login/oauth2/code/{registrationId}"
     }
+}
+
+// =========
+
+fun CustomUserDetails.toAccount(): Account {
+    return Account(
+        id = this.id,
+        socialType = this.socialType,
+        nickname = this.nickname,
+        email = this.email,
+        profileImageUrl = this.profileImageUrl,
+        thumbnailImageUrl = this.thumbnailImageUrl,
+    )
 }
