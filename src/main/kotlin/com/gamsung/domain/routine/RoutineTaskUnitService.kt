@@ -1,28 +1,30 @@
 package com.gamsung.domain.routine
 
 import com.gamsung.repository.RoutineTaskUnitRepository
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class RoutineTaskUnitService(
     private val routineTaskUnitRepository: RoutineTaskUnitRepository,
 ) {
 
-    fun createRoutineTaskUnit(routineTask: RoutineTask, date: LocalDate): RoutineTaskUnit {
+    fun createRoutineTaskUnit(routineTaskUnit: RoutineTaskUnit): RoutineTaskUnit {
         val unit = RoutineTaskUnit(
-            id = date.toString().plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id),
-            profileId = routineTask.profileId,
-            date = date.toString(), // todo : 변경해야 함
-            localDate = LocalDate.now(), // todo : 변경해야 함
-            taskId = routineTask.id, // todo : String???
-            title = routineTask.title,
+            id = routineTaskUnit.id,
+            profileId = routineTaskUnit.profileId,
+            date = routineTaskUnit.date,
+            localDate = routineTaskUnit.localDate,
+            taskId = routineTaskUnit.taskId,
+            title = routineTaskUnit.title,
 
-            timesOfWeek = routineTask.timesOfWeek,
-            timesOfDay = routineTask.timesOfDay,
-            days = routineTask.days,
-            times = routineTask.times,
+            timesOfWeek = routineTaskUnit.timesOfWeek,
+            timesOfDay = routineTaskUnit.timesOfDay,
+            days = routineTaskUnit.days,
+            times = routineTaskUnit.times,
 
             friendIds = null,
             completeCount = 0, // 시작은 0

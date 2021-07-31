@@ -1,14 +1,13 @@
 package com.gamsung.api.routine
 
-import com.gamsung.domain.routine.RoutineTask
 import com.gamsung.domain.routine.RoutineTaskUnit
 import com.gamsung.domain.routine.RoutineTaskUnitService
 import com.gamsung.repository.RoutineTaskUnitRepository
+import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/routine/unit")
@@ -17,12 +16,12 @@ class RoutineTaskUnitController(
     private val routineTaskUnitService: RoutineTaskUnitService
 ) {
 
+    @ApiOperation(value = "Task unit 생성")
     @PostMapping
     fun create(
-        @RequestBody routineTask: RoutineTask
+        @RequestBody routineTaskUnit: RoutineTaskUnit
     ): RoutineTaskUnit {
-        val date = LocalDate.now() // todo
-        return routineTaskUnitService.createRoutineTaskUnit(routineTask, date)
+        return routineTaskUnitService.createRoutineTaskUnit(routineTaskUnit)
     }
 /*
     @PutMapping
