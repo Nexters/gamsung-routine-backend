@@ -4,6 +4,11 @@ import com.gamsung.domain.template.Category
 import com.gamsung.domain.template.Template
 import com.gamsung.domain.template.TemplateTask
 
+data class CategoryDto(
+    val id: String,
+    val name: String,
+)
+
 /**
  * @author Jongkook
  * @date : 2021/07/10
@@ -18,12 +23,10 @@ data class TemplateDto(
 data class TemplateTaskDto(
     val id: String,
     val name: String,
+    val defaultDays: List<Int>,
 )
 
-data class CategoryDto(
-    val id: String,
-    val name: String,
-)
+// ===========
 
 @JvmName("toDtoCategory")
 fun List<Category>.toDto() = this.map {
@@ -42,4 +45,5 @@ fun List<Template>.toDto() = this.map {
 fun TemplateTask.toDto() = TemplateTaskDto(
     id = id,
     name = name,
+    defaultDays = defaultDays,
 )

@@ -29,8 +29,21 @@ class TemplateService {
             Template(
                 id = "1", categoryId = "1", name = "살을 빼고 싶어", tasks = listOf(
                     TemplateTask(
-                        id = "1", name = "물 마시기"
-                    )
+                        id = "1", name = "물 마시기", defaultDays = listOf(1, 2, 3, 4, 5, 6, 7)
+                    ),
+                    TemplateTask(
+                        id = "2", name = "물 마시기", defaultDays = listOf(1, 2, 3, 4, 5, 6, 7)
+                    ),
+                )
+            ),
+            Template(
+                id = "2", categoryId = "1", name = "살을 빼고 싶어", tasks = listOf(
+                    TemplateTask(
+                        id = "3", name = "물 마시기", defaultDays = listOf(1, 2, 3, 4, 5, 6, 7),
+                    ),
+                    TemplateTask(
+                        id = "4", name = "물 마시기", defaultDays = listOf(1, 2, 3, 4, 5, 6, 7),
+                    ),
                 )
             )
         )

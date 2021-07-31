@@ -16,5 +16,5 @@ data class Template(
 data class TemplateTask(
     val id: String,
     val name: String,
-    // TODO 구체화
+    val defaultDays: List<Int>,
 )
