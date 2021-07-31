@@ -56,7 +56,7 @@ data class RoutineTaskUnit(
                 times = times,
                 friendIds = friendIds,
                 completeCount = completeCount,
-                completedDateList = mutableListOf()
+                completedDateList = emptyList()
             )
         }
     }
