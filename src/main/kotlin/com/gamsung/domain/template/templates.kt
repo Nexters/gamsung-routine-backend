@@ -17,4 +17,5 @@ data class TemplateTask(
     val id: String,
     val name: String,
     val defaultDays: List<Int>,
+    val dailyTimes: Int = 1,
 )

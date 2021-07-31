@@ -24,6 +24,7 @@ data class TemplateTaskDto(
     val id: String,
     val name: String,
     val defaultDays: List<Int>,
+    val dailyTimes: Int,
 )
 
 // ===========
@@ -38,7 +39,7 @@ fun List<Template>.toDto() = this.map {
         id = it.id,
         name = it.name,
         tasks = it.tasks.map(TemplateTask::toDto),
-        templateIconUrl = it.templateIconUrl
+        templateIconUrl = it.templateIconUrl,
     )
 }
 
@@ -46,4 +47,5 @@ fun TemplateTask.toDto() = TemplateTaskDto(
     id = id,
     name = name,
     defaultDays = defaultDays,
+    dailyTimes = dailyTimes,
 )
