@@ -28,6 +28,7 @@ class RoutineTaskController(
 //        return routineTaskService.getUserRoutines(profileId)
 //    }
 
+    // 권사원 코멘트 : nullable로 받을 수 있는 값은 @RequestParam 에 required=false
     @GetMapping("/weekly/{profileId}")
     fun read(
         @PathVariable profileId: String,

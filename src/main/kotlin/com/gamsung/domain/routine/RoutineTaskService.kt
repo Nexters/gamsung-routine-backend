@@ -67,12 +67,11 @@ class RoutineTaskService(
                             localDate = LocalDate.now(),
                             taskId = routineTask.id,
                             title = routineTask.title,
-                            timesOfWeek = routineTask.timesOfWeek,
                             timesOfDay = routineTask.timesOfDay,
                             days = routineTask.days,
                             times = routineTask.times,
                             completeCount = 0,
-                            completedDateList = arrayListOf(),
+//                            completedDateList = arrayListOf(),
                             friendIds = arrayListOf()
                         )
 

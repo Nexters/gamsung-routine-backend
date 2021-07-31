@@ -1,8 +1,8 @@
 package com.gamsung.api.unit
 
-import com.gamsung.domain.unit.RoutineTaskUnit
+import com.gamsung.api.dto.ResponseDto
+import com.gamsung.api.dto.RoutineTaskUnitDto
 import com.gamsung.domain.unit.RoutineTaskUnitService
-import com.gamsung.domain.unit.RoutineTaskUnitRepository
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -12,16 +12,18 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/routine/unit")
 class RoutineTaskUnitController(
-    private val routineTaskUnitRepository: RoutineTaskUnitRepository,
     private val routineTaskUnitService: RoutineTaskUnitService
 ) {
 
     @ApiOperation(value = "Task unit 생성")
-    @PostMapping
+    @PostMapping("")
     fun create(
-        @RequestBody routineTaskUnit: RoutineTaskUnit
-    ): RoutineTaskUnit {
-        return routineTaskUnitService.createRoutineTaskUnit(routineTaskUnit)
+        @RequestBody routineTaskUnitDto: RoutineTaskUnitDto
+    ): ResponseDto<String> {
+        val unit = routineTaskUnitService.createRoutineTaskUnit(routineTaskUnitDto)
+        return ResponseDto.ok(
+            unit.id ?: "ID를 찾을 수 없습니다"
+        )
     }
 /*
     @PutMapping

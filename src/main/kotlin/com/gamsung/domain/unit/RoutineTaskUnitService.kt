@@ -1,6 +1,8 @@
 package com.gamsung.domain.unit
 
+import com.gamsung.api.dto.RoutineTaskUnitDto
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Service
@@ -8,26 +10,23 @@ class RoutineTaskUnitService(
     private val routineTaskUnitRepository: RoutineTaskUnitRepository,
 ) {
 
-    fun createRoutineTaskUnit(routineTaskUnit: RoutineTaskUnit): RoutineTaskUnit {
-        val unit = RoutineTaskUnit(
-            id = routineTaskUnit.id,
-            profileId = routineTaskUnit.profileId,
-            date = routineTaskUnit.date,
-            localDate = routineTaskUnit.localDate,
-            taskId = routineTaskUnit.taskId,
-            title = routineTaskUnit.title,
+    fun createRoutineTaskUnit(routineTaskUnitDto: RoutineTaskUnitDto): RoutineTaskUnit {
+        return RoutineTaskUnit(
+            id = null,
+            profileId = routineTaskUnitDto.profileId,
+            date = routineTaskUnitDto.date,
+            localDate = LocalDate.now(),
+            taskId = routineTaskUnitDto.taskId,
+            title = routineTaskUnitDto.title,
 
-            timesOfWeek = routineTaskUnit.timesOfWeek,
-            timesOfDay = routineTaskUnit.timesOfDay,
-            days = routineTaskUnit.days,
-            times = routineTaskUnit.times,
+            timesOfDay = routineTaskUnitDto.timesOfDay,
+            days = routineTaskUnitDto.days,
+            times = routineTaskUnitDto.times,
 
             friendIds = null,
             completeCount = 0, // 시작은 0
-            completedDateList = mutableListOf()
+//            completedDateList = mutableListOf()
         )
-
-        return routineTaskUnitRepository.save(unit)
     }
 
     fun getRoutineTaskUnitAll(profileId: String): MutableList<RoutineTaskUnit> {
