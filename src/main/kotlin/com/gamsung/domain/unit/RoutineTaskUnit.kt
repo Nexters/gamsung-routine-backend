@@ -30,7 +30,7 @@ data class RoutineTaskUnit(
 
     // 완료 될때마다 업데이트 되야 하는 필드들
     val completeCount: Int,
-//    val completedDateList: List<LocalDate> //[“2020-08-05:12:02:05”, “2020-08-05:12:02:05”, “2020-08-05:12:02:05”]
+    val completedDateList: List<LocalDate> //[“2020-08-05:12:02:05”, “2020-08-05:12:02:05”, “2020-08-05:12:02:05”]
 ) {
 //    companion object {
 //        fun create(

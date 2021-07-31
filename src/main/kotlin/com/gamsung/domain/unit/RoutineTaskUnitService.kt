@@ -25,7 +25,7 @@ class RoutineTaskUnitService(
 
             friendIds = null,
             completeCount = 0, // 시작은 0
-//            completedDateList = mutableListOf()
+            completedDateList = mutableListOf()
         )
     }
 

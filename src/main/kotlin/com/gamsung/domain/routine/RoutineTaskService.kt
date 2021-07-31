@@ -71,7 +71,7 @@ class RoutineTaskService(
                             days = routineTask.days,
                             times = routineTask.times,
                             completeCount = 0,
-//                            completedDateList = arrayListOf(),
+                            completedDateList = mutableListOf(),
                             friendIds = arrayListOf()
                         )
 
