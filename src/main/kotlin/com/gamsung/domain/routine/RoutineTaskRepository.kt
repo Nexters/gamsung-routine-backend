@@ -1,6 +1,5 @@
-package com.gamsung.repository
+package com.gamsung.domain.routine
 
-import com.gamsung.domain.routine.RoutineTask
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface RoutineTaskRepository: MongoRepository<RoutineTask, String> {

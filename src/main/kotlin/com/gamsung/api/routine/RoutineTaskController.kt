@@ -5,7 +5,7 @@ import com.gamsung.api.dto.RoutineTaskDto
 import com.gamsung.api.dto.toDto
 import com.gamsung.api.dto.toEntity
 import com.gamsung.domain.routine.RoutineTaskService
-import com.gamsung.repository.RoutineTaskRepository
+import com.gamsung.domain.routine.RoutineTaskRepository
 import org.springframework.web.bind.annotation.*
 
 @RestController

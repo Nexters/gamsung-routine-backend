@@ -1,11 +1,7 @@
-package com.gamsung.domain.routine
+package com.gamsung.domain.unit
 
-import com.gamsung.repository.RoutineTaskUnitRepository
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Service
 class RoutineTaskUnitService(

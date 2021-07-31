@@ -1,6 +1,5 @@
-package com.gamsung.repository
+package com.gamsung.domain.unit
 
-import com.gamsung.domain.routine.RoutineTaskUnit
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime

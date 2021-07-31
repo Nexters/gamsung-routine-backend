@@ -1,8 +1,8 @@
-package com.gamsung.api.routine
+package com.gamsung.api.unit
 
-import com.gamsung.domain.routine.RoutineTaskUnit
-import com.gamsung.domain.routine.RoutineTaskUnitService
-import com.gamsung.repository.RoutineTaskUnitRepository
+import com.gamsung.domain.unit.RoutineTaskUnit
+import com.gamsung.domain.unit.RoutineTaskUnitService
+import com.gamsung.domain.unit.RoutineTaskUnitRepository
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

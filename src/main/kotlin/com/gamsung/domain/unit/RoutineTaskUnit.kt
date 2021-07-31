@@ -1,4 +1,4 @@
-package com.gamsung.domain.routine
+package com.gamsung.domain.unit
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
