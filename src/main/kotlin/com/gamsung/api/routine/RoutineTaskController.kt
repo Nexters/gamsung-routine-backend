@@ -1,6 +1,9 @@
 package com.gamsung.api.routine
 
-import com.gamsung.api.dto.*
+import com.gamsung.api.dto.MonthlyRoutineHistoryDto
+import com.gamsung.api.dto.RoutineTaskDto
+import com.gamsung.api.dto.toDto
+import com.gamsung.api.dto.toEntity
 import com.gamsung.domain.routine.RoutineTaskService
 import com.gamsung.repository.RoutineTaskRepository
 import org.springframework.web.bind.annotation.*
@@ -16,6 +19,7 @@ class RoutineTaskController(
     fun create(
         @RequestBody routineTaskDto: RoutineTaskDto
     ): RoutineTaskDto {
+        routineTaskService.createRoutineTask(routineTaskDto)
         return routineTaskRepository.save(routineTaskDto.toEntity()).toDto()
     }
 
@@ -25,9 +29,11 @@ class RoutineTaskController(
 //    }
 
     @GetMapping("/weekly/{profileId}")
-    fun read(@PathVariable profileId: String,
-             @RequestParam year: Int?,
-             @RequestParam month: Int?): MonthlyRoutineHistoryDto {
+    fun read(
+        @PathVariable profileId: String,
+        @RequestParam year: Int?,
+        @RequestParam month: Int?
+    ): MonthlyRoutineHistoryDto {
         return routineTaskService.getMonthlyRoutines(profileId, year, month)
     }
 

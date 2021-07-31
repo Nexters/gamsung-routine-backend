@@ -10,17 +10,16 @@ data class RoutineTaskUnit(
     @Id
     val id: String, // "20210702:profileId:taskId", key가 없을 시 최초 생성
     val profileId: String,
-//    val date: LocalDate,
-    val date: String,
+    val date: String, // 월, 일이 한자리수일 때, '0'붙일 것
+    val localDate: LocalDate,
     val taskId: String,
-    val title: String,
+    val title: String, // Task Title
 
     // ** 이 4 필드는, 루틴 수정시 해당 "주"에 있는 history에 반영 **
     val timesOfWeek: Int, // 이번주에 총 며칠해야 하나
     val timesOfDay: Int, // 하루면 총 몇회해야 하나
     val days: List<Int>?, // 월 수 금
     val times: List<String>?, // [09:00, 10:00]
-//    val targetCount: Int, // timesOfWeek * timesOfDay를 계산해서 사용하면 될듯
 
     val friendIds: List<String>?, // 친구 관련 데이터 필요시 id를 바탕으로 query 후에 채워준다
 //    Friends: [

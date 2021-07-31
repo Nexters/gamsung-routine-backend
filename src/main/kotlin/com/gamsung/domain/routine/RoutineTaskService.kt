@@ -1,6 +1,7 @@
 package com.gamsung.domain.routine
 
 import com.gamsung.api.dto.MonthlyRoutineHistoryDto
+import com.gamsung.api.dto.RoutineTaskDto
 import com.gamsung.repository.RoutineTaskRepository
 import com.gamsung.repository.RoutineTaskUnitRepository
 import org.springframework.stereotype.Service
@@ -62,13 +63,14 @@ class RoutineTaskService(
                         val dailyTaskUnit = RoutineTaskUnit(
                             id = id,
                             profileId = routineTask.profileId,
+                            date = date,
+                            localDate = LocalDate.now(),
                             taskId = routineTask.id,
                             title = routineTask.title,
                             timesOfWeek = routineTask.timesOfWeek,
                             timesOfDay = routineTask.timesOfDay,
                             days = routineTask.days,
                             times = routineTask.times,
-                            date = date, // todo @권사원, 이거 LocalDate로 바궈도 됨???
                             completeCount = 0,
                             completedDateList = arrayListOf(),
                             friendIds = arrayListOf()
@@ -85,6 +87,14 @@ class RoutineTaskService(
         } else {
             throw Exception()
         }
+    }
+
+    /**
+     * 1. create task
+     * 2. create task unit
+     */
+    fun createRoutineTask(routineTaskDto: RoutineTaskDto) {
+        //
     }
 
 }

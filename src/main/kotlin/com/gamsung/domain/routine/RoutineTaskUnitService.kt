@@ -14,7 +14,8 @@ class RoutineTaskUnitService(
         val unit = RoutineTaskUnit(
             id = date.toString().plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id),
             profileId = routineTask.profileId,
-            date = date.toString(), // todo
+            date = date.toString(), // todo : 변경해야 함
+            localDate = LocalDate.now(), // todo : 변경해야 함
             taskId = routineTask.id, // todo : String???
             title = routineTask.title,
 
