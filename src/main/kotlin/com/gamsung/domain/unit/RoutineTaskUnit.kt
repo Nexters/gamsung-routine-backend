@@ -2,7 +2,6 @@ package com.gamsung.domain.unit
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
 
 @Document
@@ -32,13 +31,33 @@ data class RoutineTaskUnit(
     val completeCount: Int,
     val completedDateList: List<LocalDate> //[“2020-08-05:12:02:05”, “2020-08-05:12:02:05”, “2020-08-05:12:02:05”]
 ) {
-//    companion object {
-//        fun create(
-//
-//        ): RoutineTaskUnit {
-//            return RoutineTaskUnit(
-//
-//            )
-//        }
-//    }
+    companion object {
+        fun create(
+            profileId: String,
+            date: String,
+            localDate: LocalDate,
+            taskId: String,
+            title: String,
+            timesOfDay: Int,
+            days: List<Int>?,
+            times: List<String>?,
+            friendIds: List<String>?,
+            completeCount: Int
+        ): RoutineTaskUnit {
+            return RoutineTaskUnit(
+                id = null,
+                profileId = profileId,
+                date = date,
+                localDate = localDate,
+                taskId = taskId,
+                title = title,
+                timesOfDay = timesOfDay,
+                days = days,
+                times = times,
+                friendIds = friendIds,
+                completeCount = completeCount,
+                completedDateList = mutableListOf()
+            )
+        }
+    }
 }

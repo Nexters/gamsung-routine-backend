@@ -11,8 +11,7 @@ class RoutineTaskUnitService(
 ) {
 
     fun createRoutineTaskUnit(routineTaskUnitDto: RoutineTaskUnitDto): RoutineTaskUnit {
-        return RoutineTaskUnit(
-            id = null,
+        val unit = RoutineTaskUnit.create(
             profileId = routineTaskUnitDto.profileId,
             date = routineTaskUnitDto.date,
             localDate = LocalDate.now(),
@@ -25,8 +24,9 @@ class RoutineTaskUnitService(
 
             friendIds = null,
             completeCount = 0, // 시작은 0
-            completedDateList = mutableListOf()
         )
+
+        return routineTaskUnitRepository.save(unit)
     }
 
     fun getRoutineTaskUnitAll(profileId: String): MutableList<RoutineTaskUnit> {
