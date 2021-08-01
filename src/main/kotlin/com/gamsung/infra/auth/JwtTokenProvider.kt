@@ -20,7 +20,7 @@ class JwtTokenProvider(
             setClaims(mutableMapOf<String, Any>())
             setSubject(userDetails.username)
             setIssuedAt(Date(System.currentTimeMillis()))
-            setExpiration(Date(System.currentTimeMillis() * millis))
+            setExpiration(Date(System.currentTimeMillis() + millis))
             signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)))
         }.compact()
     }
