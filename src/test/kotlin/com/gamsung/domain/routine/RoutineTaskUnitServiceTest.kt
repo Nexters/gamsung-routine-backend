@@ -1,6 +1,6 @@
 package com.gamsung.domain.routine
 
-import com.gamsung.repository.RoutineTaskUnitRepository
+import com.gamsung.domain.unit.RoutineTaskUnitRepository
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest

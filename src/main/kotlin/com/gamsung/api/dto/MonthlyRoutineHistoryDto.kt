@@ -1,6 +1,6 @@
 package com.gamsung.api.dto
 
-import com.gamsung.domain.routine.RoutineTaskUnit
+import com.gamsung.domain.unit.RoutineTaskUnit
 
 data class MonthlyRoutineHistoryDto (
     val year: Int,
