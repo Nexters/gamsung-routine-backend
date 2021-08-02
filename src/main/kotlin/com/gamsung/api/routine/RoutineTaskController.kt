@@ -4,6 +4,7 @@ import com.gamsung.api.dto.MonthlyRoutineHistoryDto
 import com.gamsung.api.dto.RoutineTaskDto
 import com.gamsung.api.dto.toDto
 import com.gamsung.api.dto.toEntity
+import com.gamsung.domain.routine.RoutineTask
 import com.gamsung.domain.routine.RoutineTaskService
 import com.gamsung.domain.routine.RoutineTaskRepository
 import org.springframework.web.bind.annotation.*
@@ -54,6 +55,14 @@ class RoutineTaskController(
     @DeleteMapping("/{taskId}")
     fun delete(@PathVariable taskId: String) {
         routineTaskRepository.deleteById(taskId)
+    }
+
+    @GetMapping("/invite/{taskId}/{friendId}")
+    fun inviteFriend(
+        @PathVariable taskId: String,
+        @PathVariable friendId: String
+    ) : RoutineTaskDto {
+        return routineTaskService.inviteFriendToTask(taskId, friendId).toDto()
     }
 
 }

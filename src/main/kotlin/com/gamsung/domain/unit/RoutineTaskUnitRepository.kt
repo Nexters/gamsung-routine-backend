@@ -14,4 +14,5 @@ interface RoutineTaskUnitRepository : MongoRepository<RoutineTaskUnit, String> {
     ): MutableList<RoutineTaskUnit>
 
     fun findByProfileId(profileId: String): MutableList<RoutineTaskUnit>
+    fun findByTaskIdIn(taskIds: List<String>): MutableList<RoutineTaskUnit>
 }
