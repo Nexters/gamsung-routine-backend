@@ -33,6 +33,7 @@ data class RoutineTaskUnit(
 ) {
     companion object {
         fun create(
+            id: String,
             profileId: String,
             date: String,
             localDate: LocalDate,
@@ -45,7 +46,7 @@ data class RoutineTaskUnit(
             completeCount: Int
         ): RoutineTaskUnit {
             return RoutineTaskUnit(
-                id = null,
+                id = id,
                 profileId = profileId,
                 date = date,
                 localDate = localDate,
