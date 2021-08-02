@@ -1,12 +1,10 @@
 package com.gamsung.domain.routine
 
-import com.gamsung.api.dto.MonthlyRoutineHistoryDto
-import com.gamsung.api.dto.RoutineTaskDto
+import com.gamsung.api.dto.*
 import com.gamsung.domain.unit.RoutineTaskUnit
 import com.gamsung.domain.unit.RoutineTaskUnitRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.Month
 
 @Service
@@ -27,46 +25,70 @@ class RoutineTaskService(
         val isLeapYear = LocalDate.ofYearDay(endYear, 1).isLeapYear
         val endDate = LocalDate.of(endYear, Month.of(endMonth), Month.of(endMonth).length(isLeapYear))
 
-        val dailyRoutines = routineTaskUnitRepository.findByProfileIdAndLocalDateBetween(profileId, startDate, endDate)
-        val routineTasks = routineTaskRepository.findByProfileId(profileId)
+        val routineUnits = routineTaskUnitRepository.findByProfileIdAndLocalDateBetween(profileId, startDate, endDate)
+
+        //초대가 되면 같은 task id를 가지게 됨 (다른 profile id)
+        //내가 가지고 있는 모든 taskId를 바탕으로 친구들의 taskUnit까지 가져옴, 그리고 20210712:taskId 등으로 해서 같은 태스크 끼리 모음
+        val friendRoutineUnits = routineTaskUnitRepository.findByTaskIdIn(routineUnits.map { it.taskId })
+        //key 값에 따라 친구 task grouping 을 함
+        val friendRoutinesUnitsByDateAndTaskId = friendRoutineUnits.groupBy { it.date + it.taskId }
+
+        val routineUnitDtoResult = mutableListOf<RoutineTaskUnitDto>()
+        routineUnits.forEach { dailyRoutine ->
+            val key = dailyRoutine.date + dailyRoutine.taskId
+            //만약 같은 key가 존재 하면 친구 task를 dto friends 필드에 입력
+            if (friendRoutinesUnitsByDateAndTaskId.containsKey(key)) {
+                val friendRoutines = friendRoutinesUnitsByDateAndTaskId[key]!!
+                    .map{ RoutineTaskFriendUnitDto(profileId = it.profileId,
+                        completeCount = it.completeCount, completedDateList = it.completedDateList) }
+                val newUnitDto = dailyRoutine.toDto(friendRoutines)
+                routineUnitDtoResult.add(newUnitDto)
+            }
+        }
+
+        // 여기서 부터는 미래에 있는 task들 오늘 이후
         val today = LocalDate.now()
-        for (routineTask in routineTasks) {
-            routineTask.days.let {
-                for (day in it) {
-                    if (day <= today.dayOfWeek.value) {
-                        continue
+        if (startDate.isBefore(today) && endDate.isAfter(today)) {
+            val routineTasks = routineTaskRepository.findByProfileId(profileId)
+
+            for (routineTask in routineTasks) {
+                routineTask.days.let {
+                    for (day in it) {
+                        if (day <= today.dayOfWeek.value) {
+                            continue
+                        }
+
+                        val daysFromToday = day - today.dayOfWeek.value
+                        val currDate = LocalDate.now().plusDays(daysFromToday.toLong())
+                        val date = generateDate(currDate)
+                        val id = date.plus(":").plus(profileId).plus(":").plus(routineTask.id)
+                        val dailyTaskUnit = RoutineTaskUnit(
+                            id = id,
+                            profileId = routineTask.profileId,
+                            date = date,
+                            localDate = LocalDate.now(),
+                            taskId = routineTask.id,
+                            title = routineTask.title,
+                            timesOfDay = routineTask.timesOfDay,
+                            days = routineTask.days,
+                            times = routineTask.times,
+                            completeCount = 0,
+                            completedDateList = mutableListOf(),
+                            friendIds = arrayListOf()
+                        )
+
+                        routineUnitDtoResult.add(dailyTaskUnit.toDto(arrayListOf()))
                     }
-
-                    val daysFromToday = day - today.dayOfWeek.value
-                    val currDate = LocalDate.now().plusDays(daysFromToday.toLong())
-                    val date = generateDate(currDate)
-                    val id = date.plus(":").plus(profileId).plus(":").plus(routineTask.id)
-                    val dailyTaskUnit = RoutineTaskUnit(
-                        id = id,
-                        profileId = routineTask.profileId,
-                        date = date,
-                        localDate = LocalDate.now(),
-                        taskId = routineTask.id,
-                        title = routineTask.title,
-                        timesOfDay = routineTask.timesOfDay,
-                        days = routineTask.days,
-                        times = routineTask.times,
-                        completeCount = 0,
-                        completedDateList = mutableListOf(),
-                        friendIds = arrayListOf()
-                    )
-
-                    dailyRoutines.add(dailyTaskUnit)
                 }
             }
         }
 
-        dailyRoutines.sortBy { it.date.toInt() }
+        routineUnitDtoResult.sortBy { it.date.toInt() }
 
         return MonthlyRoutineHistoryDto(
             year = year,
             month = month,
-            dailyRoutines = dailyRoutines.groupBy { it.date })
+            dailyRoutines = routineUnitDtoResult.groupBy { it.date })
 
     }
 
@@ -109,6 +131,30 @@ class RoutineTaskService(
         val day = if (dayString.length < 2) ("0$dayString") else dayString
 
         return currDate.year.toString() + month + day
+    }
+
+    fun inviteFriendToTask(taskId: String, friendId: String) : RoutineTask {
+
+        val task = routineTaskRepository.findById(taskId)
+        if (task.isPresent) {
+            val friendTask = RoutineTask(
+                id = task.get().id,
+                profileId = friendId,
+                title = task.get().title,
+                timesOfWeek = task.get().timesOfWeek,
+                timesOfDay = task.get().timesOfDay,
+                notify = task.get().notify,
+                days = task.get().days,
+                times = task.get().times,
+                category = task.get().category,
+                templateId = task.get().templateId,
+                order = task.get().order
+            )
+
+            return routineTaskRepository.save(friendTask)
+        } else {
+            throw Exception("Task not exist")
+        }
     }
 
     /**
