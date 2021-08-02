@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "gamsung-routine",
+  "private_key_id": "c5cbd185727073ba8571208e7aa237394e07b510",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCSEMhIpZI2Og42\nIT3kL9Js4B0vMAUxswT6DJSBtHUfpk/SOCv+Z+JZ9dobEqpXjwXFtLpCO8dsINIs\nPJZPUqxeKKILGLyI0hZBIyVhLG03yel73bPRf9WUhc5PEwW0ctQvQMLJ/nNG9LB+\nPizb4k9BYSUJ+6IReI7Cm1VisxEgarXgQGW4Mn0HxXLgAvHVtfsXzMF5EX8lpKDB\nz8AvbOgR0AxX/Qr4r3HIvKHj/MEF/HlanwVsR9vGKs1hB7ekafle6Nidy4HbhEWn\nSnYc8N7vK6VUWJqFEJtdkkhryhB6r5oSNLzjxyvGv5pAAcLHNK7eCm1VbED/yVnq\nASPIPwgbAgMBAAECggEAAuNyEn2ztn7PaSKfJrQLZTvJV/WLJMB1iLxW83muF0Ii\nsfWKaS2EvGKwPXjRBYo+gvpf9I9aEjlT7qwEDO2FmxcSnUWP9OSyq/cV9iX6wu+r\nPlfUBoCQqK88tTObGUZsC8MsFvKBNRYBp31zRaXkC1bwdJIVUmMf75lCxwDjhdCO\nvwGl1oXZqRX6xL7V40M/QSlNlilSdYf8s1aeUl5y0kueatgZbT3ibvucHo1yP4hc\nC/rAUZETwhUCpqli/80ePkOrbrqMIIWUq6qoSIVXRZ86dEHT9P/7bePZxdHwauVj\nYbOJ/KNT24kfTyDhFNUYKLWrJ6NfKQSzYkYVpIAkgQKBgQDM6ZT5pKlP/tOBt8yq\neAtaoe323vYLOEBmYQyEV6PUI6qbuS31hIJQl9oBMtB7bWk62KYdI+DLoxiDjpP+\n1kMKx7798A5sHGOpSzkPSYYdXKsEiJcZVMSjtbSnTpg+aHj2wGK0LW4IIviu8of1\nmios5oWpYJ2J7FmyaChLCDc3BwKBgQC2e1UhxWANo+Fg0PtKHKb4FV11X9qKRvt9\nq/V5RwpsRvK7MhCcTM5hBQZcUHf3Li77R72W1llehnmmVNCg3e5t7B51EbF1iQ/I\nXDNjCZ1dbnP4mewhBm6l5zfFITO/u7u4CuwrcVkKlJI1hlPVh3m4IQi+KtOxd88u\nB+DDsj7tTQKBgQCCHpGLNRSOx7JnXN+KIFCVbN4/NbXnygCbAmWAZGaT/1IHMMAO\nd+aIZuT4fdwFhKSdyZUyS+YjaZ3XbGJuIIDSB6Uwe4+s9xoSFsJVAss3OfEfH91T\nKJD1pBzjYPUsLAskJWaII5ELeamQ7lGHlC3T9U5LEB75xivvLlTn0H+/YQKBgAg1\nXAr82elDKew0+ljHGSunqmCRQz9dGgr5JT2jWHCucFTDV8PwIIh0tWiJphvUVACx\npXGXisWZvvcgcZIK6aLAME6L0TO8Sp10qEsYL5/4S/cu1VRW+bs0v2l6qN1DEJqi\nwyThIGQ9cqY9uJ+uTGdf9Qi43HTrMsKbUBz9c58xAoGAWrLZNTtar7mJFDD87qi2\n/vHCe4p2nSyjHyeskMIYyhf/Ep7JFSiP24TNlMOlFdPPoh0595jJN553wpVlFVtf\nPjrDU7d7UyP0osKjtvfUqKQWKogFOi7cK6Izf4z5qh4HwCrMNdJRr9IFjakUELJL\n+YHBoH8GXUfDDqTzEef3a6g=\n-----END PRIVATE KEY-----\n",
+  "client_email": "gamsung-routine@gamsung-routine.iam.gserviceaccount.com",
+  "client_id": "112690170309186523975",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gamsung-routine%40gamsung-routine.iam.gserviceaccount.com"
+}
