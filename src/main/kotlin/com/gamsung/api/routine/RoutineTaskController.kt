@@ -29,11 +29,11 @@ class RoutineTaskController(
 //    }
 
     // 권사원 코멘트 : nullable로 받을 수 있는 값은 @RequestParam 에 required=false
-    @GetMapping("/weekly/{profileId}")
+    @GetMapping("/monthly/{profileId}")
     fun read(
         @PathVariable profileId: String,
-        @RequestParam year: Int?,
-        @RequestParam month: Int?
+        @RequestParam year: Int,
+        @RequestParam month: Int
     ): MonthlyRoutineHistoryDto {
         return routineTaskService.getMonthlyRoutines(profileId, year, month)
     }

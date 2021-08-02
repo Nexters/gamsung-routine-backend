@@ -3,7 +3,6 @@ package com.gamsung.domain.unit
 import com.gamsung.api.dto.RoutineTaskUnitDto
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Service
 class RoutineTaskUnitService(
@@ -11,9 +10,12 @@ class RoutineTaskUnitService(
 ) {
 
     fun createRoutineTaskUnit(routineTaskUnitDto: RoutineTaskUnitDto): RoutineTaskUnit {
+        val date = generateDate(LocalDate.now())
+        val id = date.plus(":").plus(routineTaskUnitDto.profileId).plus(":").plus(routineTaskUnitDto.taskId)
         val unit = RoutineTaskUnit.create(
+            id = id,
             profileId = routineTaskUnitDto.profileId,
-            date = routineTaskUnitDto.date,
+            date = date,
             localDate = LocalDate.now(),
             taskId = routineTaskUnitDto.taskId,
             title = routineTaskUnitDto.title,
@@ -35,12 +37,22 @@ class RoutineTaskUnitService(
 
     fun getRoutineTaskUnit(
         profileId: String,
-        fromDate: LocalDateTime,
-        toDate: LocalDateTime
+        fromDate: LocalDate,
+        toDate: LocalDate
     ): MutableList<RoutineTaskUnit> {
-        return routineTaskUnitRepository.findByProfileIdAndDateBetween(
+        return routineTaskUnitRepository.findByProfileIdAndLocalDateBetween(
             profileId, fromDate, toDate
         )
+    }
+
+    private fun generateDate(currDate: LocalDate) : String {
+        val monthString = currDate.month.value.toString()
+        val month = if (monthString.length < 2) ("0$monthString") else monthString
+
+        val dayString = currDate.dayOfMonth.toString()
+        val day = if (dayString.length < 2) ("0$dayString") else dayString
+
+        return currDate.year.toString() + month + day
     }
 
 }
