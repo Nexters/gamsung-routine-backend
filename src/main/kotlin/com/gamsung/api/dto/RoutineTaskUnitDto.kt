@@ -5,6 +5,7 @@ import java.time.LocalDate
 
 
 data class RoutineTaskUnitDto(
+    val id: String?,
     val profileId: String,
     val date: String,
     val localDate: LocalDate,
@@ -19,6 +20,7 @@ data class RoutineTaskUnitDto(
 )
 
 fun RoutineTaskUnit.toDto(friends: List<RoutineTaskFriendUnitDto>) = RoutineTaskUnitDto(
+    id = id,
     profileId = profileId,
     date = date,
     localDate = localDate,

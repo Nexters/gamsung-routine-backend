@@ -10,8 +10,8 @@ data class RoutineTaskUnit(
     @Id
     val id: String?, // "20210702:profileId:taskId", key가 없을 시 최초 생성
     val profileId: String,
-    val date: String, // 월, 일이 한자리수일 때, '0'붙일 것
-    val localDate: LocalDate,
+    var date: String, // 월, 일이 한자리수일 때, '0'붙일 것
+    var localDate: LocalDate,
     val taskId: String,
     val title: String, // Task Title
 
@@ -31,6 +31,16 @@ data class RoutineTaskUnit(
     val completeCount: Int,
     val completedDateList: List<LocalDate> //[“2020-08-05:12:02:05”, “2020-08-05:12:02:05”, “2020-08-05:12:02:05”]
 ) {
+
+    fun update(
+        date: String,
+        localDate: LocalDate
+    ): RoutineTaskUnit {
+        this.date = date
+        this.localDate = localDate
+        return this
+    }
+
     companion object {
         fun create(
             id: String,
