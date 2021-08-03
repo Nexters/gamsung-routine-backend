@@ -38,6 +38,11 @@ data class RoutineTaskUnit(
         return this
     }
 
+    fun back(): RoutineTaskUnit {
+        this.completedDateList.removeAt(this.completedDateList.size - 1)
+        return this
+    }
+
     fun complete(localDateTime: LocalDateTime): RoutineTaskUnit {
         this.completedDateList.add(localDateTime)
         return this

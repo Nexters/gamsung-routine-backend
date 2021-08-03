@@ -110,9 +110,21 @@ class RoutineTaskUnitService(
     fun checkCompleted(unitId: String): String {
         val unit = routineTaskUnitRepository.findById(unitId).get()
         if (unit.completedDateList.size == (unit.times?.size ?: -1)) {
-            return "이미 완료된 태스크 입니다."
+            return "이미 오늘의 모든 태스크가 완료되었습니다."
+        } else if (unit.completedDateList.size == 0) {
+            return "완료된 태스크가 없습니다."
         }
         return ""
+    }
+
+    fun backRoutineTaskUnit(unitId: String): Pair<RoutineTaskUnit, String> {
+        val unit = routineTaskUnitRepository.findById(unitId).get()
+        val message = checkCompleted(unitId)
+        return if (message.isBlank()) {
+            Pair(routineTaskUnitRepository.save(unit.back()), message)
+        } else {
+            Pair(unit, message)
+        }
     }
 
     fun getRoutineTaskUnitAll(profileId: String): MutableList<RoutineTaskUnit> {
