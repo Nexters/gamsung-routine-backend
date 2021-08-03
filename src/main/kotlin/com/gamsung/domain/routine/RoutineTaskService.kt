@@ -26,7 +26,7 @@ class RoutineTaskService(
         val isLeapYear = LocalDate.ofYearDay(endYear, 1).isLeapYear
         val endDate = LocalDate.of(endYear, Month.of(endMonth), Month.of(endMonth).length(isLeapYear))
 
-        val routineUnits = routineTaskUnitRepository.findByProfileIdAndLocalDateBetween(profileId, startDate, endDate)
+        val routineUnits = routineTaskUnitRepository.findAllByProfileIdAndLocalDateBetween(profileId, startDate, endDate)
 
         //초대가 되면 같은 task id를 가지게 됨 (다른 profile id)
         //내가 가지고 있는 모든 taskId를 바탕으로 친구들의 taskUnit까지 가져옴, 그리고 20210712:taskId 등으로 해서 같은 태스크 끼리 모음
@@ -43,7 +43,8 @@ class RoutineTaskService(
                     .map {
                         RoutineTaskFriendUnitDto(
                             profileId = it.profileId,
-                            completeCount = it.completeCount, completedDateList = it.completedDateList
+                            completeCount = it.completeCount,
+                            completedDateList = it.completedDateList
                         )
                     }
                 val newUnitDto = dailyRoutine.toDto(friendRoutines)
@@ -103,7 +104,7 @@ class RoutineTaskService(
         loop@ for (routineTask in routineTasks) {
 
             // 미루기를 통해 이미 해당 일정에 태스크 유닛이 있는지 확인
-            val unit = routineTaskUnitRepository.findByProfileIdAndTaskIdAndLocalDate(
+            val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
                 routineTask.profileId,
                 routineTask.id,
                 today

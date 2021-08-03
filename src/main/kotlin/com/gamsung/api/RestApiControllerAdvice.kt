@@ -15,7 +15,7 @@ class RestApiControllerAdvice {
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleException(e: IllegalArgumentException): ResponseDto<Nothing> {
         log.warn(e.message)
-        return ResponseDto.werror(
+        return ResponseDto.error(
             status = HttpStatus.BAD_REQUEST,
             message = e.message ?: ""
         )

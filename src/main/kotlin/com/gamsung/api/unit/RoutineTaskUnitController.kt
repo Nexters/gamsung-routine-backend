@@ -5,7 +5,9 @@ import com.gamsung.api.dto.RoutineTaskUnitDto
 import com.gamsung.api.dto.toDto
 import com.gamsung.domain.unit.RoutineTaskUnitService
 import io.swagger.annotations.ApiOperation
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/routine/unit")
@@ -21,6 +23,29 @@ class RoutineTaskUnitController(
         val unit = routineTaskUnitService.createRoutineTaskUnit(routineTaskUnitDto)
         return ResponseDto.ok(
             unit.id ?: "ID를 찾을 수 없습니다"
+        )
+    }
+
+    @ApiOperation(value = "단일 Task unit 조회")
+    @GetMapping("/{unitId}")
+    fun searchUnit(
+        @PathVariable unitId: String
+    ): ResponseDto<RoutineTaskUnitDto?> {
+        return ResponseDto.ok(
+            routineTaskUnitService.searchRoutineTaskUnit(unitId).toDto()
+        )
+    }
+
+    @ApiOperation(value = "특정일 Task unit 조회")
+    @GetMapping("/day/{profileId}")
+    fun searchUnitDay(
+        @PathVariable profileId: String,
+        @RequestParam
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        date: LocalDate,
+    ): ResponseDto<List<RoutineTaskUnitDto>> {
+        return ResponseDto.ok(
+            routineTaskUnitService.searchRoutineTaskUnitDay(profileId, date)
         )
     }
 

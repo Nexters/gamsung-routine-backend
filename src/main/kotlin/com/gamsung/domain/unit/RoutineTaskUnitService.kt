@@ -1,6 +1,8 @@
 package com.gamsung.domain.unit
 
+import com.gamsung.api.dto.RoutineTaskFriendUnitDto
 import com.gamsung.api.dto.RoutineTaskUnitDto
+import com.gamsung.api.dto.toDto
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -32,6 +34,27 @@ class RoutineTaskUnitService(
         return routineTaskUnitRepository.save(unit)
     }
 
+    fun searchRoutineTaskUnit(unitId: String): RoutineTaskUnit {
+        return routineTaskUnitRepository.findById(unitId).get()
+    }
+
+    fun searchRoutineTaskUnitDay(profileId: String, date: LocalDate): List<RoutineTaskUnitDto> {
+        val unitList = routineTaskUnitRepository.findAllByProfileIdAndLocalDate(profileId, date)
+        val dtoList = mutableListOf<RoutineTaskUnitDto>()
+
+        unitList.map {
+            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDate(it.taskId, date).map { unit ->
+                RoutineTaskFriendUnitDto(
+                    profileId = unit.profileId,
+                    completeCount = unit.completeCount,
+                    completedDateList = unit.completedDateList
+                )
+            }
+            dtoList.add(it.toDto(friends))
+        }
+        return dtoList
+    }
+
     fun updateRoutineTaskUnit(routineTaskUnitDto: RoutineTaskUnitDto): RoutineTaskUnit {
         val unit = routineTaskUnitRepository.findById(routineTaskUnitDto.id ?: "").get()
         return routineTaskUnitRepository.save(unit)
@@ -59,7 +82,7 @@ class RoutineTaskUnitService(
         val pastUnitList = mutableListOf<RoutineTaskUnit>()
         for (i in 0 until dayOfWeek) {
             val addDays = (i + 1).toLong()
-            val dayUnit = routineTaskUnitRepository.findByProfileIdAndTaskIdAndLocalDate(
+            val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
                 unit.profileId, unit.taskId, date.plusDays(addDays)
             ).first()
             pastUnitList.add(dayUnit)
@@ -79,7 +102,7 @@ class RoutineTaskUnitService(
             if (unit.days?.contains(i) == false) {
                 // 이미 밀린 태스크가 있지 않은 날짜 찾기
                 val newDate = date.plusDays(i.toLong())
-                val dayUnit = routineTaskUnitRepository.findByProfileIdAndTaskIdAndLocalDate(
+                val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
                     unit.profileId, unit.taskId, newDate
                 )
                 if (dayUnit.isEmpty()) {
@@ -136,7 +159,7 @@ class RoutineTaskUnitService(
         fromDate: LocalDate,
         toDate: LocalDate
     ): MutableList<RoutineTaskUnit> {
-        return routineTaskUnitRepository.findByProfileIdAndLocalDateBetween(
+        return routineTaskUnitRepository.findAllByProfileIdAndLocalDateBetween(
             profileId, fromDate, toDate
         )
     }
