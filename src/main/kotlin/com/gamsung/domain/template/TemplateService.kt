@@ -1,11 +1,19 @@
 package com.gamsung.domain.template
 
+import com.gamsung.infra.google.GoogleSheetTemplate
+import com.gamsung.infra.toValueList
 import org.springframework.stereotype.Service
 
 @Service
-class TemplateService {
+class TemplateService(
+    private val googleSheetTemplate: GoogleSheetTemplate
+) {
     fun getCategory(): List<Category> {
-        return MOCK_CATEGORY
+        val categoryValueRange =
+            googleSheetTemplate.getSheet("1f6wt7lzhaTGIvd5--4sINJAMQSzk3w27P3scwxamPMM", "Category")
+        val values = categoryValueRange.toValueList()
+
+        return values.map { Category(it.getOrElse(0) { "0" }, it.getOrElse(1) { "" }) }
     }
 
     fun get(categoryId: String?): List<Template> {

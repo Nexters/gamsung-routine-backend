@@ -12,6 +12,11 @@ auth:
       secret: 6ee7a4c0ddd9ef131c0695a168243074cf511143c9a201a8821422811a7d5fff
       expire-days: 9999
 
+google:
+  app:
+    name: gamsung-routine
+    email: gamsung-routine@gamsung-routine.iam.gserviceaccount.com
+
 logging:
   level:
     com.gamsung: DEBUG
