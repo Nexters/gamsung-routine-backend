@@ -22,11 +22,8 @@ class RoutineTaskUnitService(
             localDate = LocalDate.now(),
             taskId = routineTaskUnitDto.taskId,
             title = routineTaskUnitDto.title,
-
-            timesOfDay = routineTaskUnitDto.timesOfDay,
             days = routineTaskUnitDto.days,
             times = routineTaskUnitDto.times,
-
             friendIds = null,
             completeCount = 0, // 시작은 0
         )
@@ -48,14 +45,6 @@ class RoutineTaskUnitService(
         if (planCount > 6) {
             return "해당 태스크는 미룰 수 없습니다. (매일 수행)"
         }
-
-        /*
-         vvv- v
-        1234567
-         -
-        뒤에 남은 날짜에서 태스크를 수행해야 하는 횟수를 뺀다
-
-         */
 
         // 해당 날짜의 주차를 확인
         val date = unit.localDate
@@ -99,6 +88,26 @@ class RoutineTaskUnitService(
             }
         }
         return "해당 태스크는 미룰 수 없습니다."
+    }
+
+    fun completeRoutineTaskUnit(unitId: String): Pair<RoutineTaskUnit, String> {
+        val unit = routineTaskUnitRepository.findById(unitId).get()
+        val message = checkCompleted(unitId)
+        return if (message.isBlank()) {
+            unit.complete(LocalDate.now())
+            val saveUnit = routineTaskUnitRepository.save(unit)
+            Pair(saveUnit, message)
+        } else {
+            Pair(unit, message)
+        }
+    }
+
+    fun checkCompleted(unitId: String): String {
+        val unit = routineTaskUnitRepository.findById(unitId).get()
+        if (unit.completedDateList.size == (unit.times?.size ?: -1)) {
+            return "이미 완료된 태스크 입니다."
+        }
+        return ""
     }
 
     fun getRoutineTaskUnitAll(profileId: String): MutableList<RoutineTaskUnit> {
