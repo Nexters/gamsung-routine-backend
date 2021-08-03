@@ -2,6 +2,7 @@ package com.gamsung.api.dto
 
 import com.gamsung.domain.unit.RoutineTaskUnit
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 data class RoutineTaskUnitDto(
@@ -15,7 +16,7 @@ data class RoutineTaskUnitDto(
     val times: List<String>?,
     val friends: List<RoutineTaskFriendUnitDto>?,
     val completeCount: Int,
-    val completedDateList: List<LocalDate>
+    val completedDateList: List<LocalDateTime>
 )
 
 fun RoutineTaskUnit.toDto() = RoutineTaskUnitDto(

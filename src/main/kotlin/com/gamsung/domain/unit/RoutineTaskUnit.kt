@@ -3,6 +3,7 @@ package com.gamsung.domain.unit
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Document
 data class RoutineTaskUnit(
@@ -23,7 +24,7 @@ data class RoutineTaskUnit(
 
     // 완료 될때마다 업데이트 되야 하는 필드들
     val completeCount: Int,
-    val completedDateList: MutableList<LocalDate> //[“2020-08-05:12:02:05”, “2020-08-05:12:02:05”, “2020-08-05:12:02:05”]
+    val completedDateList: MutableList<LocalDateTime> //[“2020-08-05:12:02:05”, “2020-08-05:12:02:05”, “2020-08-05:12:02:05”]
 ) {
 
     fun update(
@@ -35,8 +36,8 @@ data class RoutineTaskUnit(
         return this
     }
 
-    fun complete(localDate: LocalDate): RoutineTaskUnit {
-        this.completedDateList.add(localDate)
+    fun complete(localDateTime: LocalDateTime): RoutineTaskUnit {
+        this.completedDateList.add(localDateTime)
         return this
     }
 

@@ -3,6 +3,7 @@ package com.gamsung.domain.unit
 import com.gamsung.api.dto.RoutineTaskUnitDto
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.TextStyle
 import java.util.*
 
@@ -94,7 +95,7 @@ class RoutineTaskUnitService(
         val unit = routineTaskUnitRepository.findById(unitId).get()
         val message = checkCompleted(unitId)
         return if (message.isBlank()) {
-            unit.complete(LocalDate.now())
+            unit.complete(LocalDateTime.now())
             val saveUnit = routineTaskUnitRepository.save(unit)
             Pair(saveUnit, message)
         } else {
