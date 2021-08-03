@@ -41,6 +41,10 @@ class RoutineTaskUnitService(
         // 해당 unit이 등록된 날짜를 확인
         val unit = routineTaskUnitRepository.findById(unitId).get()
 
+        // unit을 1회라도 수행하면 미루기 불가
+        if (unit.completedDateList.size > 0)
+            return "해당 태스크는 미룰 수 없습니다. (해당 Task 진행중)"
+
         // 일주일 매일 수행하는 task라면 바로 반환
         val planCount = unit.days?.size ?: WEEK_COUNT
         if (planCount > 6) {
@@ -79,7 +83,7 @@ class RoutineTaskUnitService(
                     unit.profileId, unit.taskId, newDate
                 )
                 if (dayUnit.isEmpty()) {
-                    val newUnit = dayUnit.first().update(
+                    val newUnit = dayUnit.first().delay(
                         generateDate(newDate),
                         newDate
                     )

@@ -21,18 +21,20 @@ data class RoutineTaskUnit(
     val times: List<String>?, // [09:00, 10:00]
 
     val friendIds: List<String>?, // 친구 관련 데이터 필요시 id를 바탕으로 query 후에 채워준다
+    var checkDelay: Boolean = false,
 
     // 완료 될때마다 업데이트 되야 하는 필드들
     val completeCount: Int,
     val completedDateList: MutableList<LocalDateTime> //[“2020-08-05:12:02:05”, “2020-08-05:12:02:05”, “2020-08-05:12:02:05”]
 ) {
 
-    fun update(
+    fun delay(
         date: String,
         localDate: LocalDate
     ): RoutineTaskUnit {
         this.date = date
         this.localDate = localDate
+        this.checkDelay = true
         return this
     }
 
