@@ -10,3 +10,5 @@ fun ValueRange?.toValueList(): List<List<String>> =
         this.getValues().toList().filterIndexed { index, _ -> index != 0 } as List<List<String>>
     }
 
+fun List<String>.getOrStringZero(index: Int) = this.getOrElse(index) { "0" }
+fun List<String>.getOrStringEmpty(index: Int) = this.getOrElse(index) { "" }

@@ -1,6 +1,9 @@
 package com.gamsung.domain.template
 
+import com.gamsung.infra.getOrStringEmpty
+import com.gamsung.infra.getOrStringZero
 import com.gamsung.infra.google.GoogleSheetTemplate
+import com.gamsung.infra.ifEmptyToNull
 import com.gamsung.infra.toValueList
 import org.springframework.stereotype.Service
 
@@ -13,47 +16,43 @@ class TemplateService(
             googleSheetTemplate.getSheet("1f6wt7lzhaTGIvd5--4sINJAMQSzk3w27P3scwxamPMM", "Category")
         val values = categoryValueRange.toValueList()
 
-        return values.map { Category(it.getOrElse(0) { "0" }, it.getOrElse(1) { "" }) }
+        return values.map { Category(it.getOrStringZero(0), it.getOrStringEmpty(1)) }
     }
 
     fun get(categoryId: String?): List<Template> {
-        val templates = MOCK_TEMPLATE
+        val templateValueRange =
+            googleSheetTemplate.getSheet("1f6wt7lzhaTGIvd5--4sINJAMQSzk3w27P3scwxamPMM", "Template")
+        val templateTaskValueRange =
+            googleSheetTemplate.getSheet("1f6wt7lzhaTGIvd5--4sINJAMQSzk3w27P3scwxamPMM", "TemplateTask")
+
+        val templateTaskValues = templateTaskValueRange.toValueList()
+
+        val templates = templateValueRange.toValueList().filter { it.getOrStringZero(3) == categoryId }.map {
+            val templateId = it.getOrStringZero(0)
+            val tasks =
+                templateTaskValues.filter { templateTaskValue -> templateTaskValue.getOrStringZero(4) == templateId }
+                    .map { templateTaskValue ->
+                        TemplateTask(
+                            id = templateTaskValue.getOrStringZero(0),
+                            name = templateTaskValue.getOrStringEmpty(1),
+                            defaultDays = templateTaskValue.getOrStringEmpty(2).split(",")
+                                .map { defaultDay -> defaultDay.toInt() },
+                            dailyTimes = templateTaskValue.getOrStringZero(3).toInt(),
+                        )
+                    }
+            Template(
+                id = templateId,
+                name = it.getOrStringEmpty(1),
+                templateIconUrl = it.getOrNull(2).ifEmptyToNull(),
+                categoryId = it.getOrStringZero(3),
+                tasks = tasks
+            )
+        }
+
         return if (categoryId != null) {
             templates.filter { it.categoryId == categoryId }
         } else {
             templates
         }
-    }
-
-    companion object {
-        private val MOCK_CATEGORY = listOf(
-            Category("1", "건강"),
-            Category("2", "학습"),
-            Category("3", "인플루언스"),
-            Category("4", "취미"),
-        )
-
-        private val MOCK_TEMPLATE = listOf(
-            Template(
-                id = "1", categoryId = "1", name = "살을 빼고 싶어", tasks = listOf(
-                    TemplateTask(
-                        id = "1", name = "물 마시기", defaultDays = listOf(1, 2, 3, 4, 5, 6, 7)
-                    ),
-                    TemplateTask(
-                        id = "2", name = "물 마시기", defaultDays = listOf(1, 2, 3, 4, 5, 6, 7)
-                    ),
-                )
-            ),
-            Template(
-                id = "2", categoryId = "1", name = "살을 빼고 싶어", tasks = listOf(
-                    TemplateTask(
-                        id = "3", name = "물 마시기", defaultDays = listOf(1, 2, 3, 4, 5, 6, 7),
-                    ),
-                    TemplateTask(
-                        id = "4", name = "물 마시기", defaultDays = listOf(1, 2, 3, 4, 5, 6, 7),
-                    ),
-                )
-            )
-        )
     }
 }
