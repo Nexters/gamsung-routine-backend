@@ -3,6 +3,7 @@ package com.gamsung.domain.routine
 import com.gamsung.api.dto.*
 import com.gamsung.domain.unit.RoutineTaskUnit
 import com.gamsung.domain.unit.RoutineTaskUnitRepository
+import com.gamsung.generateDate
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.Month
@@ -25,7 +26,7 @@ class RoutineTaskService(
         val isLeapYear = LocalDate.ofYearDay(endYear, 1).isLeapYear
         val endDate = LocalDate.of(endYear, Month.of(endMonth), Month.of(endMonth).length(isLeapYear))
 
-        val routineUnits = routineTaskUnitRepository.findByProfileIdAndLocalDateBetween(profileId, startDate, endDate)
+        val routineUnits = routineTaskUnitRepository.findAllByProfileIdAndLocalDateBetween(profileId, startDate, endDate)
 
         //초대가 되면 같은 task id를 가지게 됨 (다른 profile id)
         //내가 가지고 있는 모든 taskId를 바탕으로 친구들의 taskUnit까지 가져옴, 그리고 20210712:taskId 등으로 해서 같은 태스크 끼리 모음
@@ -39,8 +40,13 @@ class RoutineTaskService(
             //만약 같은 key가 존재 하면 친구 task를 dto friends 필드에 입력
             if (friendRoutinesUnitsByDateAndTaskId.containsKey(key)) {
                 val friendRoutines = friendRoutinesUnitsByDateAndTaskId[key]!!
-                    .map{ RoutineTaskFriendUnitDto(profileId = it.profileId,
-                        completeCount = it.completeCount, completedDateList = it.completedDateList) }
+                    .map {
+                        RoutineTaskFriendUnitDto(
+                            profileId = it.profileId,
+                            completeCount = it.completeCount,
+                            completedDateList = it.completedDateList
+                        )
+                    }
                 val newUnitDto = dailyRoutine.toDto(friendRoutines)
                 routineUnitDtoResult.add(newUnitDto)
             }
@@ -66,10 +72,9 @@ class RoutineTaskService(
                             id = id,
                             profileId = routineTask.profileId,
                             date = date,
-                            localDate = LocalDate.now(),
+                            localDate = currDate,
                             taskId = routineTask.id,
                             title = routineTask.title,
-                            timesOfDay = routineTask.timesOfDay,
                             days = routineTask.days,
                             times = routineTask.times,
                             completeCount = 0,
@@ -96,20 +101,28 @@ class RoutineTaskService(
         val routineTaskUnits = mutableListOf<RoutineTaskUnit>()
         val routineTasks = routineTaskRepository.findAll()
         val today = LocalDate.now()
-        for (routineTask in routineTasks) {
+        loop@ for (routineTask in routineTasks) {
+
+            // 미루기를 통해 이미 해당 일정에 태스크 유닛이 있는지 확인
+            val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
+                routineTask.profileId,
+                routineTask.id,
+                today
+            )
+            if (unit.size > 0) continue@loop
+
             routineTask.days.let {
                 val daySet = it.toSet()
                 if (daySet.contains(today.dayOfWeek.value)) {
-                    val date = generateDate(LocalDate.now())
+                    val date = generateDate(today)
                     val id = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
                     val dailyTaskUnit = RoutineTaskUnit(
                         id = id,
                         profileId = routineTask.profileId,
                         date = date,
-                        localDate = LocalDate.now(),
+                        localDate = today,
                         taskId = routineTask.id,
                         title = routineTask.title,
-                        timesOfDay = routineTask.timesOfDay,
                         days = routineTask.days,
                         times = routineTask.times,
                         completeCount = 0,
@@ -123,17 +136,17 @@ class RoutineTaskService(
         routineTaskUnitRepository.saveAll(routineTaskUnits)
     }
 
-    private fun generateDate(currDate: LocalDate) : String {
-        val monthString = currDate.month.value.toString()
-        val month = if (monthString.length < 2) ("0$monthString") else monthString
+//    private fun generateDate(currDate: LocalDate) : String {
+//        val monthString = currDate.month.value.toString()
+//        val month = if (monthString.length < 2) ("0$monthString") else monthString
+//
+//        val dayString = currDate.dayOfMonth.toString()
+//        val day = if (dayString.length < 2) ("0$dayString") else dayString
+//
+//        return currDate.year.toString() + month + day
+//    }
 
-        val dayString = currDate.dayOfMonth.toString()
-        val day = if (dayString.length < 2) ("0$dayString") else dayString
-
-        return currDate.year.toString() + month + day
-    }
-
-    fun inviteFriendToTask(taskId: String, friendId: String) : RoutineTask {
+    fun inviteFriendToTask(taskId: String, friendId: String): RoutineTask {
 
         val task = routineTaskRepository.findById(taskId)
         if (task.isPresent) {
