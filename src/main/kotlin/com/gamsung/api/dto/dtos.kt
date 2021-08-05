@@ -20,6 +20,12 @@ data class ResponseDto<T> internal constructor(
             data = data,
         )
 
+        fun <T> error(message: String) = ResponseDto<T>(
+            status = 5001,
+            message = message,
+            data = null
+        )
+
         fun error(status: HttpStatus, message: String?): ResponseDto<Nothing> {
             return ResponseDto(
                 status = status.value(),

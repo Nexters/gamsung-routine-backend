@@ -170,12 +170,4 @@ class RoutineTaskService(
         }
     }
 
-    /**
-     * 1. create task
-     * 2. create task unit
-     */
-    fun createRoutineTask(routineTaskDto: RoutineTaskDto) {
-        //
-    }
-
 }

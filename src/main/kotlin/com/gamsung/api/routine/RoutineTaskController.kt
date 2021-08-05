@@ -1,9 +1,7 @@
 package com.gamsung.api.routine
 
-import com.gamsung.api.dto.MonthlyRoutineHistoryDto
-import com.gamsung.api.dto.RoutineTaskDto
-import com.gamsung.api.dto.toDto
-import com.gamsung.api.dto.toEntity
+import com.gamsung.api.BusinessException
+import com.gamsung.api.dto.*
 import com.gamsung.domain.routine.RoutineTask
 import com.gamsung.domain.routine.RoutineTaskService
 import com.gamsung.domain.routine.RoutineTaskRepository
@@ -19,15 +17,14 @@ class RoutineTaskController(
     @PostMapping
     fun create(
         @RequestBody routineTaskDto: RoutineTaskDto
-    ): RoutineTaskDto {
-        routineTaskService.createRoutineTask(routineTaskDto)
-        return routineTaskRepository.save(routineTaskDto.toEntity()).toDto()
+    ): ResponseDto<RoutineTaskDto?> {
+        if (routineTaskDto.days.isEmpty() || routineTaskDto.times.isEmpty()) {
+            return ResponseDto.error("days과 times는 1개 이상의 값이 있어야 합니다.")
+        }
+        return ResponseDto.ok(
+            routineTaskRepository.save(routineTaskDto.toEntity()).toDto()
+        )
     }
-
-//    @GetMapping("/{profileId}")
-//    fun read(@PathVariable profileId: String): RoutineDto {
-//        return routineTaskService.getUserRoutines(profileId)
-//    }
 
     // 권사원 코멘트 : nullable로 받을 수 있는 값은 @RequestParam 에 required=false
     @GetMapping("/monthly/{profileId}")
@@ -61,7 +58,7 @@ class RoutineTaskController(
     fun inviteFriend(
         @PathVariable taskId: String,
         @PathVariable friendId: String
-    ) : RoutineTaskDto {
+    ): RoutineTaskDto {
         return routineTaskService.inviteFriendToTask(taskId, friendId).toDto()
     }
 
