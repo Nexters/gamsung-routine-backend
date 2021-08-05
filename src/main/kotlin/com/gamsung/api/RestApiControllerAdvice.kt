@@ -37,7 +37,7 @@ class RestApiControllerAdvice {
         log.error(e.message, e)
         return ResponseDto.error(
             status = HttpStatus.INTERNAL_SERVER_ERROR,
-            message = "알 수 없는 에러가 발생하였습니다."
+            message = e.message ?: "알 수 없는 에러가 발생하였습니다."
         )
     }
 

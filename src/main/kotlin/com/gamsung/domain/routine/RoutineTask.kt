@@ -9,8 +9,8 @@ data class RoutineTask(
     var id: String, // UUID
     var profileId: String,
     var title: String,
-    var timesOfWeek: Int, // 주당 횟수
-    var timesOfDay: Int, // 1일 횟수
+//    var timesOfWeek: Int, // 주당 횟수
+//    var timesOfDay: Int, // 1일 횟수
     var notify: Boolean, // 알람 여부
     var days: List<Int>, // 월 수 금
     var times: List<String>, // 09:00, 10:00

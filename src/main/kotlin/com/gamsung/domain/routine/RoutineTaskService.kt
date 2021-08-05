@@ -154,8 +154,8 @@ class RoutineTaskService(
                 id = task.get().id,
                 profileId = friendId,
                 title = task.get().title,
-                timesOfWeek = task.get().timesOfWeek,
-                timesOfDay = task.get().timesOfDay,
+//                timesOfWeek = task.get().timesOfWeek,
+//                timesOfDay = task.get().timesOfDay,
                 notify = task.get().notify,
                 days = task.get().days,
                 times = task.get().times,
@@ -168,14 +168,6 @@ class RoutineTaskService(
         } else {
             throw Exception("Task not exist")
         }
-    }
-
-    /**
-     * 1. create task
-     * 2. create task unit
-     */
-    fun createRoutineTask(routineTaskDto: RoutineTaskDto) {
-        //
     }
 
 }
