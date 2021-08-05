@@ -87,12 +87,4 @@ class RoutineTaskUnitController(
         )
     }
 
-//    @ApiOperation(value = "Task unit 일괄 수정")
-
-/*
-    @DeleteMapping("/{taskId}")
-    fun delete(@PathVariable taskId: String) {
-        routineTaskRepository.deleteById(taskId)
-    }
-*/
 }

@@ -13,8 +13,8 @@ data class RoutineTaskDto(
 //    var timesOfWeek: Int, // 주당 횟수,
 //    var timesOfDay: Int, // 1일 횟수,
     var notify: Boolean, // 알람 여부
-    var days: List<Int>, // 월 수 금
-    var times: List<String>, // 09:00, 10:00
+    var days: List<Int>?, // 월 수 금
+    var times: List<String>?, // 09:00, 10:00
     var category: String, // Category. 아마도 Enum?
     var templateId: String?, // UUID
     var order: Int, // 나열 순서
@@ -43,8 +43,8 @@ fun RoutineTaskDto.toEntity() =
 //        timesOfWeek = timesOfWeek,
 //        timesOfDay = timesOfDay,
         notify = notify,
-        days = days,
-        times = times,
+        days = days ?: emptyList(),
+        times = times ?: emptyList(),
         category = category,
         templateId = templateId ?: "",
         order = order

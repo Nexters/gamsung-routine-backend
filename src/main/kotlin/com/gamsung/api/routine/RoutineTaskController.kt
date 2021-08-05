@@ -2,10 +2,11 @@ package com.gamsung.api.routine
 
 import com.gamsung.api.BusinessException
 import com.gamsung.api.dto.*
-import com.gamsung.domain.routine.RoutineTask
-import com.gamsung.domain.routine.RoutineTaskService
 import com.gamsung.domain.routine.RoutineTaskRepository
+import com.gamsung.domain.routine.RoutineTaskService
 import org.springframework.web.bind.annotation.*
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/routine")
@@ -18,9 +19,10 @@ class RoutineTaskController(
     fun create(
         @RequestBody routineTaskDto: RoutineTaskDto
     ): ResponseDto<RoutineTaskDto?> {
-        if (routineTaskDto.days.isEmpty() || routineTaskDto.times.isEmpty()) {
-            return ResponseDto.error("days과 times는 1개 이상의 값이 있어야 합니다.")
+        if ((routineTaskDto.days?.isEmpty() != false) || (routineTaskDto.times?.isEmpty() != false)) {
+            throw BusinessException("days과 times는 1개 이상의 값이 있어야 합니다.")
         }
+
         return ResponseDto.ok(
             routineTaskRepository.save(routineTaskDto.toEntity()).toDto()
         )
