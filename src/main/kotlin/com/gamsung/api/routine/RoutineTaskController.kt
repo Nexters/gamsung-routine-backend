@@ -4,7 +4,6 @@ import com.gamsung.api.BusinessException
 import com.gamsung.api.dto.*
 import com.gamsung.domain.routine.RoutineTaskRepository
 import com.gamsung.domain.routine.RoutineTaskService
-import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
@@ -46,6 +45,11 @@ class RoutineTaskController(
         return ResponseDto.ok(
             routineTaskRepository.save(routineTaskDto.toNewEntity()).toDto()
         )
+    }
+
+    @GetMapping("/{id}")
+    fun read(@PathVariable id: String): RoutineTaskDto {
+        return routineTaskService.getRoutineTask(id)
     }
 
     // 권사원 코멘트 : nullable로 받을 수 있는 값은 @RequestParam 에 required=false

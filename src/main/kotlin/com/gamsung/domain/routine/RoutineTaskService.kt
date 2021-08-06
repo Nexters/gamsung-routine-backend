@@ -136,6 +136,11 @@ class RoutineTaskService(
         routineTaskUnitRepository.saveAll(routineTaskUnits)
     }
 
+    // 단일 task 조회를 위한 함수
+    fun getRoutineTask(id: String): RoutineTaskDto {
+        return routineTaskRepository.findById(id).get().toDto()
+    }
+
 //    private fun generateDate(currDate: LocalDate) : String {
 //        val monthString = currDate.month.value.toString()
 //        val month = if (monthString.length < 2) ("0$monthString") else monthString
