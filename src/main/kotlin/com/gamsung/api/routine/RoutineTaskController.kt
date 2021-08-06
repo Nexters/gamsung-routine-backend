@@ -4,6 +4,7 @@ import com.gamsung.api.BusinessException
 import com.gamsung.api.dto.*
 import com.gamsung.domain.routine.RoutineTaskRepository
 import com.gamsung.domain.routine.RoutineTaskService
+import io.swagger.annotations.ApiOperation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
@@ -19,6 +20,7 @@ class RoutineTaskController(
         private val log: Logger = LoggerFactory.getLogger(RoutineTaskController::class.java)
     }
 
+    @ApiOperation(value = "단일 Task 생성")
     @PostMapping
     fun create(
         @RequestBody routineTaskDto: RoutineTaskDto
@@ -47,6 +49,7 @@ class RoutineTaskController(
         )
     }
 
+    @ApiOperation(value = "단일 Task 조회")
     @GetMapping("/{id}")
     fun read(@PathVariable id: String): RoutineTaskDto {
         return routineTaskService.getRoutineTask(id)
