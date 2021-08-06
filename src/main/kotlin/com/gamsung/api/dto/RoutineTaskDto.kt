@@ -1,17 +1,16 @@
 package com.gamsung.api.dto
 
 import com.gamsung.domain.routine.RoutineTask
+import org.bson.types.ObjectId
 
 /**
  * @author Jongkook
  * @date : 2021/07/10
  */
 data class RoutineTaskDto(
-    val id: String, // UUID
+    val id: String?, // UUID
     val profileId: String,
     val title: String,
-//    var timesOfWeek: Int, // 주당 횟수,
-//    var timesOfDay: Int, // 1일 횟수,
     var notify: Boolean, // 알람 여부
     val days: List<Int> = emptyList(), // 월 수 금
     val times: List<String> = emptyList(), // 09:00, 10:00
@@ -22,11 +21,9 @@ data class RoutineTaskDto(
 
 fun RoutineTask.toDto() =
     RoutineTaskDto(
-        id = id,
+        id = id.toString(),
         profileId = profileId,
         title = title,
-//        timesOfWeek = timesOfWeek,
-//        timesOfDay = timesOfDay,
         notify = notify,
         days = days,
         times = times,
@@ -35,16 +32,27 @@ fun RoutineTask.toDto() =
         order = order
     )
 
-fun RoutineTaskDto.toEntity() =
+fun RoutineTaskDto.toNewEntity() =
     RoutineTask(
-        id = id,
+        id = ObjectId(),
         profileId = profileId,
         title = title,
-//        timesOfWeek = timesOfWeek,
-//        timesOfDay = timesOfDay,
         notify = notify,
-        days = days ?: emptyList(),
-        times = times ?: emptyList(),
+        days = days,
+        times = times,
+        category = category,
+        templateId = templateId ?: "",
+        order = order
+    )
+
+fun RoutineTaskDto.toEntity() =
+    RoutineTask(
+        id = ObjectId(id),
+        profileId = profileId,
+        title = title,
+        notify = notify,
+        days = days,
+        times = times,
         category = category,
         templateId = templateId ?: "",
         order = order

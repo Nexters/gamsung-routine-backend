@@ -73,7 +73,7 @@ class RoutineTaskService(
                             profileId = routineTask.profileId,
                             date = date,
                             localDate = currDate,
-                            taskId = routineTask.id,
+                            taskId = routineTask.id.toString(),
                             title = routineTask.title,
                             days = routineTask.days,
                             times = routineTask.times,
@@ -106,7 +106,7 @@ class RoutineTaskService(
             // 미루기를 통해 이미 해당 일정에 태스크 유닛이 있는지 확인
             val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
                 routineTask.profileId,
-                routineTask.id,
+                routineTask.id.toString(),
                 today
             )
             if (unit.size > 0) continue@loop
@@ -121,7 +121,7 @@ class RoutineTaskService(
                         profileId = routineTask.profileId,
                         date = date,
                         localDate = today,
-                        taskId = routineTask.id,
+                        taskId = routineTask.id.toString(),
                         title = routineTask.title,
                         days = routineTask.days,
                         times = routineTask.times,

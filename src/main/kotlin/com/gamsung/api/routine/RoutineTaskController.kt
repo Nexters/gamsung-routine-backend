@@ -4,6 +4,7 @@ import com.gamsung.api.BusinessException
 import com.gamsung.api.dto.*
 import com.gamsung.domain.routine.RoutineTaskRepository
 import com.gamsung.domain.routine.RoutineTaskService
+import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
@@ -43,7 +44,7 @@ class RoutineTaskController(
         }
 
         return ResponseDto.ok(
-            routineTaskRepository.save(routineTaskDto.toEntity()).toDto()
+            routineTaskRepository.save(routineTaskDto.toNewEntity()).toDto()
         )
     }
 
@@ -63,7 +64,7 @@ class RoutineTaskController(
     ): RoutineTaskDto {
         // task id를 체크 --> todo: message를 어떻게 노출시킬지 고민 중
         // to 상환 : orElseThrow =--> ?: throw
-        val exist = routineTaskRepository.findById(routineTaskDto.id)
+        val exist = routineTaskRepository.findById(routineTaskDto.id ?: "")
         if (exist.isEmpty) throw IllegalArgumentException("업데이트 할 Task를 찾을 수 없습니다.")
 
         val routineTask = routineTaskRepository.save(routineTaskDto.toEntity())
