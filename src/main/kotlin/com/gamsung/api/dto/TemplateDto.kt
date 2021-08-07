@@ -16,6 +16,7 @@ data class CategoryDto(
 data class TemplateDto(
     val id: String,
     val name: String,
+    val description: String,
     val tasks: List<TemplateTaskDto>,
     val templateIconUrl: String?,
 )
@@ -38,6 +39,7 @@ fun List<Template>.toDto() = this.map {
     TemplateDto(
         id = it.id,
         name = it.name,
+        description = it.description ?: "",
         tasks = it.tasks.map(TemplateTask::toDto),
         templateIconUrl = it.templateIconUrl,
     )

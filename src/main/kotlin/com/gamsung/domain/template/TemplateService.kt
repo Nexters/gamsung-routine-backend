@@ -27,7 +27,7 @@ class TemplateService(
 
         val templateTaskValues = templateTaskValueRange.toValueList()
 
-        val templates = templateValueRange.toValueList().filter { it.getOrStringZero(3) == categoryId }.map {
+        val templates = templateValueRange.toValueList().filter { it.getOrStringZero(4) == categoryId }.map {
             val templateId = it.getOrStringZero(0)
             val tasks =
                 templateTaskValues.filter { templateTaskValue -> templateTaskValue.getOrStringZero(4) == templateId }
@@ -43,8 +43,9 @@ class TemplateService(
             Template(
                 id = templateId,
                 name = it.getOrStringEmpty(1),
-                templateIconUrl = it.getOrNull(2).ifEmptyToNull(),
-                categoryId = it.getOrStringZero(3),
+                description = it.getOrStringEmpty(2),
+                templateIconUrl = it.getOrNull(3).ifEmptyToNull(),
+                categoryId = it.getOrStringZero(4),
                 tasks = tasks
             )
         }

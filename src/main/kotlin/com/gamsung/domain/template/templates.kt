@@ -9,6 +9,7 @@ data class Template(
     val id: String,
     val categoryId: String,
     val name: String,
+    val description: String?,
     val templateIconUrl: String? = null,
     val tasks: List<TemplateTask>,
 )
