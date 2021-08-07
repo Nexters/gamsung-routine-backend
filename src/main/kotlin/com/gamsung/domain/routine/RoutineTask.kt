@@ -1,16 +1,15 @@
 package com.gamsung.domain.routine
 
+import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
 data class RoutineTask(
     @Id
-    var id: String, // UUID
+    var id: ObjectId, // UUID
     var profileId: String,
     var title: String,
-    var timesOfWeek: Int, // 주당 횟수
-    var timesOfDay: Int, // 1일 횟수
     var notify: Boolean, // 알람 여부
     var days: List<Int>, // 월 수 금
     var times: List<String>, // 09:00, 10:00
