@@ -5,7 +5,7 @@ class PlayGround {
 
     @Test
     fun testTimeFormat() {
-        val sample1 = "13a:0a0a"
+        val sample1 = "13:00"
         val sample2 = "33:00"
         val format = SimpleDateFormat("HH:mm")
         val date1 = format.parse(sample1)
