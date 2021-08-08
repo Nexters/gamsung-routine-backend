@@ -34,6 +34,7 @@ data class User internal constructor(
         this.profileImageUrl = profileImageUrl
         this.thumbnailImageUrl = thumbnailImageUrl
         this.pushToken = pushToken
+        this.lastAccessTime = LocalDateTime.now()
         return this
     }
 
