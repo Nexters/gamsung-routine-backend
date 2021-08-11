@@ -14,7 +14,7 @@ class RoutineTaskUnitScheduler (
 ) {
 
     @Scheduled(cron = "0 0 0 * * ?")
-//    @Scheduled(fixedDelay = 1000)
+//    @Scheduled(fixedDelay = 5000)
     fun generateUnit() {
         routineTaskService.getAndSaveTodayRoutineUnits()
     }

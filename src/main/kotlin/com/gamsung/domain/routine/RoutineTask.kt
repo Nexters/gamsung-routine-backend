@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document
 data class RoutineTask(
     @Id
-    var id: ObjectId, // UUID
+    var id: String?, // UUID
     var profileId: String,
     var title: String,
     var notify: Boolean, // 알람 여부
