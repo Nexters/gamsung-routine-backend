@@ -21,7 +21,7 @@ class RoutineTaskController(
     }
 
     @ApiOperation(value = "멀티 Task 생성")
-    @PostMapping
+    @PostMapping("/multi")
     fun createMany(
         @RequestBody routineTaskDtos: List<RoutineTaskDto>
     ): ResponseDto<List<RoutineTaskDto>> {
