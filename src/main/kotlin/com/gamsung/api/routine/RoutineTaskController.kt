@@ -20,6 +20,16 @@ class RoutineTaskController(
         private val log: Logger = LoggerFactory.getLogger(RoutineTaskController::class.java)
     }
 
+    @ApiOperation(value = "멀티 Task 생성")
+    @PostMapping
+    fun createMany(
+        @RequestBody routineTaskDtos: List<RoutineTaskDto>
+    ): ResponseDto<List<RoutineTaskDto>> {
+        return ResponseDto.ok(
+            routineTaskRepository.saveAll(routineTaskDtos.map { it.toEntity() }).map { it.toDto() }
+        )
+    }
+
     @ApiOperation(value = "단일 Task 생성")
     @PostMapping
     fun create(

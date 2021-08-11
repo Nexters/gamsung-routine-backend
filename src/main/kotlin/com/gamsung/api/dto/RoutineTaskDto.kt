@@ -21,7 +21,7 @@ data class RoutineTaskDto(
 
 fun RoutineTask.toDto() =
     RoutineTaskDto(
-        id = id.toString(),
+        id = id,
         profileId = profileId,
         title = title,
         notify = notify,
@@ -34,7 +34,7 @@ fun RoutineTask.toDto() =
 
 fun RoutineTaskDto.toNewEntity() =
     RoutineTask(
-        id = ObjectId(),
+        id = id,
         profileId = profileId,
         title = title,
         notify = notify,
@@ -47,7 +47,7 @@ fun RoutineTaskDto.toNewEntity() =
 
 fun RoutineTaskDto.toEntity() =
     RoutineTask(
-        id = ObjectId(id),
+        id = id,
         profileId = profileId,
         title = title,
         notify = notify,
