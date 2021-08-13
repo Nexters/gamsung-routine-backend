@@ -123,8 +123,8 @@ class RoutineTaskUnitService(
         val profile = AccountHolder.get()
         val unitId = "$date:${profile.id}:$taskId"
         val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
-        if (unit.completedDateList.size == (unit.times?.size ?: -1)) {
-            return Pair(unit, "이미 오늘의 모든 태스크가 완료되었습니다.")
+        if (unit.completedDateList.size == unit.timesOfDay) {
+            throw IllegalArgumentException("이미 오늘의 모든 태스크가 완료되었습니다.")
         }
 
         unit.complete(LocalDateTime.now())

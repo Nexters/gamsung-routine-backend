@@ -8,11 +8,7 @@ data class ResponseDto<T> internal constructor(
     val data: T? = null,
 ) {
     companion object {
-        fun <T> ok(data: T) = ResponseDto(
-            status = 200,
-            message = "성공",
-            data = data,
-        )
+        fun <T> ok(data: T) = ok(data, "성공")
 
         fun <T> ok(data: T, message: String) = ResponseDto(
             status = 200,

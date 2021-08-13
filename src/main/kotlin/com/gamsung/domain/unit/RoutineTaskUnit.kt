@@ -29,6 +29,10 @@ data class RoutineTaskUnit(
         @Transient
         get() = completedDateList.size
 
+    val timesOfDay: Int
+        @Transient
+        get() = times?.size ?: -1
+
     fun delay(
         date: String,
         localDate: LocalDate
