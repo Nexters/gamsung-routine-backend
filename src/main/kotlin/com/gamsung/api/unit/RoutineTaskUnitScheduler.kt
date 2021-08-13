@@ -13,8 +13,8 @@ class RoutineTaskUnitScheduler (
     val routineTaskService: RoutineTaskService
 ) {
 
-//    @Scheduled(cron = "0 0 0 * * ?")
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(fixedDelay = 5000)
     fun generateUnit() {
         routineTaskService.getAndSaveTodayRoutineUnits()
     }
