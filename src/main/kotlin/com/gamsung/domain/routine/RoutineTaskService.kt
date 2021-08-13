@@ -3,7 +3,7 @@ package com.gamsung.domain.routine
 import com.gamsung.api.dto.*
 import com.gamsung.domain.unit.RoutineTaskUnit
 import com.gamsung.domain.unit.RoutineTaskUnitRepository
-import com.gamsung.generateDate
+import com.gamsung.infra.toDateString
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.Month
@@ -66,7 +66,7 @@ class RoutineTaskService(
 
                         val daysFromToday = day - today.dayOfWeek.value
                         val currDate = LocalDate.now().plusDays(daysFromToday.toLong())
-                        val date = generateDate(currDate)
+                        val date = currDate.toDateString()
                         val unitId = date.plus(":").plus(profileId).plus(":").plus(routineTask.id)
                         val dailyTaskUnit = RoutineTaskUnit(
                             unitId = unitId,
@@ -113,7 +113,7 @@ class RoutineTaskService(
             routineTask.days.let {
                 val daySet = it.toSet()
                 if (daySet.contains(today.dayOfWeek.value)) {
-                    val date = generateDate(today)
+                    val date = today.toDateString()
                     val unitId = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
                     val dailyTaskUnit = RoutineTaskUnit(
                         unitId = unitId,

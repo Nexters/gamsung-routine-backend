@@ -17,7 +17,10 @@ data class RoutineTaskUnitDto(
     val friends: List<RoutineTaskFriendUnitDto>?,
     val completeCount: Int,
     val completedDateList: List<LocalDateTime>
-)
+) {
+    val timesOfDay: Int get() = this.times?.size ?: 0
+    val timesOfWeek: Int get() = this.days?.size ?: 0
+}
 
 fun RoutineTaskUnit.toDto() = RoutineTaskUnitDto(
     id = id,

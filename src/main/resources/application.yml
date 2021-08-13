@@ -20,3 +20,4 @@ google:
 logging:
   level:
     com.gamsung: DEBUG
+    org.springframework.web: DEBUG

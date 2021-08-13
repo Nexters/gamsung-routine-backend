@@ -122,7 +122,7 @@ class RoutineTaskUnitService(
     fun completeRoutineTaskUnit(taskId: String, date: String): Pair<RoutineTaskUnit, String> {
         val profile = AccountHolder.get()
         val unitId = "$date:${profile.id}:$taskId"
-        val unit = routineTaskUnitRepository.findByUnitId(taskId).first()
+        val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
         val message = checkCompleted(unitId)
         return if (message.isBlank()) {
             unit.complete(LocalDateTime.now())
