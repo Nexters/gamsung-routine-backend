@@ -123,22 +123,19 @@ class RoutineTaskUnitService(
         val profile = AccountHolder.get()
         val unitId = "$date:${profile.id}:$taskId"
         val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
-        val message = checkCompleted(unitId)
-        return if (message.isBlank()) {
-            unit.complete(LocalDateTime.now())
-            val saveUnit = routineTaskUnitRepository.save(unit)
-            Pair(saveUnit, message)
-        } else {
-            Pair(unit, message)
+        if (unit.completedDateList.size == (unit.times?.size ?: -1)) {
+            return Pair(unit, "이미 오늘의 모든 태스크가 완료되었습니다.")
         }
+
+        unit.complete(LocalDateTime.now())
+        val saveUnit = routineTaskUnitRepository.save(unit)
+        return Pair(saveUnit, "테스크가 완료되었습니다.")
     }
 
     fun checkCompleted(unitId: String): String {
         val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
         if (unit.completedDateList.size == (unit.times?.size ?: -1)) {
             return "이미 오늘의 모든 태스크가 완료되었습니다."
-        } else if (unit.completedDateList.size == 0) {
-            return "완료된 태스크가 없습니다."
         }
         return ""
     }
