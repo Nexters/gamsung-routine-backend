@@ -66,9 +66,9 @@ class RoutineTaskUnitController(
     }
 
     @ApiOperation(value = "Task 1회 완료하기")
-    @PatchMapping("/complete/{unitId}")
-    fun complete(@PathVariable unitId: String): ResponseDto<RoutineTaskUnitDto?> {
-        val pair = routineTaskUnitService.completeRoutineTaskUnit(unitId)
+    @PatchMapping("/complete/{taskId}")
+    fun complete(@PathVariable taskId: String, @RequestParam date: String): ResponseDto<RoutineTaskUnitDto?> {
+        val pair = routineTaskUnitService.completeRoutineTaskUnit(taskId, date)
 
         return ResponseDto.ok(
             message = pair.second,

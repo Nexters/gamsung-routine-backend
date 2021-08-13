@@ -67,9 +67,9 @@ class RoutineTaskService(
                         val daysFromToday = day - today.dayOfWeek.value
                         val currDate = LocalDate.now().plusDays(daysFromToday.toLong())
                         val date = generateDate(currDate)
-                        val id = date.plus(":").plus(profileId).plus(":").plus(routineTask.id)
+                        val unitId = date.plus(":").plus(profileId).plus(":").plus(routineTask.id)
                         val dailyTaskUnit = RoutineTaskUnit(
-                            id = id,
+                            unitId = unitId,
                             profileId = routineTask.profileId,
                             date = date,
                             localDate = currDate,
@@ -77,7 +77,6 @@ class RoutineTaskService(
                             title = routineTask.title,
                             days = routineTask.days,
                             times = routineTask.times,
-                            completeCount = 0,
                             completedDateList = mutableListOf(),
                             friendIds = arrayListOf()
                         )
@@ -115,9 +114,9 @@ class RoutineTaskService(
                 val daySet = it.toSet()
                 if (daySet.contains(today.dayOfWeek.value)) {
                     val date = generateDate(today)
-                    val id = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
+                    val unitId = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
                     val dailyTaskUnit = RoutineTaskUnit(
-                        id = id,
+                        unitId = unitId,
                         profileId = routineTask.profileId,
                         date = date,
                         localDate = today,
@@ -125,7 +124,6 @@ class RoutineTaskService(
                         title = routineTask.title,
                         days = routineTask.days,
                         times = routineTask.times,
-                        completeCount = 0,
                         completedDateList = mutableListOf(),
                         friendIds = arrayListOf()
                     )

@@ -6,6 +6,7 @@ import java.time.LocalDate
 
 @Repository
 interface RoutineTaskUnitRepository : MongoRepository<RoutineTaskUnit, String> {
+    fun findByUnitId(unitId: String): List<RoutineTaskUnit>
 
     fun findAllByProfileIdAndLocalDate(profileId: String, date: LocalDate): List<RoutineTaskUnit>
 

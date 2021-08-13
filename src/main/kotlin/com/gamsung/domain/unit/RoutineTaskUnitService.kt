@@ -3,6 +3,8 @@ package com.gamsung.domain.unit
 import com.gamsung.api.dto.RoutineTaskFriendUnitDto
 import com.gamsung.api.dto.RoutineTaskUnitDto
 import com.gamsung.api.dto.toDto
+import com.gamsung.domain.security.AccountHolder
+import com.gamsung.infra.toDateString
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -16,10 +18,10 @@ class RoutineTaskUnitService(
     private val WEEK_COUNT = 7
 
     fun createRoutineTaskUnit(routineTaskUnitDto: RoutineTaskUnitDto): RoutineTaskUnit {
-        val date = generateDate(LocalDate.now())
+        val date = LocalDateTime.now().toDateString()
         val id = date.plus(":").plus(routineTaskUnitDto.profileId).plus(":").plus(routineTaskUnitDto.taskId)
         val unit = RoutineTaskUnit.create(
-            id = id,
+            unitId = id,
             profileId = routineTaskUnitDto.profileId,
             date = date,
             localDate = LocalDate.now(),
@@ -28,7 +30,6 @@ class RoutineTaskUnitService(
             days = routineTaskUnitDto.days,
             times = routineTaskUnitDto.times,
             friendIds = null,
-            completeCount = 0, // 시작은 0
         )
 
         return routineTaskUnitRepository.save(unit)
@@ -107,7 +108,7 @@ class RoutineTaskUnitService(
                 )
                 if (dayUnit.isEmpty()) {
                     val newUnit = dayUnit.first().delay(
-                        generateDate(newDate),
+                        newDate.toDateString(),
                         newDate
                     )
                     routineTaskUnitRepository.save(newUnit)
@@ -118,8 +119,10 @@ class RoutineTaskUnitService(
         return "해당 태스크는 미룰 수 없습니다."
     }
 
-    fun completeRoutineTaskUnit(unitId: String): Pair<RoutineTaskUnit, String> {
-        val unit = routineTaskUnitRepository.findById(unitId).get()
+    fun completeRoutineTaskUnit(taskId: String, date: String): Pair<RoutineTaskUnit, String> {
+        val profile = AccountHolder.get()
+        val unitId = "$date:${profile.id}:$taskId"
+        val unit = routineTaskUnitRepository.findByUnitId(taskId).first()
         val message = checkCompleted(unitId)
         return if (message.isBlank()) {
             unit.complete(LocalDateTime.now())
@@ -131,7 +134,7 @@ class RoutineTaskUnitService(
     }
 
     fun checkCompleted(unitId: String): String {
-        val unit = routineTaskUnitRepository.findById(unitId).get()
+        val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
         if (unit.completedDateList.size == (unit.times?.size ?: -1)) {
             return "이미 오늘의 모든 태스크가 완료되었습니다."
         } else if (unit.completedDateList.size == 0) {
@@ -141,7 +144,7 @@ class RoutineTaskUnitService(
     }
 
     fun backRoutineTaskUnit(unitId: String): Pair<RoutineTaskUnit, String> {
-        val unit = routineTaskUnitRepository.findById(unitId).get()
+        val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
         val message = checkCompleted(unitId)
         return if (message.isBlank()) {
             Pair(routineTaskUnitRepository.save(unit.back()), message)
@@ -163,15 +166,4 @@ class RoutineTaskUnitService(
             profileId, fromDate, toDate
         )
     }
-
-    private fun generateDate(currDate: LocalDate): String {
-        val monthString = currDate.month.value.toString()
-        val month = if (monthString.length < 2) ("0$monthString") else monthString
-
-        val dayString = currDate.dayOfMonth.toString()
-        val day = if (dayString.length < 2) ("0$dayString") else dayString
-
-        return currDate.year.toString() + month + day
-    }
-
 }
