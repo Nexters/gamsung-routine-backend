@@ -140,14 +140,17 @@ class RoutineTaskUnitService(
         return ""
     }
 
-    fun backRoutineTaskUnit(unitId: String): Pair<RoutineTaskUnit, String> {
+    fun backRoutineTaskUnit(taskId: String, date: String): Pair<RoutineTaskUnit, String> {
+        val profile = AccountHolder.get()
+        val unitId = "$date:${profile.id}:$taskId"
+
         val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
-        val message = checkCompleted(unitId)
-        return if (message.isBlank()) {
-            Pair(routineTaskUnitRepository.save(unit.back()), message)
-        } else {
-            Pair(unit, message)
+
+        if (unit.completeCount < 1) {
+            throw IllegalArgumentException("이미 모든 태스크가 되돌아갔습니다.")
         }
+
+        return Pair(routineTaskUnitRepository.save(unit.back()), "태스크가 되돌아갔습니다.")
     }
 
     fun getRoutineTaskUnitAll(profileId: String): MutableList<RoutineTaskUnit> {

@@ -77,9 +77,9 @@ class RoutineTaskUnitController(
     }
 
     @ApiOperation(value = "Task 1회 되돌리기")
-    @PatchMapping("/back/{unitId}")
-    fun back(@PathVariable unitId: String): ResponseDto<RoutineTaskUnitDto?> {
-        val pair = routineTaskUnitService.backRoutineTaskUnit(unitId)
+    @PatchMapping("/back/{taskId}")
+    fun back(@PathVariable taskId: String, @RequestParam date: String): ResponseDto<RoutineTaskUnitDto?> {
+        val pair = routineTaskUnitService.backRoutineTaskUnit(taskId, date)
 
         return ResponseDto.ok(
             message = pair.second,
