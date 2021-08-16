@@ -11,7 +11,8 @@ data class ProfileDto(
     val name: String,
     val profileImageUrl: String?,
     val thumbnailImageUrl: String?,
+    val pushNotification: Boolean,
 )
 
 fun Account.toDto() =
-    ProfileDto(id = id, name = nickname, profileImageUrl = profileImageUrl, thumbnailImageUrl = thumbnailImageUrl)
+    ProfileDto(id = id, name = nickname, profileImageUrl = profileImageUrl, thumbnailImageUrl = thumbnailImageUrl, pushNotification = pushNotification)

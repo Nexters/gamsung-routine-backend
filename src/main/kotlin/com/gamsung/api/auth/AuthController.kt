@@ -6,10 +6,7 @@ import com.gamsung.api.dto.SignInResponseDto
 import com.gamsung.api.dto.toRequestWith
 import com.gamsung.domain.auth.service.AuthService
 import com.gamsung.domain.auth.service.SocialType
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class AuthController(
@@ -25,5 +22,11 @@ class AuthController(
                 refreshToken = signInResult.refreshToken,
             )
         )
+    }
+
+    @PatchMapping("/api/v1/auth/push-notification")
+    fun modifyPushNotification(): ResponseDto<Boolean> {
+        val isOn = authService.modifyPushNotification()
+        return ResponseDto.ok(isOn)
     }
 }

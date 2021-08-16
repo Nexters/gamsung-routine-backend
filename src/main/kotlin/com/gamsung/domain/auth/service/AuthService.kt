@@ -5,9 +5,11 @@ import com.gamsung.domain.auth.document.User
 import com.gamsung.domain.auth.repository.UserRepository
 import com.gamsung.domain.external.kakao.KakaoApiClient
 import com.gamsung.domain.external.kakao.KakaoResponse
+import com.gamsung.domain.security.AccountHolder
 import com.gamsung.infra.auth.JwtTokenProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -101,6 +103,14 @@ class AuthService(
         )
 
         return userRepository.save(user)
+    }
+
+    fun modifyPushNotification(): Boolean {
+        val profile = AccountHolder.get()
+        val user = requireNotNull(userRepository.findByIdOrNull(profile.id))
+        val pushNotification = user.modifyPushNotification()
+        userRepository.save(user)
+        return pushNotification
     }
 }
 

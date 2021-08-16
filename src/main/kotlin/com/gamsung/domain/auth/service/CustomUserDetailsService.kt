@@ -29,5 +29,6 @@ private fun User.toUserDetails() = CustomUserDetails(
     _email = this.email,
     _profileImageUrl = this.profileImageUrl,
     _thumbnailImageUrl = this.thumbnailImageUrl,
+    _pushNotification = this.pushNotification ?: true,
     _authorities = mutableListOf(SimpleGrantedAuthority("ROLE_USER"))
 )

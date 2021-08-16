@@ -19,6 +19,7 @@ data class User internal constructor(
     var profileImageUrl: String?,
     var thumbnailImageUrl: String?,
     var pushToken: String?,
+    var pushNotification: Boolean? = true,
     var lastAccessTime: LocalDateTime = LocalDateTime.now(),
     val active: Boolean = true,
 ) {
@@ -36,6 +37,11 @@ data class User internal constructor(
         this.pushToken = pushToken
         this.lastAccessTime = LocalDateTime.now()
         return this
+    }
+
+    fun modifyPushNotification(): Boolean {
+        pushNotification = pushNotification?.not() ?: false
+        return pushNotification!!
     }
 
     companion object {
@@ -61,6 +67,7 @@ data class User internal constructor(
                 profileImageUrl = profileImageUrl,
                 thumbnailImageUrl = thumbnailImageUrl,
                 pushToken = pushToken,
+                pushNotification = true,
             )
         }
     }

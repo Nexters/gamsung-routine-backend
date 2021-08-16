@@ -25,6 +25,7 @@ data class Account(
     val email: String,
     val profileImageUrl: String?,
     val thumbnailImageUrl: String?,
+    val pushNotification: Boolean
 )
 
 class CustomUserDetails(
@@ -36,6 +37,7 @@ class CustomUserDetails(
     private val _email: String,
     private val _profileImageUrl: String?,
     private val _thumbnailImageUrl: String?,
+    private val _pushNotification: Boolean?,
     private val _authorities: MutableList<out GrantedAuthority>,
 ) : UserDetails {
     val id: String get() = _id
@@ -44,6 +46,7 @@ class CustomUserDetails(
     val email: String get() = _email
     val profileImageUrl: String? get() = _profileImageUrl
     val thumbnailImageUrl: String? get() = _thumbnailImageUrl
+    val pushNotification: Boolean get() = _pushNotification ?: true
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return _authorities
@@ -127,5 +130,6 @@ fun CustomUserDetails.toAccount(): Account {
         email = this.email,
         profileImageUrl = this.profileImageUrl,
         thumbnailImageUrl = this.thumbnailImageUrl,
+        pushNotification = this.pushNotification,
     )
 }
