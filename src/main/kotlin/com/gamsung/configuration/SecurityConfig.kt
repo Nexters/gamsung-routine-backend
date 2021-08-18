@@ -81,6 +81,7 @@ class SecurityConfig(
     override fun configure(web: WebSecurity) {
         web.ignoring()
             .antMatchers("/docs/**")
+            .antMatchers("/.well-known/**")
             .antMatchers("/swagger-ui.html")
     }
 
