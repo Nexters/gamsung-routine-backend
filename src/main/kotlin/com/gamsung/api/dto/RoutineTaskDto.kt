@@ -17,6 +17,7 @@ data class RoutineTaskDto(
     val category: String, // Category. 아마도 Enum?
     val templateId: String?, // UUID
     val order: Int, // 나열 순서
+    val delayCount: Int, // 미루기 한 횟수, init = 0
 )
 
 fun RoutineTask.toDto() =
@@ -29,7 +30,8 @@ fun RoutineTask.toDto() =
         times = times,
         category = category,
         templateId = templateId,
-        order = order
+        order = order,
+        delayCount = delayCount
     )
 
 fun RoutineTaskDto.toNewEntity() =
@@ -42,7 +44,8 @@ fun RoutineTaskDto.toNewEntity() =
         times = times,
         category = category,
         templateId = templateId ?: "",
-        order = order
+        order = order,
+        delayCount = 0
     )
 
 fun RoutineTaskDto.toEntity() =
@@ -55,5 +58,6 @@ fun RoutineTaskDto.toEntity() =
         times = times,
         category = category,
         templateId = templateId ?: "",
-        order = order
+        order = order,
+        delayCount = delayCount
     )

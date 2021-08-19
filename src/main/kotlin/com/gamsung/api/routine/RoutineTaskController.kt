@@ -26,7 +26,7 @@ class RoutineTaskController(
         @RequestBody routineTaskDtos: List<RoutineTaskDto>
     ): ResponseDto<List<RoutineTaskDto>> {
         return ResponseDto.ok(
-            routineTaskRepository.saveAll(routineTaskDtos.map { it.toEntity() }).map { it.toDto() }
+            routineTaskRepository.saveAll(routineTaskDtos.map { it.toNewEntity() }).map { it.toDto() }
         )
     }
 

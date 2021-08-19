@@ -1,6 +1,5 @@
 package com.gamsung.domain.routine
 
-import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -16,4 +15,5 @@ data class RoutineTask(
     var category: String, // Category. 아마도 Enum?
     var templateId: String, // UUID
     var order: Int, // 나열 순서
+    var delayCount: Int // 미루기 한 횟수, init = 0
 )

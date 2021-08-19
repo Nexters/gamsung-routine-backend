@@ -103,16 +103,25 @@ class RoutineTaskService(
         loop@ for (routineTask in routineTasks) {
 
             // 미루기를 통해 이미 해당 일정에 태스크 유닛이 있는지 확인
-            val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
-                routineTask.profileId,
-                routineTask.id!!,
-                today
-            )
-            if (unit.size > 0) continue@loop
+//            val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
+//                routineTask.profileId,
+//                routineTask.id!!,
+//                today
+//            )
+//            if (unit.size > 0) continue@loop
 
             routineTask.days.let {
                 val daySet = it.toSet()
-                if (daySet.contains(today.dayOfWeek.value)) {
+                if (daySet.contains(today.dayOfWeek.value) || routineTask.delayCount > 0) {
+
+                    /**
+                     * todo
+                     * daySet.contains(today.dayOfWeek.value)이 아니고 delayCount > 0 일때
+                     * delayCount--
+                     * 미루기 표시
+                     */
+
+
                     val date = today.toDateString()
                     val unitId = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
                     val dailyTaskUnit = RoutineTaskUnit(
@@ -164,7 +173,8 @@ class RoutineTaskService(
                 times = task.get().times,
                 category = task.get().category,
                 templateId = task.get().templateId,
-                order = task.get().order
+                order = task.get().order,
+                delayCount = task.get().delayCount
             )
 
             return routineTaskRepository.save(friendTask)
