@@ -6,26 +6,35 @@ import java.time.LocalDate
 
 @Repository
 interface RoutineTaskUnitRepository : MongoRepository<RoutineTaskUnit, String> {
-    fun findByUnitId(unitId: String): List<RoutineTaskUnit>
+    fun findByUnitIdAndDelayedDateTimeIsNull(unitId: String): List<RoutineTaskUnit>
 
-    fun findAllByProfileIdAndLocalDate(profileId: String, date: LocalDate): List<RoutineTaskUnit>
+    fun findAllByProfileIdAndLocalDateAndDelayedDateTimeIsNull(
+        profileId: String,
+        date: LocalDate
+    ): List<RoutineTaskUnit>
 
-    fun findAllByTaskIdAndLocalDate(taskId: String, date: LocalDate): List<RoutineTaskUnit>
+    fun findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(taskId: String, date: LocalDate): List<RoutineTaskUnit>
 
-    fun findAllByProfileIdAndLocalDateBetween(
+    fun findAllByProfileIdAndLocalDateBetweenAndDelayedDateTimeIsNull(
         profileId: String,
         start: LocalDate,
         end: LocalDate
     ): MutableList<RoutineTaskUnit>
 
-    fun findAllByProfileIdAndTaskIdAndLocalDate(
+    fun findAllByProfileIdAndTaskIdAndLocalDateBetweenAndDelayedDateTimeIsNull(
+        profileId: String,
+        taskId: String,
+        start: LocalDate,
+        end: LocalDate
+    ): MutableList<RoutineTaskUnit>
+
+    fun findAllByProfileIdAndTaskIdAndLocalDateAndDelayedDateTimeIsNull(
         profileId: String,
         taskId: String,
         localDate: LocalDate
     ): MutableList<RoutineTaskUnit>
 
-
     fun findByProfileId(profileId: String): MutableList<RoutineTaskUnit>
 
-    fun findByTaskIdIn(taskIds: List<String>): MutableList<RoutineTaskUnit>
+    fun findByTaskIdInAndDelayedDateTimeIsNull(taskIds: List<String>): MutableList<RoutineTaskUnit>
 }
