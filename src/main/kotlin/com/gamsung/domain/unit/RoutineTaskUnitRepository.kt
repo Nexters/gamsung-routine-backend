@@ -8,12 +8,22 @@ import java.time.LocalDate
 interface RoutineTaskUnitRepository : MongoRepository<RoutineTaskUnit, String> {
     fun findByUnitIdAndDelayedDateTimeIsNull(unitId: String): List<RoutineTaskUnit>
 
-    fun findAllByProfileIdAndLocalDateAndDelayedDateTimeIsNull(profileId: String, date: LocalDate): List<RoutineTaskUnit>
+    fun findAllByProfileIdAndLocalDateAndDelayedDateTimeIsNull(
+        profileId: String,
+        date: LocalDate
+    ): List<RoutineTaskUnit>
 
     fun findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(taskId: String, date: LocalDate): List<RoutineTaskUnit>
 
     fun findAllByProfileIdAndLocalDateBetweenAndDelayedDateTimeIsNull(
         profileId: String,
+        start: LocalDate,
+        end: LocalDate
+    ): MutableList<RoutineTaskUnit>
+
+    fun findAllByProfileIdAndTaskIdAndLocalDateBetweenAndDelayedDateTimeIsNull(
+        profileId: String,
+        taskId: String,
         start: LocalDate,
         end: LocalDate
     ): MutableList<RoutineTaskUnit>

@@ -57,6 +57,31 @@ class RoutineTaskUnitService(
         return dtoList
     }
 
+    fun searchRoutineTaskUnitPeriod(
+        profileId: String,
+        taskId: String,
+        fromDate: LocalDate,
+        toDate: LocalDate
+    ): List<RoutineTaskUnitDto> {
+        val unitList = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDateBetweenAndDelayedDateTimeIsNull(
+            profileId, taskId, fromDate, toDate
+        )
+        val dtoList = mutableListOf<RoutineTaskUnitDto>()
+
+        unitList.map {
+            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, it.localDate)
+                .map { unit ->
+                    RoutineTaskFriendUnitDto(
+                        profileId = unit.profileId,
+                        completeCount = unit.completeCount,
+                        completedDateList = unit.completedDateList
+                    )
+                }
+            dtoList.add(it.toDto(friends))
+        }
+        return dtoList
+    }
+
     fun updateRoutineTaskUnit(routineTaskUnitDto: RoutineTaskUnitDto): RoutineTaskUnit {
         val unit = routineTaskUnitRepository.findById(routineTaskUnitDto.id ?: "").get()
         return routineTaskUnitRepository.save(unit)
