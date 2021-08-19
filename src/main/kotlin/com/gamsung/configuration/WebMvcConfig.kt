@@ -8,5 +8,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class WebMvcConfig : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/docs/**").addResourceLocations("classpath:/static/docs/")
+        registry.addResourceHandler("/.well-known/**").addResourceLocations("classpath:/static/.well-known/")
     }
 }
