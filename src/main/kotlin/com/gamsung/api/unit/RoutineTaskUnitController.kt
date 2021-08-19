@@ -49,7 +49,7 @@ class RoutineTaskUnitController(
         )
     }
 
-    @ApiOperation(value = "특정일 Task unit 조회")
+    @ApiOperation(value = "특정기간 Task unit 조회")
     @GetMapping("/day/{profileId}/{taskId}")
     fun searchUnitPeriod(
         @PathVariable profileId: String,
