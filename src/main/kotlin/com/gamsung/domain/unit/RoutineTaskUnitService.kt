@@ -10,8 +10,6 @@ import com.gamsung.infra.toDateString
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.TextStyle
-import java.util.*
 
 @Service
 class RoutineTaskUnitService(
@@ -43,11 +41,11 @@ class RoutineTaskUnitService(
     }
 
     fun searchRoutineTaskUnitDay(profileId: String, date: LocalDate): List<RoutineTaskUnitDto> {
-        val unitList = routineTaskUnitRepository.findAllByProfileIdAndLocalDate(profileId, date)
+        val unitList = routineTaskUnitRepository.findAllByProfileIdAndLocalDateAndDelayedDateTimeIsNull(profileId, date)
         val dtoList = mutableListOf<RoutineTaskUnitDto>()
 
         unitList.map {
-            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDate(it.taskId, date).map { unit ->
+            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, date).map { unit ->
                 RoutineTaskFriendUnitDto(
                     profileId = unit.profileId,
                     completeCount = unit.completeCount,
@@ -89,7 +87,7 @@ class RoutineTaskUnitService(
         val pastUnitList = mutableListOf<RoutineTaskUnit>()
         for (i in 0 until dayOfWeek) {
             val addDays = (i + 1).toLong()
-            val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDateAAndDelayedDateTimeIsNull(
+            val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDateAndDelayedDateTimeIsNull(
                 unit.profileId, unit.taskId, date.plusDays(addDays)
             ).first()
             pastUnitList.add(dayUnit)
@@ -134,7 +132,7 @@ class RoutineTaskUnitService(
     fun completeRoutineTaskUnit(taskId: String, date: String): Pair<RoutineTaskUnit, String> {
         val profile = AccountHolder.get()
         val unitId = "$date:${profile.id}:$taskId"
-        val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
+        val unit = routineTaskUnitRepository.findByUnitIdAndDelayedDateTimeIsNull(unitId).first()
         if (unit.completedDateList.size == unit.timesOfDay) {
             throw IllegalArgumentException("이미 오늘의 모든 태스크가 완료되었습니다.")
         }
@@ -145,7 +143,7 @@ class RoutineTaskUnitService(
     }
 
     fun checkCompleted(unitId: String): String {
-        val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
+        val unit = routineTaskUnitRepository.findByUnitIdAndDelayedDateTimeIsNull(unitId).first()
         if (unit.completedDateList.size == (unit.times?.size ?: -1)) {
             return "이미 오늘의 모든 태스크가 완료되었습니다."
         }
@@ -156,7 +154,7 @@ class RoutineTaskUnitService(
         val profile = AccountHolder.get()
         val unitId = "$date:${profile.id}:$taskId"
 
-        val unit = routineTaskUnitRepository.findByUnitId(unitId).first()
+        val unit = routineTaskUnitRepository.findByUnitIdAndDelayedDateTimeIsNull(unitId).first()
 
         if (unit.completeCount < 1) {
             throw IllegalArgumentException("이미 모든 태스크가 되돌아갔습니다.")
@@ -174,7 +172,7 @@ class RoutineTaskUnitService(
         fromDate: LocalDate,
         toDate: LocalDate
     ): MutableList<RoutineTaskUnit> {
-        return routineTaskUnitRepository.findAllByProfileIdAndLocalDateBetween(
+        return routineTaskUnitRepository.findAllByProfileIdAndLocalDateBetweenAndDelayedDateTimeIsNull(
             profileId, fromDate, toDate
         )
     }
