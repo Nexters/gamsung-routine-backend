@@ -14,10 +14,10 @@ data class RoutineTaskDto(
     var notify: Boolean, // 알람 여부
     val days: List<Int> = emptyList(), // 월 수 금
     val times: List<String> = emptyList(), // 09:00, 10:00
-    val category: String, // Category. 아마도 Enum?
+    val category: String?, // Category. 아마도 Enum?
     val templateId: String?, // UUID
     val order: Int, // 나열 순서
-    val delayCount: Int, // 미루기 한 횟수, init = 0
+    var delayCount: Int, // 미루기 한 횟수, init = 0
 )
 
 fun RoutineTask.toDto() =
@@ -42,7 +42,7 @@ fun RoutineTaskDto.toNewEntity() =
         notify = notify,
         days = days,
         times = times,
-        category = category,
+        category = category ?: "",
         templateId = templateId ?: "",
         order = order,
         delayCount = 0
@@ -56,7 +56,7 @@ fun RoutineTaskDto.toEntity() =
         notify = notify,
         days = days,
         times = times,
-        category = category,
+        category = category ?: "",
         templateId = templateId ?: "",
         order = order,
         delayCount = delayCount

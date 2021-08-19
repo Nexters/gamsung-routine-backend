@@ -24,6 +24,11 @@ interface RoutineTaskUnitRepository : MongoRepository<RoutineTaskUnit, String> {
         localDate: LocalDate
     ): MutableList<RoutineTaskUnit>
 
+    fun findAllByProfileIdAndTaskIdAndLocalDateAAndDelayedDateTimeIsNull(
+        profileId: String,
+        taskId: String,
+        localDate: LocalDate
+    ): MutableList<RoutineTaskUnit>
 
     fun findByProfileId(profileId: String): MutableList<RoutineTaskUnit>
 

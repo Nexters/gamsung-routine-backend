@@ -1,6 +1,7 @@
 package com.gamsung.domain.unit
 
 import com.gamsung.configuration.mongo.BaseDocument
+import com.gamsung.infra.lateInit
 import org.springframework.data.annotation.Transient
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
@@ -20,10 +21,12 @@ data class RoutineTaskUnit(
     val times: List<String>?, // [09:00, 10:00]
 
     val friendIds: List<String>?, // 친구 관련 데이터 필요시 id를 바탕으로 query 후에 채워준다
-    var checkDelay: Boolean = false,
+    var isDelayUnit: Boolean = false,
 
     // 완료 될때마다 업데이트 되야 하는 필드들
-    val completedDateList: MutableList<LocalDateTime> //[“2020-08-05:12:02:05”, “2020-08-05:12:02:05”, “2020-08-05:12:02:05”]
+    val completedDateList: MutableList<LocalDateTime>, //[“2020-08-05:12:02:05”, “2020-08-05:12:02:05”, “2020-08-05:12:02:05”]
+    val delayedDateTime: LocalDateTime?
+
 ) : BaseDocument() {
     val completeCount: Int
         @Transient
@@ -39,7 +42,7 @@ data class RoutineTaskUnit(
     ): RoutineTaskUnit {
         this.date = date
         this.localDate = localDate
-        this.checkDelay = true
+//        this.isDelayUnit = true
         return this
     }
 
@@ -64,6 +67,7 @@ data class RoutineTaskUnit(
             days: List<Int>?,
             times: List<String>?,
             friendIds: List<String>?,
+
         ): RoutineTaskUnit {
             return RoutineTaskUnit(
                 unitId = unitId,
@@ -75,7 +79,8 @@ data class RoutineTaskUnit(
                 days = days,
                 times = times,
                 friendIds = friendIds,
-                completedDateList = mutableListOf()
+                completedDateList = mutableListOf(),
+                delayedDateTime = null
             )
         }
     }

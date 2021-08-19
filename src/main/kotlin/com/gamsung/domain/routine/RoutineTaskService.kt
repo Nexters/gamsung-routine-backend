@@ -78,7 +78,8 @@ class RoutineTaskService(
                             days = routineTask.days,
                             times = routineTask.times,
                             completedDateList = mutableListOf(),
-                            friendIds = arrayListOf()
+                            friendIds = arrayListOf(),
+                            delayedDateTime = null
                         )
 
                         routineUnitDtoResult.add(dailyTaskUnit.toDto(arrayListOf()))
@@ -114,13 +115,13 @@ class RoutineTaskService(
                 val daySet = it.toSet()
                 if (daySet.contains(today.dayOfWeek.value) || routineTask.delayCount > 0) {
 
-                    /**
-                     * todo
-                     * daySet.contains(today.dayOfWeek.value)이 아니고 delayCount > 0 일때
-                     * delayCount--
-                     * 미루기 표시
-                     */
-
+                    // 수행 날짜도 아닌데 진입 했다면 delay된 유닛
+                    val delayStatus = !daySet.contains(today.dayOfWeek.value)
+                    if (delayStatus) {
+                        val dto = routineTask.toDto()
+                        dto.delayCount--
+                        routineTaskRepository.save(dto.toEntity())
+                    }
 
                     val date = today.toDateString()
                     val unitId = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
@@ -134,7 +135,9 @@ class RoutineTaskService(
                         days = routineTask.days,
                         times = routineTask.times,
                         completedDateList = mutableListOf(),
-                        friendIds = arrayListOf()
+                        friendIds = arrayListOf(),
+                        isDelayUnit = delayStatus,
+                        delayedDateTime = null
                     )
                     routineTaskUnits.add(dailyTaskUnit)
                 }

@@ -3,6 +3,8 @@ package com.gamsung.domain.unit
 import com.gamsung.api.dto.RoutineTaskFriendUnitDto
 import com.gamsung.api.dto.RoutineTaskUnitDto
 import com.gamsung.api.dto.toDto
+import com.gamsung.api.dto.toEntity
+import com.gamsung.domain.routine.RoutineTaskRepository
 import com.gamsung.domain.security.AccountHolder
 import com.gamsung.infra.toDateString
 import org.springframework.stereotype.Service
@@ -14,6 +16,7 @@ import java.util.*
 @Service
 class RoutineTaskUnitService(
     private val routineTaskUnitRepository: RoutineTaskUnitRepository,
+    private val routineTaskRepository: RoutineTaskRepository
 ) {
     private val WEEK_COUNT = 7
 
@@ -65,6 +68,9 @@ class RoutineTaskUnitService(
         // 해당 unit이 등록된 날짜를 확인
         val unit = routineTaskUnitRepository.findById(unitId).get()
 
+        // 해당 unit의 태스크
+        val taskDto = routineTaskRepository.findById(unit.taskId).get().toDto()
+
         // unit을 1회라도 수행하면 미루기 불가
         if (unit.completedDateList.size > 0)
             return "해당 태스크는 미룰 수 없습니다. (해당 Task 진행중)"
@@ -83,40 +89,46 @@ class RoutineTaskUnitService(
         val pastUnitList = mutableListOf<RoutineTaskUnit>()
         for (i in 0 until dayOfWeek) {
             val addDays = (i + 1).toLong()
-            val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
+            val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDateAAndDelayedDateTimeIsNull(
                 unit.profileId, unit.taskId, date.plusDays(addDays)
             ).first()
             pastUnitList.add(dayUnit)
         }
         // 남은 날짜
         val remainDays = WEEK_COUNT - dayOfWeek
-        // 남은 unit (오늘 Unit 포함)
+        // 남은 unit (오늘 Unit 포함) : 계획된 유닛 - 이미 지나간 유닛
         val remainUnitCount = planCount - pastUnitList.size
 
         if (remainDays <= remainUnitCount) {
             return "해당 태스크는 미룰 수 없습니다. (여유 일정 없음)"
         }
 
-        // 미룰 수 있는 날짜 중 가장 가까운 날짜에 오늘 unit 배정
-        for (i in dayOfWeek until (WEEK_COUNT + 1)) {
-            // 계획에 포함되어 있지 않고
-            if (unit.days?.contains(i) == false) {
-                // 이미 밀린 태스크가 있지 않은 날짜 찾기
-                val newDate = date.plusDays(i.toLong())
-                val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
-                    unit.profileId, unit.taskId, newDate
-                )
-                if (dayUnit.isEmpty()) {
-                    val newUnit = dayUnit.first().delay(
-                        newDate.toDateString(),
-                        newDate
-                    )
-                    routineTaskUnitRepository.save(newUnit)
-                    return "해당 태스크를 ${newDate.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN)}로 미뤘습니다."
-                }
-            }
-        }
-        return "해당 태스크는 미룰 수 없습니다."
+        // 태스크 delay count up
+        taskDto.delayCount++
+        routineTaskRepository.save(taskDto.toEntity())
+
+        return "(๑>ᴗ<๑) 해당 태스크를 미뤘습니다."
+
+//        // 미룰 수 있는 날짜 중 가장 가까운 날짜에 오늘 unit 배정
+//        for (i in dayOfWeek until (WEEK_COUNT + 1)) {
+//            // 계획에 포함되어 있지 않고
+//            if (unit.days?.contains(i) == false) {
+//                // 이미 밀린 태스크가 있지 않은 날짜 찾기
+//                val newDate = date.plusDays(i.toLong())
+//                val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
+//                    unit.profileId, unit.taskId, newDate
+//                )
+//                if (dayUnit.isEmpty()) {
+//                    val newUnit = dayUnit.first().delay(
+//                        newDate.toDateString(),
+//                        newDate
+//                    )
+//                    routineTaskUnitRepository.save(newUnit)
+//                    return "해당 태스크를 ${newDate.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN)}로 미뤘습니다."
+//                }
+//            }
+//        }
+//        return "해당 태스크는 미룰 수 없습니다."
     }
 
     fun completeRoutineTaskUnit(taskId: String, date: String): Pair<RoutineTaskUnit, String> {
