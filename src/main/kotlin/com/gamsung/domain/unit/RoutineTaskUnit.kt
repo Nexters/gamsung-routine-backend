@@ -1,7 +1,6 @@
 package com.gamsung.domain.unit
 
 import com.gamsung.configuration.mongo.BaseDocument
-import com.gamsung.infra.lateInit
 import org.springframework.data.annotation.Transient
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
