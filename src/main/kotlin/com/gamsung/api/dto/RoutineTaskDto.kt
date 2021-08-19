@@ -1,7 +1,6 @@
 package com.gamsung.api.dto
 
 import com.gamsung.domain.routine.RoutineTask
-import org.bson.types.ObjectId
 
 /**
  * @author Jongkook

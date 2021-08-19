@@ -62,9 +62,9 @@ class RoutineTaskUnitService(
         return routineTaskUnitRepository.save(unit)
     }
 
-    fun delayRoutineTaskUnit(unitId: String): String {
+    fun delayRoutineTaskUnit(id: String): String {
         // 해당 unit이 등록된 날짜를 확인
-        val unit = routineTaskUnitRepository.findById(unitId).get()
+        val unit = routineTaskUnitRepository.findById(id).get()
 
         // 해당 unit의 태스크
         val taskDto = routineTaskRepository.findById(unit.taskId).get().toDto()
@@ -89,21 +89,25 @@ class RoutineTaskUnitService(
             val addDays = (i + 1).toLong()
             val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDateAndDelayedDateTimeIsNull(
                 unit.profileId, unit.taskId, date.plusDays(addDays)
-            ).first()
-            pastUnitList.add(dayUnit)
+            ).firstOrNull()
+            dayUnit?.let { pastUnitList.add(it) }
         }
         // 남은 날짜
         val remainDays = WEEK_COUNT - dayOfWeek
         // 남은 unit (오늘 Unit 포함) : 계획된 유닛 - 이미 지나간 유닛
         val remainUnitCount = planCount - pastUnitList.size
 
-        if (remainDays <= remainUnitCount) {
+        if (remainDays < remainUnitCount) {
             return "해당 태스크는 미룰 수 없습니다. (여유 일정 없음)"
         }
 
         // 태스크 delay count up
         taskDto.delayCount++
         routineTaskRepository.save(taskDto.toEntity())
+
+        // Unit delay 처리
+        unit.delayedDateTime = LocalDateTime.now()
+        routineTaskUnitRepository.save(unit)
 
         return "(๑>ᴗ<๑) 해당 태스크를 미뤘습니다."
 
