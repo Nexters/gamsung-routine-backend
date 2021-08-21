@@ -69,16 +69,17 @@ class RoutineTaskUnitService(
         toDate: String
     ): List<RoutineTaskUnitDto> {
 
-        val profile = Account(
-            id = "610440cca49e190b7a79c112",
-            socialType = SocialType.KAKAO,
-            nickname = "",
-            email = "",
-            profileImageUrl = "",
-            thumbnailImageUrl = "",
-            pushNotification = true
-        )
+//        val profile = Account(
+//            id = "610440cca49e190b7a79c112",
+//            socialType = SocialType.KAKAO,
+//            nickname = "",
+//            email = "",
+//            profileImageUrl = "",
+//            thumbnailImageUrl = "",
+//            pushNotification = true
+//        )
 
+        val profile = AccountHolder.get()
         val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
         val fromLocalDate: LocalDate = LocalDate.parse(fromDate, formatter).minusDays(1)
         val toLocalDate: LocalDate = LocalDate.parse(toDate, formatter).plusDays(1)
