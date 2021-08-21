@@ -8,7 +8,6 @@ import com.gamsung.domain.routine.RoutineTask
  */
 data class RoutineTaskDto(
     val id: String?, // UUID
-    val taskId: String,
     val profileId: String,
     val title: String,
     var notify: Boolean, // 알람 여부
@@ -23,7 +22,6 @@ data class RoutineTaskDto(
 fun RoutineTask.toDto() =
     RoutineTaskDto(
         id = id,
-        taskId = taskId,
         profileId = profileId,
         title = title,
         notify = notify,
@@ -38,7 +36,6 @@ fun RoutineTask.toDto() =
 fun RoutineTaskDto.toNewEntity() =
     RoutineTask(
         id = id,
-        taskId = taskId,
         profileId = profileId,
         title = title,
         notify = notify,
@@ -53,7 +50,6 @@ fun RoutineTaskDto.toNewEntity() =
 fun RoutineTaskDto.toEntity() =
     RoutineTask(
         id = id,
-        taskId = taskId,
         profileId = profileId,
         title = title,
         notify = notify,
