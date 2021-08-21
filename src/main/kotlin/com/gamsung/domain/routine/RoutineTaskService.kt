@@ -57,6 +57,8 @@ class RoutineTaskService(
                     }
                 val newUnitDto = dailyRoutine.toDto(friendRoutines)
                 routineUnitDtoResult.add(newUnitDto)
+            } else {
+                routineUnitDtoResult.add(dailyRoutine.toDto())
             }
         }
 
