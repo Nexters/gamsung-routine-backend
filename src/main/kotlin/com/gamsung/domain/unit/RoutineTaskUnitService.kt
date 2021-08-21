@@ -31,6 +31,7 @@ class RoutineTaskUnitService(
             date = dateString,
             localDate = date.plusHours(9).toLocalDate(),
             taskId = routineTaskUnitDto.taskId,
+            taskCode = routineTaskUnitDto.taskCode,
             title = routineTaskUnitDto.title,
             days = routineTaskUnitDto.days,
             times = routineTaskUnitDto.times,

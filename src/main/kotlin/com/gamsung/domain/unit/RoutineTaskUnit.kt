@@ -13,6 +13,7 @@ data class RoutineTaskUnit(
     var date: String, // 월, 일이 한자리수일 때, '0'붙일 것
     var localDate: LocalDate,
     val taskId: String,
+    val taskCode: String,
     val title: String, // Task Title
 
     // ** 아래 필드는, 루틴 수정시 해당 "주"에 있는 history에 반영 **
@@ -62,6 +63,7 @@ data class RoutineTaskUnit(
             date: String,
             localDate: LocalDate,
             taskId: String,
+            taskCode: String,
             title: String,
             days: List<Int>?,
             times: List<String>?,
@@ -74,6 +76,7 @@ data class RoutineTaskUnit(
                 date = date,
                 localDate = localDate,
                 taskId = taskId,
+                taskCode = taskCode,
                 title = title,
                 days = days,
                 times = times,
