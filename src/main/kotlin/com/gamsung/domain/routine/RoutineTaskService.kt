@@ -99,12 +99,12 @@ class RoutineTaskService(
             }
         }
 
-        routineUnitDtoResult.sortBy { it.date.toInt() }
+        routineUnitDtoResult.sortBy { it.date?.toInt() }
 
         return MonthlyRoutineHistoryDto(
             year = year,
             month = month,
-            dailyRoutines = routineUnitDtoResult.groupBy { it.date })
+            dailyRoutines = routineUnitDtoResult.groupBy { it.date ?: "" })
 
     }
 

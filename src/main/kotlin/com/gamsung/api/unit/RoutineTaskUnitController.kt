@@ -52,17 +52,16 @@ class RoutineTaskUnitController(
     @ApiOperation(value = "특정기간 Task unit 조회")
     @GetMapping("/day/{profileId}/{taskId}")
     fun searchUnitPeriod(
-        @PathVariable profileId: String,
         @PathVariable taskId: String,
         @RequestParam
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        fromDate: LocalDate,
+        fromDate: String,
         @RequestParam
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        toDate: LocalDate,
+        toDate: String,
         ): ResponseDto<List<RoutineTaskUnitDto>> {
         return ResponseDto.ok(
-            routineTaskUnitService.searchRoutineTaskUnitPeriod(profileId, taskId, fromDate, toDate)
+            routineTaskUnitService.searchRoutineTaskUnitPeriod(taskId, fromDate, toDate)
         )
     }
 

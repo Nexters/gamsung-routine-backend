@@ -4,12 +4,15 @@ import com.gamsung.api.dto.RoutineTaskFriendUnitDto
 import com.gamsung.api.dto.RoutineTaskUnitDto
 import com.gamsung.api.dto.toDto
 import com.gamsung.api.dto.toEntity
+import com.gamsung.domain.auth.service.Account
+import com.gamsung.domain.auth.service.SocialType
 import com.gamsung.domain.routine.RoutineTaskRepository
 import com.gamsung.domain.security.AccountHolder
 import com.gamsung.infra.toDateString
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class RoutineTaskUnitService(
@@ -19,13 +22,14 @@ class RoutineTaskUnitService(
     private val WEEK_COUNT = 7
 
     fun createRoutineTaskUnit(routineTaskUnitDto: RoutineTaskUnitDto): RoutineTaskUnit {
-        val date = LocalDateTime.now().toDateString()
-        val id = date.plus(":").plus(routineTaskUnitDto.profileId).plus(":").plus(routineTaskUnitDto.taskId)
+        val date = LocalDateTime.now()
+        val dateString = date.toDateString()
+        val id = dateString.plus(":").plus(routineTaskUnitDto.profileId).plus(":").plus(routineTaskUnitDto.taskId)
         val unit = RoutineTaskUnit.create(
             unitId = id,
             profileId = routineTaskUnitDto.profileId,
-            date = date,
-            localDate = LocalDate.now(),
+            date = dateString,
+            localDate = date.plusHours(9).toLocalDate(),
             taskId = routineTaskUnitDto.taskId,
             taskCode = routineTaskUnitDto.taskCode,
             title = routineTaskUnitDto.title,
@@ -46,31 +50,7 @@ class RoutineTaskUnitService(
         val dtoList = mutableListOf<RoutineTaskUnitDto>()
 
         unitList.map {
-            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, date).map { unit ->
-                RoutineTaskFriendUnitDto(
-                    profileId = unit.profileId,
-                    completeCount = unit.completeCount,
-                    completedDateList = unit.completedDateList
-                )
-            }
-            dtoList.add(it.toDto(friends))
-        }
-        return dtoList
-    }
-
-    fun searchRoutineTaskUnitPeriod(
-        profileId: String,
-        taskId: String,
-        fromDate: LocalDate,
-        toDate: LocalDate
-    ): List<RoutineTaskUnitDto> {
-        val unitList = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDateBetweenAndDelayedDateTimeIsNull(
-            profileId, taskId, fromDate, toDate
-        )
-        val dtoList = mutableListOf<RoutineTaskUnitDto>()
-
-        unitList.map {
-            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, it.localDate)
+            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, date)
                 .map { unit ->
                     RoutineTaskFriendUnitDto(
                         profileId = unit.profileId,
@@ -78,6 +58,51 @@ class RoutineTaskUnitService(
                         completedDateList = unit.completedDateList
                     )
                 }
+            dtoList.add(it.toDto(friends))
+        }
+        return dtoList
+    }
+
+    fun searchRoutineTaskUnitPeriod(
+        taskId: String,
+        fromDate: String,
+        toDate: String
+    ): List<RoutineTaskUnitDto> {
+
+        val profile = Account(
+            id = "610440cca49e190b7a79c112",
+            socialType = SocialType.KAKAO,
+            nickname = "",
+            email = "",
+            profileImageUrl = "",
+            thumbnailImageUrl = "",
+            pushNotification = true
+        )
+
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+        val fromLocalDate: LocalDate = LocalDate.parse(fromDate, formatter).minusDays(1)
+        val toLocalDate: LocalDate = LocalDate.parse(toDate, formatter).plusDays(1)
+
+        val unitList = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateBetweenAndDelayedDateTimeIsNull(
+            profile.id, taskId, fromLocalDate.toDateString(), toLocalDate.toDateString()
+        )
+
+//        val unitList2 = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateBetweenAndDelayedDateTimeIsNull(
+//            profile.id, taskId, fromDate, toDate
+//        )
+
+        val dtoList = mutableListOf<RoutineTaskUnitDto>()
+
+        unitList.map {
+            val friends =
+                routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, it.localDate)
+                    .map { unit ->
+                        RoutineTaskFriendUnitDto(
+                            profileId = unit.profileId,
+                            completeCount = unit.completeCount,
+                            completedDateList = unit.completedDateList
+                        )
+                    }
             dtoList.add(it.toDto(friends))
         }
         return dtoList
