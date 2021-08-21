@@ -38,5 +38,5 @@ interface RoutineTaskUnitRepository : MongoRepository<RoutineTaskUnit, String> {
 
     fun findAllByUnitIdNotIn(unitIds: List<String>): List<RoutineTaskUnit>
 
-    fun findByTaskIdInAndDelayedDateTimeIsNull(taskIds: List<String>): MutableList<RoutineTaskUnit>
+    fun findByTaskCodeInAndDelayedDateTimeIsNull(taskIds: List<String>): MutableList<RoutineTaskUnit>
 }

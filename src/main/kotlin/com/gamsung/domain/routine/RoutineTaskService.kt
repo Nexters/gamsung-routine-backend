@@ -36,9 +36,9 @@ class RoutineTaskService(
 
         val routineUnits = routineTaskUnitRepository.findAllByProfileIdAndLocalDateBetweenAndDelayedDateTimeIsNull(profileId, startDate, endDate)
 
-        //초대가 되면 같은 task id를 가지게 됨 (다른 profile id)
+        //초대가 되면 같은 code를 가지게 됨 (다른 profile id)
         //내가 가지고 있는 모든 taskId를 바탕으로 친구들의 taskUnit까지 가져옴, 그리고 20210712:taskId 등으로 해서 같은 태스크 끼리 모음
-        val friendRoutineUnits = routineTaskUnitRepository.findByTaskIdInAndDelayedDateTimeIsNull(routineUnits.map { it.taskId })
+        val friendRoutineUnits = routineTaskUnitRepository.findByTaskCodeInAndDelayedDateTimeIsNull(routineUnits.map { it.taskId })
         //key 값에 따라 친구 task grouping 을 함
         val friendRoutinesUnitsByDateAndTaskId = friendRoutineUnits.groupBy { it.date + it.taskId }
 
@@ -82,6 +82,7 @@ class RoutineTaskService(
                             date = date,
                             localDate = currDate,
                             taskId = routineTask.id.toString(),
+                            taskCode = routineTask.code!!,
                             title = routineTask.title,
                             days = routineTask.days,
                             times = routineTask.times,
@@ -108,51 +109,9 @@ class RoutineTaskService(
     fun getAndSaveTodayRoutineUnits() {
         val routineTaskUnits = mutableListOf<RoutineTaskUnit>()
         val routineTasks = routineTaskRepository.findAll()
-        val today = LocalDate.now()
         loop@ for (routineTask in routineTasks) {
-
-            // 미루기를 통해 이미 해당 일정에 태스크 유닛이 있는지 확인
-//            val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDate(
-//                routineTask.profileId,
-//                routineTask.id!!,
-//                today
-//            )
-//            if (unit.size > 0) continue@loop
-
-//            routineTask.days.let {
-//                val daySet = it.toSet()
-//                if (daySet.contains(today.dayOfWeek.value) || routineTask.delayCount > 0) {
-//
-//                    // 수행 날짜도 아닌데 진입 했다면 delay된 유닛
-//                    val delayStatus = !daySet.contains(today.dayOfWeek.value)
-//                    if (delayStatus) {
-//                        val dto = routineTask.toDto()
-//                        dto.delayCount--
-//                        routineTaskRepository.save(dto.toEntity())
-//                    }
-//
-//                    val date = today.toDateString()
-//                    val unitId = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
-//                    val dailyTaskUnit = RoutineTaskUnit(
-//                        unitId = unitId,
-//                        profileId = routineTask.profileId,
-//                        date = date,
-//                        localDate = today,
-//                        taskId = routineTask.taskId!!,
-//                        title = routineTask.title,
-//                        days = routineTask.days,
-//                        times = routineTask.times,
-//                        completedDateList = mutableListOf(),
-//                        friendIds = arrayListOf(),
-//                        isDelayUnit = delayStatus,
-//                        delayedDateTime = null
-//                    )
-//                    routineTaskUnits.add(dailyTaskUnit)
-//                }
-//            }
             getTodayRoutineTaskUnit(routineTaskUnits, routineTask)
         }
-
 
         val routineTaskIds = routineTaskUnits.map { it.unitId }
         val notExistingRoutineUnits = routineTaskUnitRepository.findAllByUnitIdNotIn(routineTaskIds)
@@ -181,7 +140,8 @@ class RoutineTaskService(
                     profileId = routineTask.profileId,
                     date = date,
                     localDate = today,
-                    taskId = routineTask.taskId!!,
+                    taskId = routineTask.id!!,
+                    taskCode = routineTask.code!!,
                     title = routineTask.title,
                     days = routineTask.days,
                     times = routineTask.times,
@@ -217,7 +177,7 @@ class RoutineTaskService(
         if (task.isPresent) {
             val friendTask = RoutineTask(
                 id = null,
-                taskId = taskId,
+                code = task.get().code,
                 profileId = friendId,
                 title = task.get().title,
 //                timesOfWeek = task.get().timesOfWeek,
