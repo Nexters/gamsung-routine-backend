@@ -173,6 +173,17 @@ class RoutineTaskService(
 //        return currDate.year.toString() + month + day
 //    }
 
+    fun deleteById(taskId: String) {
+        val today = LocalDate.now()
+        val date = today.toDateString()
+        val task = routineTaskRepository.findById(taskId)
+        if (task.isPresent) {
+            val targetUnitId = date + ":" + task.get().profileId + ":" + task.get().id
+            routineTaskUnitRepository.deleteByUnitId(targetUnitId)
+            routineTaskRepository.deleteById(taskId)
+        }
+    }
+
     fun inviteFriendToTask(taskId: String, friendId: String): RoutineTask {
 
         val task = routineTaskRepository.findById(taskId)
@@ -198,5 +209,7 @@ class RoutineTaskService(
             throw Exception("Task not exist")
         }
     }
+
+
 
 }
