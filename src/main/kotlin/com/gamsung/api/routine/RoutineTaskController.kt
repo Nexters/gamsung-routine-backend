@@ -91,7 +91,7 @@ class RoutineTaskController(
 
     @DeleteMapping("/{taskId}")
     fun delete(@PathVariable taskId: String) {
-        routineTaskRepository.deleteById(taskId)
+        routineTaskService.deleteById(taskId)
     }
 
     @GetMapping("/invite/{taskId}/{friendId}")
