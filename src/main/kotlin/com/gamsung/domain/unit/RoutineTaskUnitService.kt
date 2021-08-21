@@ -114,16 +114,35 @@ class RoutineTaskUnitService(
         return routineTaskUnitRepository.save(unit)
     }
 
-    fun delayRoutineTaskUnit(id: String): String {
-        // 해당 unit이 등록된 날짜를 확인
-        val unit = routineTaskUnitRepository.findById(id).get()
+    fun delayRoutineTaskUnit(taskId: String, date: String): String {
+
+        val profile = Account(
+            id = "610440cca49e190b7a79c112",
+            socialType = SocialType.KAKAO,
+            nickname = "",
+            email = "",
+            profileImageUrl = "",
+            thumbnailImageUrl = "",
+            pushNotification = true
+        )
+
+//        val profile = AccountHolder.get()
+//        val unitId = "$date:${profile.id}:$taskId"
+//        val unit = routineTaskUnitRepository.findByUnitIdAndDelayedDateTimeIsNull(unitId).first()
+
+        println(">>>> " + profile.id)
+        println(">>>> " + taskId)
+        println(">>>> " + date)
+
+        val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateAndDelayedDateTimeIsNull(
+            profile.id, taskId, date
+        ).firstOrNull() ?: return "해당 태스크를 찾을 수 없습니다." // unit을 1회라도 수행하면 미루기 불가
+
+        if (unit.completedDateList.size > 0)
+            return "해당 태스크는 미룰 수 없습니다. (해당 Task 진행중)"
 
         // 해당 unit의 태스크
         val taskDto = routineTaskRepository.findById(unit.taskId).get().toDto()
-
-        // unit을 1회라도 수행하면 미루기 불가
-        if (unit.completedDateList.size > 0)
-            return "해당 태스크는 미룰 수 없습니다. (해당 Task 진행중)"
 
         // 일주일 매일 수행하는 task라면 바로 반환
         val planCount = unit.days?.size ?: WEEK_COUNT
@@ -132,15 +151,15 @@ class RoutineTaskUnitService(
         }
 
         // 해당 날짜의 주차를 확인
-        val date = unit.localDate
-        val dayOfWeek = date.dayOfWeek.value // 월(1)...일(7)
+        val unitDate = unit.localDate
+        val dayOfWeek = unitDate.dayOfWeek.value // 월(1)...일(7)
 
         // 해당 날짜 이후에 미룰 수 있는 날짜가 있는지 확인
         val pastUnitList = mutableListOf<RoutineTaskUnit>()
         for (i in 0 until dayOfWeek) {
             val addDays = (i + 1).toLong()
-            val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDateAndDelayedDateTimeIsNull(
-                unit.profileId, unit.taskId, date.plusDays(addDays)
+            val dayUnit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateAndDelayedDateTimeIsNull(
+                unit.profileId, unit.taskId, unitDate.plusDays(addDays).toDateString()
             ).firstOrNull()
             dayUnit?.let { pastUnitList.add(it) }
         }
