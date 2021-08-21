@@ -8,7 +8,7 @@ import com.gamsung.domain.routine.RoutineTask
  */
 data class RoutineTaskDto(
     val id: String?, // UUID
-    val taskId: String,
+    val taskId: String?,
     val profileId: String,
     val title: String,
     var notify: Boolean, // 알람 여부
@@ -35,10 +35,11 @@ fun RoutineTask.toDto() =
         delayCount = delayCount
     )
 
+
 fun RoutineTaskDto.toNewEntity() =
     RoutineTask(
         id = id,
-        taskId = taskId,
+        taskId = profileId + System.currentTimeMillis(),
         profileId = profileId,
         title = title,
         notify = notify,

@@ -14,6 +14,14 @@ class RoutineTaskService(
     private val routineTaskRepository: RoutineTaskRepository
 ) {
 
+    fun save(routineTaskDto: RoutineTaskDto): RoutineTask {
+        val routineTaskSaved = routineTaskRepository.save(routineTaskDto.toNewEntity())
+        val routineTaskUnits = mutableListOf<RoutineTaskUnit>()
+        getTodayRoutineTaskUnit(routineTaskUnits, routineTaskSaved)
+        routineTaskUnitRepository.saveAll(routineTaskUnits)
+        return routineTaskSaved
+    }
+
     fun getMonthlyRoutines(profileId: String, year: Int, month: Int): MonthlyRoutineHistoryDto {
         val lastMonth = Month.of(month).minus(1).value
         val startMonth = if (lastMonth == 0) 12 else lastMonth
@@ -111,39 +119,80 @@ class RoutineTaskService(
 //            )
 //            if (unit.size > 0) continue@loop
 
-            routineTask.days.let {
-                val daySet = it.toSet()
-                if (daySet.contains(today.dayOfWeek.value) || routineTask.delayCount > 0) {
+//            routineTask.days.let {
+//                val daySet = it.toSet()
+//                if (daySet.contains(today.dayOfWeek.value) || routineTask.delayCount > 0) {
+//
+//                    // 수행 날짜도 아닌데 진입 했다면 delay된 유닛
+//                    val delayStatus = !daySet.contains(today.dayOfWeek.value)
+//                    if (delayStatus) {
+//                        val dto = routineTask.toDto()
+//                        dto.delayCount--
+//                        routineTaskRepository.save(dto.toEntity())
+//                    }
+//
+//                    val date = today.toDateString()
+//                    val unitId = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
+//                    val dailyTaskUnit = RoutineTaskUnit(
+//                        unitId = unitId,
+//                        profileId = routineTask.profileId,
+//                        date = date,
+//                        localDate = today,
+//                        taskId = routineTask.taskId!!,
+//                        title = routineTask.title,
+//                        days = routineTask.days,
+//                        times = routineTask.times,
+//                        completedDateList = mutableListOf(),
+//                        friendIds = arrayListOf(),
+//                        isDelayUnit = delayStatus,
+//                        delayedDateTime = null
+//                    )
+//                    routineTaskUnits.add(dailyTaskUnit)
+//                }
+//            }
+            getTodayRoutineTaskUnit(routineTaskUnits, routineTask)
+        }
 
-                    // 수행 날짜도 아닌데 진입 했다면 delay된 유닛
-                    val delayStatus = !daySet.contains(today.dayOfWeek.value)
-                    if (delayStatus) {
-                        val dto = routineTask.toDto()
-                        dto.delayCount--
-                        routineTaskRepository.save(dto.toEntity())
-                    }
 
-                    val date = today.toDateString()
-                    val unitId = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
-                    val dailyTaskUnit = RoutineTaskUnit(
-                        unitId = unitId,
-                        profileId = routineTask.profileId,
-                        date = date,
-                        localDate = today,
-                        taskId = routineTask.taskId,
-                        title = routineTask.title,
-                        days = routineTask.days,
-                        times = routineTask.times,
-                        completedDateList = mutableListOf(),
-                        friendIds = arrayListOf(),
-                        isDelayUnit = delayStatus,
-                        delayedDateTime = null
-                    )
-                    routineTaskUnits.add(dailyTaskUnit)
+        val routineTaskIds = routineTaskUnits.map { it.unitId }
+        val notExistingRoutineUnits = routineTaskUnitRepository.findAllByUnitIdNotIn(routineTaskIds)
+        routineTaskUnitRepository.saveAll(notExistingRoutineUnits)
+    }
+
+    fun getTodayRoutineTaskUnit(routineTaskUnits: MutableList<RoutineTaskUnit>, routineTask: RoutineTask) {
+        val today = LocalDate.now()
+
+        routineTask.days.let {
+            val daySet = it.toSet()
+            if (daySet.contains(today.dayOfWeek.value) || routineTask.delayCount > 0) {
+
+                // 수행 날짜도 아닌데 진입 했다면 delay된 유닛
+                val delayStatus = !daySet.contains(today.dayOfWeek.value)
+                if (delayStatus) {
+                    val dto = routineTask.toDto()
+                    dto.delayCount--
+                    routineTaskRepository.save(dto.toEntity())
                 }
+
+                val date = today.toDateString()
+                val unitId = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
+                val dailyTaskUnit = RoutineTaskUnit(
+                    unitId = unitId,
+                    profileId = routineTask.profileId,
+                    date = date,
+                    localDate = today,
+                    taskId = routineTask.taskId!!,
+                    title = routineTask.title,
+                    days = routineTask.days,
+                    times = routineTask.times,
+                    completedDateList = mutableListOf(),
+                    friendIds = arrayListOf(),
+                    isDelayUnit = delayStatus,
+                    delayedDateTime = null
+                )
+                routineTaskUnits.add(dailyTaskUnit)
             }
         }
-        routineTaskUnitRepository.saveAll(routineTaskUnits)
     }
 
     // 단일 task 조회를 위한 함수

@@ -4,6 +4,7 @@ import com.gamsung.api.BusinessException
 import com.gamsung.api.dto.*
 import com.gamsung.domain.routine.RoutineTaskRepository
 import com.gamsung.domain.routine.RoutineTaskService
+import com.google.api.client.util.DateTime
 import io.swagger.annotations.ApiOperation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -55,7 +56,7 @@ class RoutineTaskController(
         }
 
         return ResponseDto.ok(
-            routineTaskRepository.save(routineTaskDto.toNewEntity()).toDto()
+            routineTaskService.save(routineTaskDto).toDto()
         )
     }
 
