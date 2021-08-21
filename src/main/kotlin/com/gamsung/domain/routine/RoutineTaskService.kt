@@ -130,7 +130,7 @@ class RoutineTaskService(
                         profileId = routineTask.profileId,
                         date = date,
                         localDate = today,
-                        taskId = routineTask.taskId,
+                        taskId = routineTask.taskId!!,
                         title = routineTask.title,
                         days = routineTask.days,
                         times = routineTask.times,
@@ -143,7 +143,11 @@ class RoutineTaskService(
                 }
             }
         }
-        routineTaskUnitRepository.saveAll(routineTaskUnits)
+
+
+        val routineTaskIds = routineTaskUnits.map { it.unitId }
+        val notExistingRoutineUnits = routineTaskUnitRepository.findAllByUnitIdNotIn(routineTaskIds)
+        routineTaskUnitRepository.saveAll(notExistingRoutineUnits)
     }
 
     // 단일 task 조회를 위한 함수
