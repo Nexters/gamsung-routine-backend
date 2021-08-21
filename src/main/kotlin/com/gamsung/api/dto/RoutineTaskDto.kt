@@ -23,7 +23,6 @@ data class RoutineTaskDto(
 fun RoutineTask.toDto() =
     RoutineTaskDto(
         id = id,
-        taskId = taskId,
         profileId = profileId,
         title = title,
         notify = notify,
@@ -54,7 +53,6 @@ fun RoutineTaskDto.toNewEntity() =
 fun RoutineTaskDto.toEntity() =
     RoutineTask(
         id = id,
-        taskId = taskId,
         profileId = profileId,
         title = title,
         notify = notify,

@@ -102,13 +102,4 @@ class RoutineTaskController(
         return routineTaskService.inviteFriendToTask(taskId, friendId).toDto()
     }
 
-    @DeleteMapping("/leave/{taskId}/{friendId}")
-    fun leaveFriend(
-        @PathVariable taskId: String,
-        @PathVariable friendId: String
-    ) {
-        routineTaskService.leaveFriendToTask(taskId, friendId)
-    }
-
-
 }

@@ -170,8 +170,7 @@ class RoutineTaskService(
         val task = routineTaskRepository.findById(taskId)
         if (task.isPresent) {
             val friendTask = RoutineTask(
-                id = null,
-                taskId = task.get().id!!,
+                id = task.get().id,
                 profileId = friendId,
                 title = task.get().title,
 //                timesOfWeek = task.get().timesOfWeek,
@@ -186,16 +185,6 @@ class RoutineTaskService(
             )
 
             return routineTaskRepository.save(friendTask)
-        } else {
-            throw Exception("Task not exist")
-        }
-    }
-
-    fun leaveFriendToTask(taskId: String, friendId: String) {
-
-        val task = routineTaskRepository.findByTaskIdAndProfileId(taskId, friendId)
-        if (task.isPresent) {
-            return routineTaskRepository.delete(task.get())
         } else {
             throw Exception("Task not exist")
         }
