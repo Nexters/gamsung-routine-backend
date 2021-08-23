@@ -94,7 +94,7 @@ class RoutineTaskController(
         routineTaskService.deleteById(taskId)
     }
 
-    @GetMapping("/invite/{taskId}/{friendId}")
+    @PostMapping("/invite/{taskId}/{friendId}")
     fun inviteFriend(
         @PathVariable taskId: String,
         @PathVariable friendId: String

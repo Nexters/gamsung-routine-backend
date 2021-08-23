@@ -1,9 +1,11 @@
 package com.gamsung.domain.routine
 
 import com.gamsung.api.dto.*
+import com.gamsung.domain.auth.repository.UserRepository
 import com.gamsung.domain.unit.RoutineTaskUnit
 import com.gamsung.domain.unit.RoutineTaskUnitRepository
 import com.gamsung.infra.toDateString
+import feign.FeignException
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.Month
@@ -11,7 +13,8 @@ import java.time.Month
 @Service
 class RoutineTaskService(
     private val routineTaskUnitRepository: RoutineTaskUnitRepository,
-    private val routineTaskRepository: RoutineTaskRepository
+    private val routineTaskRepository: RoutineTaskRepository,
+    private val userRepository: UserRepository
 ) {
 
     fun save(routineTaskDto: RoutineTaskDto): RoutineTask {
@@ -38,24 +41,34 @@ class RoutineTaskService(
 
         //초대가 되면 같은 code를 가지게 됨 (다른 profile id)
         //내가 가지고 있는 모든 taskId를 바탕으로 친구들의 taskUnit까지 가져옴, 그리고 20210712:taskId 등으로 해서 같은 태스크 끼리 모음
-        val friendRoutineUnits = routineTaskUnitRepository.findByTaskCodeInAndDelayedDateTimeIsNull(routineUnits.map { it.taskId })
+        val friendRoutineUnits = routineTaskUnitRepository.findByTaskCodeIn(routineUnits.map { it.taskCode })
         //key 값에 따라 친구 task grouping 을 함
-        val friendRoutinesUnitsByDateAndTaskId = friendRoutineUnits.groupBy { it.date + it.taskId }
+        val friendRoutinesUnitsByDateAndTaskId = friendRoutineUnits.groupBy { it.date + it.taskCode }
 
         val routineUnitDtoResult = mutableListOf<RoutineTaskUnitDto>()
+
+
+        val usersMap = userRepository.findByIdIn(friendRoutineUnits.map { it.profileId }.distinct()).associateBy { it.id }
+
         routineUnits.forEach { dailyRoutine ->
-            val key = dailyRoutine.date + dailyRoutine.taskId
+            val key = dailyRoutine.date + dailyRoutine.taskCode
             //만약 같은 key가 존재 하면 친구 task를 dto friends 필드에 입력
             if (friendRoutinesUnitsByDateAndTaskId.containsKey(key)) {
                 val friendRoutines = friendRoutinesUnitsByDateAndTaskId[key]!!
                     .map {
-                        RoutineTaskFriendUnitDto(
-                            profileId = it.profileId,
-                            completeCount = it.completeCount,
-                            completedDateList = it.completedDateList
-                        )
+                        usersMap[it.profileId]?.let { user ->
+                            RoutineTaskFriendUnitDto(
+                                taskId = it.taskId,
+                                profileId = it.profileId,
+                                name = user.nickname,
+                                profileImageUrl = user.profileImageUrl.orEmpty(),
+                                thumbnailImageUrl = user.thumbnailImageUrl.orEmpty(),
+                                completeCount = it.completeCount,
+                                completedDateList = it.completedDateList
+                            )
+                        }
                     }
-                val newUnitDto = dailyRoutine.toDto(friendRoutines)
+                val newUnitDto = dailyRoutine.toDto(friendRoutines as List<RoutineTaskFriendUnitDto>)
                 routineUnitDtoResult.add(newUnitDto)
             } else {
                 routineUnitDtoResult.add(dailyRoutine.toDto())
@@ -107,6 +120,7 @@ class RoutineTaskService(
             dailyRoutines = routineUnitDtoResult.groupBy { it.date ?: "" })
 
     }
+
 
     fun getAndSaveTodayRoutineUnits() {
         val routineTaskUnits = mutableListOf<RoutineTaskUnit>()
@@ -160,7 +174,26 @@ class RoutineTaskService(
 
     // 단일 task 조회를 위한 함수
     fun getRoutineTask(id: String): RoutineTaskDto {
-        return routineTaskRepository.findById(id).get().toDto()
+        val routineTask = routineTaskRepository.findById(id)
+        if (routineTask.isPresent) {
+            val friendRoutineTasks = routineTaskRepository.findByCode(routineTask.get().code!!)
+            val usersMap = userRepository.findByIdIn(friendRoutineTasks.map { it.profileId }).associateBy { it.id }
+            val friends = friendRoutineTasks.map {
+                usersMap[it.profileId]?.let { user ->
+                    RoutineTaskFriendDto(
+                        taskId = it.id!!,
+                        profileId = it.profileId,
+                        name = user.nickname,
+                        profileImageUrl = user.profileImageUrl.orEmpty(),
+                        thumbnailImageUrl = user.thumbnailImageUrl.orEmpty()
+                    )
+                }
+            }.toList()
+
+            return routineTask.get().toDto(friends = friends as List<RoutineTaskFriendDto>)
+
+        }
+        throw IllegalArgumentException("task not found.")
     }
 
 //    private fun generateDate(currDate: LocalDate) : String {
@@ -187,7 +220,13 @@ class RoutineTaskService(
     fun inviteFriendToTask(taskId: String, friendId: String): RoutineTask {
 
         val task = routineTaskRepository.findById(taskId)
+
         if (task.isPresent) {
+            val friend = routineTaskRepository.findByCodeAndProfileId(task.get().code!!, friendId)
+            if (friend.isPresent) {
+                throw Exception("Already invited friend");
+            }
+
             val friendTask = RoutineTask(
                 id = null,
                 code = task.get().code,
@@ -204,7 +243,11 @@ class RoutineTaskService(
                 delayCount = task.get().delayCount
             )
 
-            return routineTaskRepository.save(friendTask)
+            val routineTaskSaved = routineTaskRepository.save(friendTask)
+            val routineTaskUnits = mutableListOf<RoutineTaskUnit>()
+            getTodayRoutineTaskUnit(routineTaskUnits, routineTaskSaved)
+            routineTaskUnitRepository.saveAll(routineTaskUnits)
+            return routineTaskSaved
         } else {
             throw Exception("Task not exist")
         }

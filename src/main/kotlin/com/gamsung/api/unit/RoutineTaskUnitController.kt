@@ -5,9 +5,7 @@ import com.gamsung.api.dto.RoutineTaskUnitDto
 import com.gamsung.api.dto.toDto
 import com.gamsung.domain.unit.RoutineTaskUnitService
 import io.swagger.annotations.ApiOperation
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/routine/unit")
@@ -36,33 +34,34 @@ class RoutineTaskUnitController(
         )
     }
 
-    @ApiOperation(value = "특정일 특정 유저 Task unit 조회")
-    @GetMapping("/day/{profileId}")
-    fun searchUnitDay(
-        @PathVariable profileId: String,
-        @RequestParam
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        date: LocalDate,
-    ): ResponseDto<List<RoutineTaskUnitDto>> {
-        return ResponseDto.ok(
-            routineTaskUnitService.searchRoutineTaskUnitDay(profileId, date)
-        )
-    }
+//    @ApiOperation(value = "특정일 Task unit 조회")
+//    @GetMapping("/day/{profileId}")
+//    fun searchUnitDay(
+//        @PathVariable profileId: String,
+//        @RequestParam
+//        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+//        date: LocalDate,
+//    ): ResponseDto<List<RoutineTaskUnitDto>> {
+//        return ResponseDto.ok(
+//            routineTaskUnitService.searchRoutineTaskUnitDay(profileId, date)
+//        )
+//    }
 
     // 당장 필요가 없어서 일단 Hide
 //    @ApiOperation(value = "특정기간 Task unit 조회")
-//    @GetMapping("/period/{taskId}")
+//    @GetMapping("/day/{profileId}/{taskId}")
 //    fun searchUnitPeriod(
+//        @PathVariable profileId: String,
 //        @PathVariable taskId: String,
 //        @RequestParam
 //        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-//        fromDate: String,
+//        fromDate: LocalDate,
 //        @RequestParam
 //        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-//        toDate: String,
+//        toDate: LocalDate,
 //        ): ResponseDto<List<RoutineTaskUnitDto>> {
 //        return ResponseDto.ok(
-//            routineTaskUnitService.searchRoutineTaskUnitPeriod(taskId, fromDate, toDate)
+//            routineTaskUnitService.searchRoutineTaskUnitPeriod(profileId, taskId, fromDate, toDate)
 //        )
 //    }
 
