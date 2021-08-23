@@ -36,7 +36,7 @@ class RoutineTaskUnitController(
         )
     }
 
-    @ApiOperation(value = "특정일 Task unit 조회")
+    @ApiOperation(value = "특정일 특정 유저 Task unit 조회")
     @GetMapping("/day/{profileId}")
     fun searchUnitDay(
         @PathVariable profileId: String,
@@ -50,7 +50,7 @@ class RoutineTaskUnitController(
     }
 
     @ApiOperation(value = "특정기간 Task unit 조회")
-    @GetMapping("/day/{profileId}/{taskId}")
+    @GetMapping("/period/{taskId}")
     fun searchUnitPeriod(
         @PathVariable taskId: String,
         @RequestParam
@@ -75,9 +75,9 @@ class RoutineTaskUnitController(
     }
 
     @ApiOperation(value = "단일 Task unit 미루기")
-    @PatchMapping("/delay/{id}")
-    fun delay(@PathVariable id: String): ResponseDto<String> {
-        val message = routineTaskUnitService.delayRoutineTaskUnit(id)
+    @PatchMapping("/delay/{taskId}")
+    fun delay(@PathVariable taskId: String, @RequestParam date: String): ResponseDto<String> {
+        val message = routineTaskUnitService.delayRoutineTaskUnit(taskId, date)
         return ResponseDto.ok(message)
     }
 

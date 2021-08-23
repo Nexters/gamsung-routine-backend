@@ -69,7 +69,7 @@ data class RoutineTaskUnit(
             times: List<String>?,
             friendIds: List<String>?,
 
-        ): RoutineTaskUnit {
+            ): RoutineTaskUnit {
             return RoutineTaskUnit(
                 unitId = unitId,
                 profileId = profileId,
