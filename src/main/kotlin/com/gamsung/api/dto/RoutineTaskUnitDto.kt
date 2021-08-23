@@ -8,8 +8,8 @@ import java.time.LocalDateTime
 data class RoutineTaskUnitDto(
     val id: String?,
     val profileId: String,
-    val date: String,
-    val localDate: LocalDate,
+    val date: String?,
+    val localDate: LocalDate?,
     val taskId: String,
     val taskCode: String,
     val title: String,
