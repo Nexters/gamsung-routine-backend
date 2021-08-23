@@ -43,15 +43,15 @@ class RoutineTaskService(
         //내가 가지고 있는 모든 taskId를 바탕으로 친구들의 taskUnit까지 가져옴, 그리고 20210712:taskId 등으로 해서 같은 태스크 끼리 모음
         val friendRoutineUnits = routineTaskUnitRepository.findByTaskCodeIn(routineUnits.map { it.taskCode })
         //key 값에 따라 친구 task grouping 을 함
-        val friendRoutinesUnitsByDateAndTaskId = friendRoutineUnits.groupBy { it.date + it.taskId }
+        val friendRoutinesUnitsByDateAndTaskId = friendRoutineUnits.groupBy { it.date + it.taskCode }
 
         val routineUnitDtoResult = mutableListOf<RoutineTaskUnitDto>()
 
 
-        val usersMap = userRepository.findByIdIn(routineUnits.map { it.profileId }.distinct()).associateBy { it.id }
+        val usersMap = userRepository.findByIdIn(friendRoutineUnits.map { it.profileId }.distinct()).associateBy { it.id }
 
         routineUnits.forEach { dailyRoutine ->
-            val key = dailyRoutine.date + dailyRoutine.taskId
+            val key = dailyRoutine.date + dailyRoutine.taskCode
             //만약 같은 key가 존재 하면 친구 task를 dto friends 필드에 입력
             if (friendRoutinesUnitsByDateAndTaskId.containsKey(key)) {
                 val friendRoutines = friendRoutinesUnitsByDateAndTaskId[key]!!
