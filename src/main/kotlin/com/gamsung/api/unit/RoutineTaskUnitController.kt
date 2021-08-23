@@ -49,21 +49,22 @@ class RoutineTaskUnitController(
         )
     }
 
-    @ApiOperation(value = "특정기간 Task unit 조회")
-    @GetMapping("/period/{taskId}")
-    fun searchUnitPeriod(
-        @PathVariable taskId: String,
-        @RequestParam
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        fromDate: String,
-        @RequestParam
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        toDate: String,
-        ): ResponseDto<List<RoutineTaskUnitDto>> {
-        return ResponseDto.ok(
-            routineTaskUnitService.searchRoutineTaskUnitPeriod(taskId, fromDate, toDate)
-        )
-    }
+    // 당장 필요가 없어서 일단 Hide
+//    @ApiOperation(value = "특정기간 Task unit 조회")
+//    @GetMapping("/period/{taskId}")
+//    fun searchUnitPeriod(
+//        @PathVariable taskId: String,
+//        @RequestParam
+//        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+//        fromDate: String,
+//        @RequestParam
+//        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+//        toDate: String,
+//        ): ResponseDto<List<RoutineTaskUnitDto>> {
+//        return ResponseDto.ok(
+//            routineTaskUnitService.searchRoutineTaskUnitPeriod(taskId, fromDate, toDate)
+//        )
+//    }
 
     @ApiOperation(value = "단일 Task unit 수정")
     @PutMapping("")

@@ -63,6 +63,7 @@ class RoutineTaskUnitService(
         return dtoList
     }
 
+    // 지우지 말 것! 확실히 안쓴다는 프론트 의견 있을 때 삭제
     fun searchRoutineTaskUnitPeriod(
         taskId: String,
         fromDate: String,
@@ -87,10 +88,6 @@ class RoutineTaskUnitService(
         val unitList = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateBetweenAndDelayedDateTimeIsNull(
             profile.id, taskId, fromLocalDate.toDateString(), toLocalDate.toDateString()
         )
-
-//        val unitList2 = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateBetweenAndDelayedDateTimeIsNull(
-//            profile.id, taskId, fromDate, toDate
-//        )
 
         val dtoList = mutableListOf<RoutineTaskUnitDto>()
 
