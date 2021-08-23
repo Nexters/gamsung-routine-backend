@@ -5,9 +5,7 @@ import com.gamsung.api.dto.RoutineTaskUnitDto
 import com.gamsung.api.dto.toDto
 import com.gamsung.domain.unit.RoutineTaskUnitService
 import io.swagger.annotations.ApiOperation
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/routine/unit")
@@ -49,6 +47,7 @@ class RoutineTaskUnitController(
 //        )
 //    }
 
+    // 당장 필요가 없어서 일단 Hide
 //    @ApiOperation(value = "특정기간 Task unit 조회")
 //    @GetMapping("/day/{profileId}/{taskId}")
 //    fun searchUnitPeriod(
@@ -66,7 +65,6 @@ class RoutineTaskUnitController(
 //        )
 //    }
 
-
     @ApiOperation(value = "단일 Task unit 수정")
     @PutMapping("")
     fun update(@RequestBody routineTaskUnitDto: RoutineTaskUnitDto): ResponseDto<String> {
@@ -78,8 +76,8 @@ class RoutineTaskUnitController(
 
     @ApiOperation(value = "단일 Task unit 미루기")
     @PatchMapping("/delay/{taskId}")
-    fun delay(@PathVariable taskId: String, @RequestParam date: String): ResponseDto<String> {
-        val message = routineTaskUnitService.delayRoutineTaskUnit(taskId, date)
+    fun delay(@PathVariable taskId: String): ResponseDto<String> {
+        val message = routineTaskUnitService.delayRoutineTaskUnit(taskId)
         return ResponseDto.ok(message)
     }
 
