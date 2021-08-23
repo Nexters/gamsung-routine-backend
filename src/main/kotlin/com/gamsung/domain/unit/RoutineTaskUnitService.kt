@@ -41,47 +41,49 @@ class RoutineTaskUnitService(
         return routineTaskUnitRepository.findById(unitId).get()
     }
 
-    fun searchRoutineTaskUnitDay(profileId: String, date: LocalDate): List<RoutineTaskUnitDto> {
-        val unitList = routineTaskUnitRepository.findAllByProfileIdAndLocalDateAndDelayedDateTimeIsNull(profileId, date)
-        val dtoList = mutableListOf<RoutineTaskUnitDto>()
+//    fun searchRoutineTaskUnitDay(profileId: String, date: LocalDate): List<RoutineTaskUnitDto> {
+//        val unitList = routineTaskUnitRepository.findAllByProfileIdAndLocalDateAndDelayedDateTimeIsNull(profileId, date)
+//        val dtoList = mutableListOf<RoutineTaskUnitDto>()
+//
+//        unitList.map {
+//            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, date).map { unit ->
+//                RoutineTaskFriendUnitDto(
+//                    profileId = unit.profileId,
+//                    completeCount = unit.completeCount,
+//                    completedDateList = unit.completedDateList
+//                )
+//            }
+//            dtoList.add(it.toDto(friends))
+//        }
+//        }
+//        }
+//        return dtoList
+//    }
 
-        unitList.map {
-            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, date).map { unit ->
-                RoutineTaskFriendUnitDto(
-                    profileId = unit.profileId,
-                    completeCount = unit.completeCount,
-                    completedDateList = unit.completedDateList
-                )
-            }
-            dtoList.add(it.toDto(friends))
-        }
-        return dtoList
-    }
-
-    fun searchRoutineTaskUnitPeriod(
-        profileId: String,
-        taskId: String,
-        fromDate: LocalDate,
-        toDate: LocalDate
-    ): List<RoutineTaskUnitDto> {
-        val unitList = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDateBetweenAndDelayedDateTimeIsNull(
-            profileId, taskId, fromDate, toDate
-        )
-        val dtoList = mutableListOf<RoutineTaskUnitDto>()
-
-        unitList.map {
-            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, it.localDate)
-                .map { unit ->
-                    RoutineTaskFriendUnitDto(
-                        profileId = unit.profileId,
-                        completeCount = unit.completeCount,
-                        completedDateList = unit.completedDateList
-                    )
-                }
-            dtoList.add(it.toDto(friends))
-        }
-        return dtoList
-    }
+//    fun searchRoutineTaskUnitPeriod(
+//        profileId: String,
+//        taskId: String,
+//        fromDate: LocalDate,
+//        toDate: LocalDate
+//    ): List<RoutineTaskUnitDto> {
+//        val unitList = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndLocalDateBetweenAndDelayedDateTimeIsNull(
+//            profileId, taskId, fromDate, toDate
+//        )
+//        val dtoList = mutableListOf<RoutineTaskUnitDto>()
+//
+//        unitList.map {
+//            val friends = routineTaskUnitRepository.findAllByTaskIdAndLocalDateAndDelayedDateTimeIsNull(it.taskId, it.localDate)
+//                .map { unit ->
+//                    RoutineTaskFriendUnitDto(
+//                        profileId = unit.profileId,
+//                        completeCount = unit.completeCount,
+//                        completedDateList = unit.completedDateList
+//                    )
+//                }
+//            dtoList.add(it.toDto(friends))
+//        }
+//        return dtoList
+//    }
 
     fun updateRoutineTaskUnit(routineTaskUnitDto: RoutineTaskUnitDto): RoutineTaskUnit {
         val unit = routineTaskUnitRepository.findById(routineTaskUnitDto.id ?: "").get()
