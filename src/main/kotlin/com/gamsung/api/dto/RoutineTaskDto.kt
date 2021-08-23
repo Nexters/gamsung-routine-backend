@@ -18,9 +18,12 @@ data class RoutineTaskDto(
     val templateId: String?, // UUID
     val order: Int, // 나열 순서
     var delayCount: Int, // 미루기 한 횟수, init = 0
+    val friends: List<RoutineTaskFriendDto>?,
+
+//    var friends: List<>
 )
 
-fun RoutineTask.toDto() =
+fun RoutineTask.toDto(friends: List<RoutineTaskFriendDto>? = null) =
     RoutineTaskDto(
         id = id,
         code = code,
@@ -32,7 +35,8 @@ fun RoutineTask.toDto() =
         category = category,
         templateId = templateId,
         order = order,
-        delayCount = delayCount
+        delayCount = delayCount,
+        friends = friends
     )
 
 
@@ -48,7 +52,7 @@ fun RoutineTaskDto.toNewEntity() =
         category = category ?: "",
         templateId = templateId ?: "",
         order = order,
-        delayCount = 0
+        delayCount = 0,
     )
 
 fun RoutineTaskDto.toEntity() =
