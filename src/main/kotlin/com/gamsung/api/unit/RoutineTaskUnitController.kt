@@ -77,8 +77,8 @@ class RoutineTaskUnitController(
 
     @ApiOperation(value = "단일 Task unit 미루기")
     @PatchMapping("/delay/{taskId}")
-    fun delay(@PathVariable taskId: String, @RequestParam date: String): ResponseDto<String> {
-        val message = routineTaskUnitService.delayRoutineTaskUnit(taskId, date)
+    fun delay(@PathVariable taskId: String): ResponseDto<String> {
+        val message = routineTaskUnitService.delayRoutineTaskUnit(taskId)
         return ResponseDto.ok(message)
     }
 
