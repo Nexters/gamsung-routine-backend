@@ -70,7 +70,7 @@ class RoutineTaskUnitService(
     ): List<RoutineTaskUnitDto> {
 
 //        val profile = Account(
-//            id = "610440cca49e190b7a79c112",
+//            id = "6106e7389ae3536a58c23615",
 //            socialType = SocialType.KAKAO,
 //            nickname = "",
 //            email = "",
@@ -130,10 +130,6 @@ class RoutineTaskUnitService(
 //        val unitId = "$date:${profile.id}:$taskId"
 //        val unit = routineTaskUnitRepository.findByUnitIdAndDelayedDateTimeIsNull(unitId).first()
 
-        println(">>>> " + profile.id)
-        println(">>>> " + taskId)
-        println(">>>> " + date)
-
         val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateAndDelayedDateTimeIsNull(
             profile.id, taskId, date
         ).firstOrNull() ?: return "해당 태스크를 찾을 수 없습니다." // unit을 1회라도 수행하면 미루기 불가
@@ -167,6 +163,8 @@ class RoutineTaskUnitService(
         val remainDays = WEEK_COUNT - dayOfWeek
         // 남은 unit (오늘 Unit 포함) : 계획된 유닛 - 이미 지나간 유닛
         val remainUnitCount = planCount - pastUnitList.size
+
+        // todo 미루지 않고 지나간 유닛을 센다
 
         if (remainDays < remainUnitCount) {
             return "해당 태스크는 미룰 수 없습니다. (여유 일정 없음)"
