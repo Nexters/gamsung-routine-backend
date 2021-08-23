@@ -41,7 +41,7 @@ class RoutineTaskService(
 
         //초대가 되면 같은 code를 가지게 됨 (다른 profile id)
         //내가 가지고 있는 모든 taskId를 바탕으로 친구들의 taskUnit까지 가져옴, 그리고 20210712:taskId 등으로 해서 같은 태스크 끼리 모음
-        val friendRoutineUnits = routineTaskUnitRepository.findByTaskCodeInAndDelayedDateTimeIsNull(routineUnits.map { it.taskId })
+        val friendRoutineUnits = routineTaskUnitRepository.findByTaskCodeIn(routineUnits.map { it.taskCode })
         //key 값에 따라 친구 task grouping 을 함
         val friendRoutinesUnitsByDateAndTaskId = friendRoutineUnits.groupBy { it.date + it.taskId }
 
