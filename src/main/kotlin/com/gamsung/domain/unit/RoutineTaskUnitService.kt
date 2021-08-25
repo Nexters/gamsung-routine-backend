@@ -158,31 +158,34 @@ class RoutineTaskUnitService(
             return Pair(DELAY_NOT_AVAILABLE, "해당 태스크는 미룰 수 없습니다. (여유 일정 없음)")
         }
 
-        // Unit delay 처리
-        unit.delayedDateTime = nowDateTime
-        routineTaskUnitRepository.save(unit)
+        var delayDay: LocalDateTime? = null
+        if (status == DELAY_STATUS_DELAY) {
+            // Unit delay 처리
+            unit.delayedDateTime = nowDateTime
+            routineTaskUnitRepository.save(unit)
 
-        val noPlanDays = mutableListOf<Int>()
-        var tempDelayCount = taskDto.delayCount
-        for (i in dayOfWeek + 1..WEEK_COUNT) {
-            if (remainUnits?.contains(i) == false) {
-                if (tempDelayCount > 0) {
-                    tempDelayCount--
-                } else {
-                    noPlanDays.add(i)
+            val noPlanDays = mutableListOf<Int>()
+            var tempDelayCount = taskDto.delayCount
+            for (i in dayOfWeek + 1..WEEK_COUNT) {
+                if (remainUnits?.contains(i) == false) {
+                    if (tempDelayCount > 0) {
+                        tempDelayCount--
+                    } else {
+                        noPlanDays.add(i)
+                    }
                 }
             }
+
+            val delayAddNumber = noPlanDays[0] - dayOfWeek
+            delayDay = nowDateTime.plusDays(delayAddNumber.toLong())
+
+            // 태스크 delay count up
+            taskDto.delayCount++
+            routineTaskRepository.save(taskDto.toEntity())
         }
 
-        val delayAddNumber = noPlanDays[0] - dayOfWeek
-        val delayDay = nowDateTime.plusDays(delayAddNumber.toLong())
-
-        // 태스크 delay count up
-        taskDto.delayCount++
-        routineTaskRepository.save(taskDto.toEntity())
-
 //        return "(๑>ᴗ<๑) 해당 태스크를 미뤘습니다."
-        return Pair(DELAY_AVAILABLE, "해당 태스크를 ${delayDay.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN)}로 미뤘습니다.")
+        return Pair(DELAY_AVAILABLE, "해당 태스크를 ${delayDay?.dayOfWeek?.getDisplayName(TextStyle.FULL, Locale.KOREAN)}로 미뤘습니다.")
     }
 
     fun completeRoutineTaskUnit(taskId: String, date: String): Pair<RoutineTaskUnit, String> {
