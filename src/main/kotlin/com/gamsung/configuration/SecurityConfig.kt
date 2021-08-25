@@ -82,6 +82,7 @@ class SecurityConfig(
         web.ignoring()
             .antMatchers("/docs/**")
             .antMatchers("/.well-known/**")
+            .antMatchers("/assets/**")
             .antMatchers("/swagger-ui.html")
     }
 
