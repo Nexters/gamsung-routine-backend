@@ -20,6 +20,12 @@ class RoutineTaskUnitService(
     private val routineTaskUnitRepository: RoutineTaskUnitRepository,
     private val routineTaskRepository: RoutineTaskRepository
 ) {
+    private val DELAY_STATUS_CHECK = 1
+    private val DELAY_STATUS_DELAY = 2
+
+    private val DELAY_AVAILABLE = true
+    private val DELAY_NOT_AVAILABLE = false
+
     private val WEEK_COUNT = 7
 
     fun createRoutineTaskUnit(routineTaskUnitDto: RoutineTaskUnitDto): RoutineTaskUnit {
@@ -96,7 +102,7 @@ class RoutineTaskUnitService(
         return routineTaskUnitRepository.save(unit)
     }
 
-    fun delayRoutineTaskUnit(taskId: String): String {
+    fun delayRoutineTaskUnit(taskId: String, status: Int): Pair<Boolean, String> {
 
         val nowDateTime = LocalDateTime.now()
         val profile = AccountHolder.get()
@@ -113,10 +119,10 @@ class RoutineTaskUnitService(
         val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
         val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateAndDelayedDateTimeIsNull(
             profile.id, taskId, nowDateTime.format(formatter)
-        ).firstOrNull() ?: return "해당 태스크를 찾을 수 없습니다." // unit을 1회라도 수행하면 미루기 불가
+        ).firstOrNull() ?: return Pair(DELAY_NOT_AVAILABLE, "해당 태스크를 찾을 수 없습니다. (해당 Task 없음)") // unit을 1회라도 수행하면 미루기 불가
 
         if (unit.completedDateList.size > 0)
-            return "해당 태스크는 미룰 수 없습니다. (해당 Task 진행중)"
+            return Pair(DELAY_NOT_AVAILABLE, "해당 태스크는 미룰 수 없습니다. (해당 Task 진행중)")
 
         // 해당 unit의 태스크
         val taskDto = routineTaskRepository.findById(unit.taskId).get().toDto()
@@ -124,7 +130,7 @@ class RoutineTaskUnitService(
         // 일주일 매일 수행하는 task라면 바로 반환
         val planCount = unit.days?.size ?: WEEK_COUNT
         if (planCount > 6) {
-            return "해당 태스크는 미룰 수 없습니다. (매일 수행)"
+            return Pair(DELAY_NOT_AVAILABLE, "해당 태스크는 미룰 수 없습니다. (매일 수행)")
         }
 
         // 해당 날짜의 주차를 확인
@@ -149,7 +155,7 @@ class RoutineTaskUnitService(
         val remainUnitCount = remainUnits?.size ?: 0
 
         if (remainDays - remainUnitCount - taskDto.delayCount <= 0) {
-            return "해당 태스크는 미룰 수 없습니다. (여유 일정 없음)"
+            return Pair(DELAY_NOT_AVAILABLE, "해당 태스크는 미룰 수 없습니다. (여유 일정 없음)")
         }
 
         // Unit delay 처리
@@ -176,7 +182,7 @@ class RoutineTaskUnitService(
         routineTaskRepository.save(taskDto.toEntity())
 
 //        return "(๑>ᴗ<๑) 해당 태스크를 미뤘습니다."
-        return "해당 태스크를 ${delayDay.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN)}로 미뤘습니다."
+        return Pair(DELAY_AVAILABLE, "해당 태스크를 ${delayDay.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN)}로 미뤘습니다.")
     }
 
     fun completeRoutineTaskUnit(taskId: String, date: String): Pair<RoutineTaskUnit, String> {
