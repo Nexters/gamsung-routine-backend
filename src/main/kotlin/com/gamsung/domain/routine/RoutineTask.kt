@@ -18,3 +18,8 @@ data class RoutineTask(
     var order: Int, // 나열 순서
     var delayCount: Int // 미루기 한 횟수, init = 0
 )
+{
+    fun getUnitId(today: String) : String {
+        return "$today:$profileId:$id"
+    }
+}
