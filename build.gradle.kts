@@ -62,6 +62,9 @@ dependencies {
     implementation("com.google.auth:google-auth-library-oauth2-http:1.0.0")
     implementation("com.google.http-client:google-http-client-jackson2:1.39.2")
 
+    // Firebase
+    implementation ("com.google.firebase:firebase-admin:8.0.0")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "junit", module = "junit")
     }
