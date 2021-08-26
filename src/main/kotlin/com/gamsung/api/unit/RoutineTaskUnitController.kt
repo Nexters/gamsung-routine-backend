@@ -77,17 +77,15 @@ class RoutineTaskUnitController(
     @ApiOperation(value = "단일 Task unit 미루기")
     @PatchMapping("/delay/{taskId}")
     fun delay(@PathVariable taskId: String): ResponseDto<String> {
-        val message = routineTaskUnitService.delayRoutineTaskUnit(taskId, 2)
-        return if (message.first) ResponseDto.ok(message.second)
-        else ResponseDto.error(message.second)
+        val message = routineTaskUnitService.delayRoutineTaskUnit(taskId, 2).second
+        return ResponseDto.ok(message)
     }
 
     @ApiOperation(value = "단일 Task unit 미루기 체크")
-    @GetMapping("/delay/check/{taskId}")
-    fun delayCheck(@PathVariable taskId: String): ResponseDto<String> {
-        val message = routineTaskUnitService.delayRoutineTaskUnit(taskId, 1)
-        return if (message.first) ResponseDto.ok(message.second)
-        else ResponseDto.error(message.second)
+    @PatchMapping("/delay/check/{taskId}")
+    fun delayCheck(@PathVariable taskId: String): ResponseDto<Boolean> {
+        val message = routineTaskUnitService.delayRoutineTaskUnit(taskId, 1).first
+        return ResponseDto.ok(message)
     }
 
     @ApiOperation(value = "Task 1회 완료하기")
