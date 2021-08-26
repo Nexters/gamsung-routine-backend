@@ -8,4 +8,5 @@ interface RoutineTaskRepository: MongoRepository<RoutineTask, String> {
     fun findByCode(code: String): List<RoutineTask>
     fun findByCodeIn(codes: List<String>): List<RoutineTask>
     fun findByCodeAndProfileId(code: String, profileId: String): Optional<RoutineTask>
+    fun findByNotifyIsTrueAndDaysContaining(day: Int): List<RoutineTask>
 }
