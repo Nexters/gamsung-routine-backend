@@ -29,11 +29,10 @@ data class ResponseDto<T> internal constructor(
             )
         }
 
-        fun error(status: Int, message: String?): ResponseDto<Nothing> {
-            return ResponseDto(
-                status = status,
-                message = message ?: "",
-            )
-        }
+        fun <T> error(data: T, message: String) = ResponseDto(
+            status = 5001,
+            message = message,
+            data = data
+        )
     }
 }
