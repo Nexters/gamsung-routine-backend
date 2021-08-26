@@ -105,16 +105,16 @@ class RoutineTaskUnitService(
     fun delayRoutineTaskUnit(taskId: String, status: Int): Pair<Boolean, String> {
 
         val nowDateTime = LocalDateTime.now()
-        val profile = AccountHolder.get()
-//        val profile = Account(
-//            id = "610440cca49e190b7a79c112",
-//            socialType = SocialType.KAKAO,
-//            nickname = "",
-//            email = "",
-//            profileImageUrl = "",
-//            thumbnailImageUrl = "",
-//            pushNotification = true
-//        )
+//        val profile = AccountHolder.get()
+        val profile = Account(
+            id = "610440cca49e190b7a79c112",
+            socialType = SocialType.KAKAO,
+            nickname = "",
+            email = "",
+            profileImageUrl = "",
+            thumbnailImageUrl = "",
+            pushNotification = true
+        )
 
         val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
         val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateAndDelayedDateTimeIsNull(
@@ -159,33 +159,36 @@ class RoutineTaskUnitService(
         }
 
         var delayDay: LocalDateTime? = null
-        if (status == DELAY_STATUS_DELAY) {
-            // Unit delay 처리
-            unit.delayedDateTime = nowDateTime
-            routineTaskUnitRepository.save(unit)
+        // Unit delay 처리
+        unit.delayedDateTime = nowDateTime
 
-            val noPlanDays = mutableListOf<Int>()
-            var tempDelayCount = taskDto.delayCount
-            for (i in dayOfWeek + 1..WEEK_COUNT) {
-                if (remainUnits?.contains(i) == false) {
-                    if (tempDelayCount > 0) {
-                        tempDelayCount--
-                    } else {
-                        noPlanDays.add(i)
-                    }
+        val noPlanDays = mutableListOf<Int>()
+        var tempDelayCount = taskDto.delayCount
+        for (i in dayOfWeek + 1..WEEK_COUNT) {
+            if (remainUnits?.contains(i) == false) {
+                if (tempDelayCount > 0) {
+                    tempDelayCount--
+                } else {
+                    noPlanDays.add(i)
                 }
             }
+        }
 
-            val delayAddNumber = noPlanDays[0] - dayOfWeek
-            delayDay = nowDateTime.plusDays(delayAddNumber.toLong())
+        val delayAddNumber = noPlanDays[0] - dayOfWeek
+        delayDay = nowDateTime.plusDays(delayAddNumber.toLong())
 
+        if (status == DELAY_STATUS_DELAY) {
+            routineTaskUnitRepository.save(unit)
             // 태스크 delay count up
             taskDto.delayCount++
             routineTaskRepository.save(taskDto.toEntity())
         }
 
 //        return "(๑>ᴗ<๑) 해당 태스크를 미뤘습니다."
-        return Pair(DELAY_AVAILABLE, "해당 태스크를 ${delayDay?.dayOfWeek?.getDisplayName(TextStyle.FULL, Locale.KOREAN)}로 미뤘습니다.")
+        return Pair(
+            DELAY_AVAILABLE,
+            "해당 태스크를 ${delayDay?.dayOfWeek?.getDisplayName(TextStyle.FULL, Locale.KOREAN)}로 미뤘습니다."
+        )
     }
 
     fun completeRoutineTaskUnit(taskId: String, date: String): Pair<RoutineTaskUnit, String> {
