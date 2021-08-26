@@ -82,11 +82,7 @@ class RoutineTaskController(
     ): RoutineTaskDto {
         // task id를 체크 --> todo: message를 어떻게 노출시킬지 고민 중
         // to 상환 : orElseThrow =--> ?: throw
-        val exist = routineTaskRepository.findById(routineTaskDto.id ?: "")
-        if (exist.isEmpty) throw IllegalArgumentException("업데이트 할 Task를 찾을 수 없습니다.")
-
-        val routineTask = routineTaskRepository.save(routineTaskDto.toEntity())
-        return routineTask.toDto()
+        return routineTaskService.update(routineTaskDto).toDto()
     }
 
     @DeleteMapping("/{taskId}")

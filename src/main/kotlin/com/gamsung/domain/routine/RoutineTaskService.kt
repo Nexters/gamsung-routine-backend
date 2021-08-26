@@ -25,6 +25,28 @@ class RoutineTaskService(
         return routineTaskSaved
     }
 
+    fun update(routineTaskDto: RoutineTaskDto): RoutineTask {
+        val savedRoutineTask = routineTaskRepository.findById(routineTaskDto.id ?: "")
+        if (savedRoutineTask.isEmpty) throw IllegalArgumentException("업데이트 할 Task를 찾을 수 없습니다.")
+
+        val dayOfWeek = LocalDate.now().dayOfWeek.value
+        val unitId = savedRoutineTask.get().getUnitId(LocalDate.now().toDateString())
+
+        if (routineTaskDto.days.contains(dayOfWeek)) {
+            //update unit
+            val todayUnit = routineTaskUnitRepository.findByUnitId(unitId)
+            if (todayUnit.isPresent) {
+                todayUnit.get().title = routineTaskDto.title
+                todayUnit.get().times = routineTaskDto.times
+                routineTaskUnitRepository.save(todayUnit.get());
+            }
+        } else {
+            //delete unit
+            routineTaskUnitRepository.deleteByUnitId(unitId)
+        }
+        return routineTaskRepository.save(routineTaskDto.toEntity())
+    }
+
     fun getMonthlyRoutines(profileId: String, year: Int, month: Int): MonthlyRoutineHistoryDto {
         val lastMonth = Month.of(month).minus(1).value
         val startMonth = if (lastMonth == 0) 12 else lastMonth
