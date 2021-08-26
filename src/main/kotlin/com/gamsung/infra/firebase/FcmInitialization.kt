@@ -6,13 +6,13 @@ import com.google.firebase.FirebaseOptions
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.io.FileInputStream
+import org.springframework.core.io.ClassPathResource
 
 @Configuration
 class FcmInitialization {
     @Bean
     fun initFcm() = ApplicationRunner {
-        val fcmCredential = FileInputStream("static/bonkaemaster-firebase-adminsdk-syfro-e1a7fe5eb4.json")
+        val fcmCredential = ClassPathResource("bonkaemaster-firebase-adminsdk-syfro-e1a7fe5eb4.json").inputStream
         val options = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(fcmCredential))
             .build()
