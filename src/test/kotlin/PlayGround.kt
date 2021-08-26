@@ -1,5 +1,7 @@
+import com.gamsung.infra.toDateTimeString
 import org.junit.jupiter.api.Test
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 
 class PlayGround {
 
@@ -17,6 +19,8 @@ class PlayGround {
         println(">>>>> " + format.format(date2))
         println(">>>>> " + (sample1 == format.format(date1)))
         println(">>>>> " + (sample2 == format.format(date2)))
+
+        println(">>>>> now : ${LocalDateTime.now().toDateTimeString()}")
     }
 
 }

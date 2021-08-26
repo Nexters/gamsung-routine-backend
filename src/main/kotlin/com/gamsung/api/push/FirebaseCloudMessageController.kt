@@ -1,10 +1,13 @@
 package com.gamsung.api.push
 
 import com.gamsung.domain.push.FirebaseCloudMessageService
+import com.gamsung.infra.toDateString
+import com.gamsung.infra.toDateTimeString
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/push")
@@ -24,6 +27,6 @@ class FirebaseCloudMessageController(
             "doOsYH50ShC_1iSnNKgiJN:APA91bHYyGGjjoRLORBfBK30m35UGaeoH0ZDo9dFVVRst7JL51Ia4gJG3SaRLNK39OTwdo6pV5JYnVrbRJn-BvdC-1xxHld_WMOuUUNuZtSrg3C8XwZv6wRPhxREHSuFgnXhJbBsO-IE",
             "cn3l2OtwSb2tnVxHcGs3pM:APA91bGaOyBhuLpJ4ItTg9bDjdPWur7C-ReoRvGniXjVctGsqI-jFCJDDuECv_ITIh_jThee_I4_e8tPg7-4z86dJIaIkzAhimaUjpaXQSlCz0PD6YzBZIw6w8kvb_-brMFWb4ws5pRw"
         )
-        firebaseCloudMessageService.sendMulticastMessage(tokenList, "26일 테스트", "손인턴의 테스트 푸시다 하 하 하 하 하 하 하 하 하 손인턴의 테스트 푸시다 하 하 하 하 하 하 하 하 하 손인턴의 테스트 푸시다 하 하 하 하 하 하 하 하 하")
+        firebaseCloudMessageService.sendMulticastMessage(tokenList, "${LocalDateTime.now().toDateTimeString()} 테스트", "손인턴의 테스트 푸시다 하 하 하 하 하 하 하 하 하 손인턴의 테스트 푸시다 하 하 하 하 하 하 하 하 하 손인턴의 테스트 푸시다 하 하 하 하 하 하 하 하 하")
     }
 }

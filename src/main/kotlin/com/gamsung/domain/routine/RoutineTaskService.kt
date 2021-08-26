@@ -79,6 +79,9 @@ class RoutineTaskService(
         val today = LocalDate.now()
         if (startDate.isBefore(today) && endDate.isAfter(today)) {
             val routineTasks = routineTaskRepository.findByProfileId(profileId)
+            val routineTasksByCode = routineTaskRepository.findByCodeIn(routineTasks.map { it.code!! })
+            val routineTaskGroupByCode = routineTasksByCode.groupBy { it.code }
+            val usersMap = userRepository.findByIdIn(routineTasksByCode.map { it.profileId }.distinct()).associateBy { it.id }
 
             for (routineTask in routineTasks) {
                 routineTask.days.let {
@@ -106,7 +109,21 @@ class RoutineTaskService(
                             delayedDateTime = null
                         )
 
-                        routineUnitDtoResult.add(dailyTaskUnit.toDto(arrayListOf()))
+                        val friends = routineTaskGroupByCode[routineTask.code!!]!!
+                            .map {
+                                usersMap[it.profileId]?.let { user ->
+                                    RoutineTaskFriendUnitDto(
+                                        taskId = it.id!!,
+                                        profileId = it.profileId,
+                                        name = user.nickname,
+                                        profileImageUrl = user.profileImageUrl.orEmpty(),
+                                        thumbnailImageUrl = user.thumbnailImageUrl.orEmpty(),
+                                        completeCount = 0,
+                                        completedDateList = emptyList()
+                                    )
+                                }
+                            }
+                        routineUnitDtoResult.add(dailyTaskUnit.toDto(friends as List<RoutineTaskFriendUnitDto>))
                     }
                 }
             }
@@ -130,8 +147,10 @@ class RoutineTaskService(
         }
 
         val routineTaskIds = routineTaskUnits.map { it.unitId }
-        val notExistingRoutineUnits = routineTaskUnitRepository.findAllByUnitIdNotIn(routineTaskIds)
-        routineTaskUnitRepository.saveAll(notExistingRoutineUnits)
+        val existingRoutineUnitSet = routineTaskUnitRepository.findAllByDateAndUnitIdIn(LocalDate.now().toDateString(), routineTaskIds)
+            .map { it.unitId }.toSet()
+        val filteredTaskUnits = routineTaskUnits.filter { !existingRoutineUnitSet.contains(it.unitId) }
+        routineTaskUnitRepository.saveAll(filteredTaskUnits)
     }
 
     fun getTodayRoutineTaskUnit(routineTaskUnits: MutableList<RoutineTaskUnit>, routineTask: RoutineTask) {
