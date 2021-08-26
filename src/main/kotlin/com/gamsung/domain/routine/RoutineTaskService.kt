@@ -5,9 +5,9 @@ import com.gamsung.domain.auth.repository.UserRepository
 import com.gamsung.domain.unit.RoutineTaskUnit
 import com.gamsung.domain.unit.RoutineTaskUnitRepository
 import com.gamsung.infra.toDateString
-import feign.FeignException
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Month
 
 @Service
@@ -251,8 +251,6 @@ class RoutineTaskService(
                 code = task.get().code,
                 profileId = friendId,
                 title = task.get().title,
-//                timesOfWeek = task.get().timesOfWeek,
-//                timesOfDay = task.get().timesOfDay,
                 notify = task.get().notify,
                 days = task.get().days,
                 times = task.get().times,
@@ -272,6 +270,8 @@ class RoutineTaskService(
         }
     }
 
-
-
+    fun getTodayNotifiedTasks(now: LocalDateTime): List<RoutineTask> {
+        val dayOfWeek = now.dayOfWeek.value
+        return routineTaskRepository.findByNotifyIsTrueAndDaysContaining(dayOfWeek)
+    }
 }

@@ -112,6 +112,10 @@ class AuthService(
         userRepository.save(user)
         return pushNotification
     }
+
+    fun getProfiles(profileIds: List<String>): List<User> {
+        return userRepository.findByIdIn(profileIds)
+    }
 }
 
 private fun KakaoResponse.toUsernameWithSocialType(socialType: SocialType): String {
