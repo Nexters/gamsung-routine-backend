@@ -3,9 +3,11 @@ package com.gamsung.domain.unit
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
+import java.util.*
 
 @Repository
 interface RoutineTaskUnitRepository : MongoRepository<RoutineTaskUnit, String> {
+    fun findByUnitId(unitId: String): Optional<RoutineTaskUnit>
     fun findByUnitIdAndDelayedDateTimeIsNull(unitId: String): List<RoutineTaskUnit>
 
     fun findAllByProfileIdAndLocalDateAndDelayedDateTimeIsNull(
