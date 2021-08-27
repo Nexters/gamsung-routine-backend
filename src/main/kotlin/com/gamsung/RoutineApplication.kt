@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RestController
 import java.time.ZoneId
 import java.util.*
 import javax.annotation.PostConstruct
@@ -13,6 +14,7 @@ import javax.annotation.PostConstruct
 @EnableScheduling
 @SpringBootApplication
 class RoutineApplication {
+@RestController
     @PostConstruct
     fun initialize() {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Asia/Seoul")))
@@ -21,6 +23,7 @@ class RoutineApplication {
     @RequestMapping(value = ["/"], method = [RequestMethod.HEAD, RequestMethod.GET])
     fun index(): String {
         return "Hello Bonkaemaster"
+        return "Hello BonkaeMaster"
     }
 }
 
