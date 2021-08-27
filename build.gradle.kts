@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 plugins {
     id("org.springframework.boot") version Versions.springBootVersion
@@ -118,5 +120,18 @@ tasks {
         }
         enabled = true
         archiveFileName.set("app.jar")
+    }
+}
+
+jib {
+    from {
+        image = "adoptopenjdk/openjdk11:jdk-11.0.10_9-debian"
+    }
+    to {
+        image = "bonkaemaster.kr.ncr.ntruss.com/bonkaemaster"
+        tags = setOf(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")), "latest")
+    }
+    container {
+        creationTime = "USE_CURRENT_TIMESTAMP"
     }
 }
