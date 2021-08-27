@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct
 @SpringBootApplication
 class RoutineApplication {
 @RestController
+class RoutineApplication(
     @PostConstruct
     fun initialize() {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Asia/Seoul")))
