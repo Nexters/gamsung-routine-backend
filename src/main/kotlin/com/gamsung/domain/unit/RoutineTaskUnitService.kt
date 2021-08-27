@@ -33,7 +33,7 @@ class RoutineTaskUnitService(
         val dateString = date.toDateString()
         val id = dateString.plus(":").plus(routineTaskUnitDto.profileId).plus(":").plus(routineTaskUnitDto.taskId)
         val unit = RoutineTaskUnit.create(
-            unitId = id,
+            id = id,
             profileId = routineTaskUnitDto.profileId,
             date = dateString,
             localDate = date.plusHours(9).toLocalDate(),
@@ -194,7 +194,7 @@ class RoutineTaskUnitService(
     fun completeRoutineTaskUnit(taskId: String, date: String): Pair<RoutineTaskUnit, String> {
         val profile = AccountHolder.get()
         val unitId = "$date:${profile.id}:$taskId"
-        val unit = routineTaskUnitRepository.findByUnitIdAndDelayedDateTimeIsNull(unitId).first()
+        val unit = routineTaskUnitRepository.findByIdAndDelayedDateTimeIsNull(unitId).first()
         if (unit.completedDateList.size == unit.timesOfDay) {
             throw IllegalArgumentException("이미 오늘의 모든 태스크가 완료되었습니다.")
         }
@@ -205,7 +205,7 @@ class RoutineTaskUnitService(
     }
 
     fun checkCompleted(unitId: String): String {
-        val unit = routineTaskUnitRepository.findByUnitIdAndDelayedDateTimeIsNull(unitId).first()
+        val unit = routineTaskUnitRepository.findByIdAndDelayedDateTimeIsNull(unitId).first()
         if (unit.completedDateList.size == (unit.times?.size ?: -1)) {
             return "이미 오늘의 모든 태스크가 완료되었습니다."
         }
@@ -216,7 +216,7 @@ class RoutineTaskUnitService(
         val profile = AccountHolder.get()
         val unitId = "$date:${profile.id}:$taskId"
 
-        val unit = routineTaskUnitRepository.findByUnitIdAndDelayedDateTimeIsNull(unitId).first()
+        val unit = routineTaskUnitRepository.findByIdAndDelayedDateTimeIsNull(unitId).first()
 
         if (unit.completeCount < 1) {
             throw IllegalArgumentException("이미 모든 태스크가 되돌아갔습니다.")

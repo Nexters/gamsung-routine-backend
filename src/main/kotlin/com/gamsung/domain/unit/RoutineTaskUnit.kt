@@ -9,7 +9,9 @@ import java.time.LocalDateTime
 
 @Document
 data class RoutineTaskUnit(
-    val unitId: String, // "20210702:profileId:taskId", key가 없을 시 최초 생성
+
+    @Id
+    val id: String, // "20210702:profileId:taskId", key가 없을 시 최초 생성
     val profileId: String,
     var date: String, // 월, 일이 한자리수일 때, '0'붙일 것
     var localDate: LocalDate,
@@ -59,7 +61,7 @@ data class RoutineTaskUnit(
 
     companion object {
         fun create(
-            unitId: String,
+            id: String,
             profileId: String,
             date: String,
             localDate: LocalDate,
@@ -72,7 +74,7 @@ data class RoutineTaskUnit(
 
             ): RoutineTaskUnit {
             return RoutineTaskUnit(
-                unitId = unitId,
+                id = id,
                 profileId = profileId,
                 date = date,
                 localDate = localDate,

@@ -7,9 +7,6 @@ import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 
 abstract class BaseDocument {
-    @Id
-    var id: String? = lateInit()
-
     @CreatedDate
     var createdDateTime: LocalDateTime = lateInit()
 
