@@ -15,6 +15,11 @@ class RoutineApplication {
     fun initialize() {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Asia/Seoul")))
     }
+
+    @GetMapping("/")
+    fun index(): String {
+        return "Hello Bonkaemaster"
+    }
 }
 
 fun main(args: Array<String>) {
