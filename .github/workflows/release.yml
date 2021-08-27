@@ -33,4 +33,4 @@ jobs:
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          script: deploy.sh
+          script: ./deploy.sh
