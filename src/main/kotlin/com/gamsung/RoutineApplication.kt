@@ -3,8 +3,8 @@ package com.gamsung
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.web.bind.annotation.GetMapping
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.util.*
 import javax.annotation.PostConstruct
 
