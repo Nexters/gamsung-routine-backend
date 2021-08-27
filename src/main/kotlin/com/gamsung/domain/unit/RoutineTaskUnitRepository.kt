@@ -7,8 +7,7 @@ import java.util.*
 
 @Repository
 interface RoutineTaskUnitRepository : MongoRepository<RoutineTaskUnit, String> {
-    fun findByUnitId(unitId: String): Optional<RoutineTaskUnit>
-    fun findByUnitIdAndDelayedDateTimeIsNull(unitId: String): List<RoutineTaskUnit>
+    fun findByIdAndDelayedDateTimeIsNull(unitId: String): List<RoutineTaskUnit>
 
     fun findAllByProfileIdAndLocalDateAndDelayedDateTimeIsNull(
         profileId: String,
@@ -51,12 +50,10 @@ interface RoutineTaskUnitRepository : MongoRepository<RoutineTaskUnit, String> {
 
     fun findByProfileId(profileId: String): MutableList<RoutineTaskUnit>
 
-    fun findAllByDateAndUnitIdIn(date: String, unitIds: List<String>): List<RoutineTaskUnit>
+    fun findAllByDateAndIdIn(date: String, unitIds: List<String>): List<RoutineTaskUnit>
 
     fun findByTaskCodeInAndDelayedDateTimeIsNull(taskIds: List<String>): MutableList<RoutineTaskUnit>
 
     fun findByTaskCodeIn(codes: List<String>): MutableList<RoutineTaskUnit>
-
-    fun deleteByUnitId(unitId: String)
 
 }

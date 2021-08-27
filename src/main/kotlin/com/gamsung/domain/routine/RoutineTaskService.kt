@@ -34,7 +34,7 @@ class RoutineTaskService(
 
         if (routineTaskDto.days.contains(dayOfWeek)) {
             //update unit
-            val todayUnit = routineTaskUnitRepository.findByUnitId(unitId)
+            val todayUnit = routineTaskUnitRepository.findById(unitId)
             if (todayUnit.isPresent) {
                 todayUnit.get().title = routineTaskDto.title
                 todayUnit.get().times = routineTaskDto.times
@@ -42,7 +42,7 @@ class RoutineTaskService(
             }
         } else {
             //delete unit
-            routineTaskUnitRepository.deleteByUnitId(unitId)
+            routineTaskUnitRepository.deleteById(unitId)
         }
         return routineTaskRepository.save(routineTaskDto.toEntity())
     }
@@ -115,9 +115,9 @@ class RoutineTaskService(
                         val daysFromToday = day - today.dayOfWeek.value
                         val currDate = LocalDate.now().plusDays(daysFromToday.toLong())
                         val date = currDate.toDateString()
-                        val unitId = date.plus(":").plus(profileId).plus(":").plus(routineTask.id)
+                        val id = date.plus(":").plus(profileId).plus(":").plus(routineTask.id)
                         val dailyTaskUnit = RoutineTaskUnit(
-                            unitId = unitId,
+                            id = id,
                             profileId = routineTask.profileId,
                             date = date,
                             localDate = currDate,
@@ -168,10 +168,10 @@ class RoutineTaskService(
             getTodayRoutineTaskUnit(routineTaskUnits, routineTask)
         }
 
-        val routineTaskIds = routineTaskUnits.map { it.unitId }
-        val existingRoutineUnitSet = routineTaskUnitRepository.findAllByDateAndUnitIdIn(LocalDate.now().toDateString(), routineTaskIds)
-            .map { it.unitId }.toSet()
-        val filteredTaskUnits = routineTaskUnits.filter { !existingRoutineUnitSet.contains(it.unitId) }
+        val routineTaskIds = routineTaskUnits.map { it.id }
+        val existingRoutineUnitSet = routineTaskUnitRepository.findAllByDateAndIdIn(LocalDate.now().toDateString(), routineTaskIds)
+            .map { it.id }.toSet()
+        val filteredTaskUnits = routineTaskUnits.filter { !existingRoutineUnitSet.contains(it.id) }
         routineTaskUnitRepository.saveAll(filteredTaskUnits)
     }
 
@@ -193,7 +193,7 @@ class RoutineTaskService(
                 val date = today.toDateString()
                 val unitId = date.plus(":").plus(routineTask.profileId).plus(":").plus(routineTask.id)
                 val dailyTaskUnit = RoutineTaskUnit(
-                    unitId = unitId,
+                    id = unitId,
                     profileId = routineTask.profileId,
                     date = date,
                     localDate = today,
@@ -253,7 +253,7 @@ class RoutineTaskService(
         val task = routineTaskRepository.findById(taskId)
         if (task.isPresent) {
             val targetUnitId = date + ":" + task.get().profileId + ":" + task.get().id
-            routineTaskUnitRepository.deleteByUnitId(targetUnitId)
+            routineTaskUnitRepository.deleteById(targetUnitId)
             routineTaskRepository.deleteById(taskId)
         }
     }
