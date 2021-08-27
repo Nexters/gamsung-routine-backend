@@ -105,16 +105,16 @@ class RoutineTaskUnitService(
     fun delayRoutineTaskUnit(taskId: String, status: Int): Pair<Boolean, String> {
 
         val nowDateTime = LocalDateTime.now()
-//        val profile = AccountHolder.get()
-        val profile = Account(
-            id = "610440cca49e190b7a79c112",
-            socialType = SocialType.KAKAO,
-            nickname = "",
-            email = "",
-            profileImageUrl = "",
-            thumbnailImageUrl = "",
-            pushNotification = true
-        )
+        val profile = AccountHolder.get()
+//        val profile = Account(
+//            id = "610440cca49e190b7a79c112",
+//            socialType = SocialType.KAKAO,
+//            nickname = "",
+//            email = "",
+//            profileImageUrl = "",
+//            thumbnailImageUrl = "",
+//            pushNotification = true
+//        )
 
         val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
         val unit = routineTaskUnitRepository.findAllByProfileIdAndTaskIdAndDateAndDelayedDateTimeIsNull(
@@ -150,7 +150,6 @@ class RoutineTaskUnitService(
         // 남은 날짜 : 과거와 오늘을 제외해서 일주일 중 남은 날짜
         val remainDays = WEEK_COUNT - dayOfWeek
         // 남은 unit (오늘 Unit 포함) : 계획된 유닛 - 이미 지나간 유닛
-//        val remainUnitCount = planCount - pastUnitList.size
         val remainUnits = unit.days?.filter { it > dayOfWeek }?.map { it }?.sorted()
         val remainUnitCount = remainUnits?.size ?: 0
 
@@ -184,7 +183,6 @@ class RoutineTaskUnitService(
             routineTaskRepository.save(taskDto.toEntity())
         }
 
-//        return "(๑>ᴗ<๑) 해당 태스크를 미뤘습니다."
         return Pair(
             DELAY_AVAILABLE,
             "해당 태스크를 ${delayDay?.dayOfWeek?.getDisplayName(TextStyle.FULL, Locale.KOREAN)}로 미뤘습니다."
