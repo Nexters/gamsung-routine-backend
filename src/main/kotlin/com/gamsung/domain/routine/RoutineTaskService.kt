@@ -1,6 +1,7 @@
 package com.gamsung.domain.routine
 
 import com.gamsung.api.dto.*
+import com.gamsung.domain.auth.document.User
 import com.gamsung.domain.auth.repository.UserRepository
 import com.gamsung.domain.unit.RoutineTaskUnit
 import com.gamsung.domain.unit.RoutineTaskUnitRepository
@@ -47,12 +48,12 @@ class RoutineTaskService(
         return routineTaskRepository.save(routineTaskDto.toEntity())
     }
 
-    fun getFriendsList(date: String, taskCode: String): List<String>? {
+    fun getFriendsList(date: String, taskCode: String): List<User>? {
         val codes = mutableListOf(taskCode)
         val friendRoutineUnits = routineTaskUnitRepository.findByTaskCodeIn(codes)
         val units = friendRoutineUnits.groupBy { it.date + it.taskCode }[date + taskCode]
         return units?.map {
-            userRepository.findById(it.profileId).get().nickname
+            userRepository.findById(it.profileId).get()
         }
     }
 
