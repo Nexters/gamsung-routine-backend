@@ -47,6 +47,15 @@ class RoutineTaskService(
         return routineTaskRepository.save(routineTaskDto.toEntity())
     }
 
+    fun getFriendsList(date: String, taskCode: String): List<String>? {
+        val codes = mutableListOf(taskCode)
+        val friendRoutineUnits = routineTaskUnitRepository.findByTaskCodeIn(codes)
+        val units = friendRoutineUnits.groupBy { it.date + it.taskCode }[date + taskCode]
+        return units?.map {
+            userRepository.findById(it.profileId).get().nickname
+        }
+    }
+
     fun getMonthlyRoutines(profileId: String, year: Int, month: Int): MonthlyRoutineHistoryDto {
         val lastMonth = Month.of(month).minus(1).value
         val startMonth = if (lastMonth == 0) 12 else lastMonth

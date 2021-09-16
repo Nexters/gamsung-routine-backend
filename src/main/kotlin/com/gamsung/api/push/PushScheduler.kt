@@ -28,10 +28,29 @@ class PushScheduler(
 
         val profiles = authService.getProfiles(profileIds).filter { it.pushNotification ?: false }.associateBy { it.id!! }
 
+
+        val todayDate = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+
         targetTasks.forEach {
             val profile = profiles[it.profileId]
             if (profile?.pushToken != null) {
-                firebaseCloudMessageService.send(profile.pushToken!!, "뭘 보내?", "내용을 알려줘")
+                val friends = routineTaskService.getFriendsList(todayDate, it.code ?: "")
+                var bodyMessage: String? = null
+                when (friends?.size) {
+                    0 -> throw Exception("")
+                    1 -> bodyMessage = "테스크를 해결하고 몬스터를 없애주시게!"
+                    2 -> {
+                        // todo
+                    }
+                    else -> {
+                        // todo
+                    }
+                }
+                firebaseCloudMessageService.send(
+                    profile.pushToken!!,
+                    it.title + " 10분 전!",
+                    "테스크를 해결하고 몬스터를 없애주시게!"
+                )
                 log.info("Push Send : $it")
             }
         }
