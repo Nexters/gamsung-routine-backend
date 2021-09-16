@@ -10,6 +10,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping("/api/routine")
@@ -19,6 +21,18 @@ class RoutineTaskController(
 ) {
     companion object {
         private val log: Logger = LoggerFactory.getLogger(RoutineTaskController::class.java)
+    }
+
+    @ApiOperation(value = "테스트용 api")
+    @GetMapping("/sample")
+    fun sample() {
+        println(">>>>> fun getFriends()")
+        val today = LocalDateTime.now() // .minusDays(1)
+        val todayDate = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+        println(">>>>> todayDate : $todayDate")
+        routineTaskService.getFriendsList(todayDate, "61267b15e732924c64fa9d0a:1630129878692")?.forEach {
+            println(">>>> ${it.nickname}")
+        }
     }
 
     @ApiOperation(value = "멀티 Task 생성")
