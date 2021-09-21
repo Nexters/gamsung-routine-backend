@@ -22,7 +22,7 @@ class PushScheduler(
         val todayDate = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
         val tasks = routineTaskService.getTodayNotifiedTasks(today)
-        val todayTime = today.toLocalTime().minusMinutes(10).format(DateTimeFormatter.ofPattern("HH:mm"))
+        val todayTime = today.toLocalTime().plusMinutes(10).format(DateTimeFormatter.ofPattern("HH:mm"))
         val targetTasks = tasks.filter { it.times.any { time -> time == todayTime } }
         val profileIds = targetTasks.map { it.profileId }.distinct()
         val profiles = authService.getProfiles(profileIds)
