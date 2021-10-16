@@ -207,6 +207,9 @@ class RoutineTaskUnitService(
         if (unit.completedDateList.size == (unit.times?.size ?: -1)) {
             return "이미 오늘의 모든 태스크가 완료되었습니다."
         }
+//        else if (unit.completedDateList.size == 0) {
+//            return "완료된 태스크가 없습니다."
+//        }
         return ""
     }
 
